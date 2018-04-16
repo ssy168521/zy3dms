@@ -65,7 +65,7 @@ var resourceInfo = {
 			agsWmsLayer.setImageFormat("png");
 			agsWmsLayer.setVisibleLayers([0]);
 			map.addLayer(agsWmsLayer);
-map.on("load", function() {
+
 
 
 		var agsWmsUrl = "http://localhost:6080/arcgis/services/MapWorld/MapServer/WMSServer";
@@ -74,12 +74,7 @@ map.on("load", function() {
 		agsWmsLayer.setVisibleLayers([0]);
 		map.addLayer(agsWmsLayer);
 		
-		// ���������ͼ��
-		var mil = new esri.layers.MapImageLayer();
-	    mil.setVisibility(true);
-		map.addLayer(mil);
 		
-		// ���������ͼ��,j46D001001
 		var mi = new esri.layers.MapImage({
 		 'extent': {'xmin':-1551802.164754936,'ymin':3188742.0592723233,'xmax':-1502801.7490601132,'ymax':3234414.144844479,'spatialReference':{'wkt':'PROJCS["WGS_1984_Albers",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Albers"],PARAMETER["false_easting",0.0],PARAMETER["false_northing",0.0],PARAMETER["central_meridian",110.0],PARAMETER["standard_parallel_1",25.0],PARAMETER["standard_parallel_2",47.0],PARAMETER["latitude_of_origin",12.0],UNIT["Meter",1.0]]'}},
 		  'href': 'C:\database\overview\test\J46D001001.png'
@@ -89,11 +84,19 @@ map.on("load", function() {
 		  'extent': { 'xmin': 89.9066, 'ymin': 39.58973, 'xmax': 90.59089, 'ymax': 40.07674,'spatialReference':{'wkid':4326}},
 		  'href': 'C:\database\overview\test\J46D001001-1.png'
 		});
-		 mil1.setVisibility(true);
-		 map.addLayer(mil1);
+		// ���������ͼ��
+		var mil = new esri.layers.MapImageLayer();
+	    mil.setVisibility(true);
+		map.addLayer(mil);
 		mil.addImage(mi);
-		mil.addImage(mi1);
-		});
+		// ���������ͼ��,j46D001001
+		
+		
+		var mil1 = new esri.layers.MapImageLayer();
+	    mil1.setVisibility(true);
+		map.addLayer(mil1);
+		mil1.addImage(mi1);
+		
 
 });
 </script>
