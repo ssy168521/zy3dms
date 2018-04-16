@@ -1,4 +1,4 @@
-ï»¿package com.sasmac.servlet;
+package com.sasmac.servlet;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,10 +22,10 @@ import com.web.thread.MyHmArchiveThread;
 import com.web.util.AppUtil;
 
 /**
- * æ­¤Servletåˆ¤æ–­æ–‡ä»¶å½’æ¡£æ–¹å¼ï¼šæœ¬åœ°å½’æ¡£è¿˜æ˜¯smbå±€åŸŸç½‘å½’æ¡£
+ * ´ËServletÅĞ¶ÏÎÄ¼ş¹éµµ·½Ê½£º±¾µØ¹éµµ»¹ÊÇsmb¾ÖÓòÍø¹éµµ
  * @author Administrator
  * @ClassName:HandArchive
- * @date 2018å¹´3æœˆ12æ—¥ ä¸‹åˆ10:32:14
+ * @date 2018Äê3ÔÂ12ÈÕ ÏÂÎç10:32:14
  */
 public class HandArchive extends HttpServlet {
 	private Logger myLogger = LogManager.getLogger("mylog");
@@ -78,41 +78,41 @@ public class HandArchive extends HttpServlet {
 	}
 
 	/**
-	 * doPostä¸å‰å°äº¤äº’
+	 * doPostÓëÇ°Ì¨½»»¥
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		response.setCharacterEncoding("utf-8");
-
-		String srcPath = request.getParameter("ArchivePath");//å½’æ¡£æºè·¯å¾„
-		String taskname = request.getParameter("taskname");  //ä»»åŠ¡åç§°
+		response.setContentType("text/html");
+		String srcPath = request.getParameter("ArchivePath");//¹éµµÔ´Â·¾¶
+		String taskname = request.getParameter("taskname");  //ÈÎÎñÃû³Æ
        
 		PrintWriter out = response.getWriter();
 
 		if (srcPath.isEmpty()) {
-			out.print("è¯·è®¾ç½®å½’æ¡£è·¯å¾„!!!");
+			out.print("ÇëÉèÖÃ¹éµµÂ·¾¶!!!");
 		} else {
 
 			int flag = -1;
 			try {
-				//åˆ¤æ–­æ˜¯å¦ä¸ºç½‘ç»œè·¯å¾„  -1ä¸ºé”™è¯¯ï¼Œ2ä¸ºsmbï¼Œ0ä¸ºä¸å­˜åœ¨ï¼Œ1ä¸ºsmbè·¯å¾„æ­£ç¡®
+				//ÅĞ¶ÏÊÇ·ñÎªÍøÂçÂ·¾¶  -1Îª´íÎó£¬2Îªsmb£¬0Îª²»´æÔÚ£¬1ÎªsmbÂ·¾¶ÕıÈ·
 				flag = Constants.AssertFileIsSMBFileDir(srcPath);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (flag == 0) {                   //0ä¸ºæœ¬åœ°è·¯å¾„
+			if (flag == 0) {                   //0Îª±¾µØÂ·¾¶
 				File pf = new File(srcPath);
 
 				if (!pf.exists()) {
-					out.println(srcPath + ":å½’æ¡£è·¯å¾„ä¸å­˜åœ¨ï¼");
+					out.println(srcPath + ":¹éµµÂ·¾¶²»´æÔÚ£¡");
 				} else {
-					out.println("æ­£åœ¨å½’æ¡£!");
+					out.println("ÕıÔÚ¹éµµ!");
 					MyHmArchiveThread pThread = new MyHmArchiveThread(srcPath);
 					pThread.setTaskName(taskname);
 					ThreadManager pthreadpool = new ThreadManager();
-					pthreadpool.submmitJob(pThread);    //å¼€å§‹å½’æ¡£
+					pthreadpool.submmitJob(pThread);    //¿ªÊ¼¹éµµ
 				}
 			} else if (flag == 2) {
 				NtlmPasswordAuthentication auth = smbAuthUtil
@@ -124,16 +124,16 @@ public class HandArchive extends HttpServlet {
 				SmbFile remoteFile = new SmbFile(srcPath, auth);
 
 				if (!remoteFile.exists()) {
-					out.print(srcPath + ":å½’æ¡£è·¯å¾„ä¸å­˜åœ¨ï¼");
+					out.print(srcPath + ":¹éµµÂ·¾¶²»´æÔÚ£¡");
 				} else {
-					out.println("æ­£åœ¨å½’æ¡£!");
+					out.println("ÕıÔÚ¹éµµ!");
 					MyHmArchiveThread pThread = new MyHmArchiveThread(srcPath);
 					pThread.setTaskName(taskname);
 					ThreadManager pthreadpool = new ThreadManager();
 					pthreadpool.submmitJob(pThread);
 				}
 			} else if (flag == 1) {
-				srcPath = AppUtil.localFilePathToSMBFilePath(srcPath);//ç½‘ç»œè·¯å¾„
+				srcPath = AppUtil.localFilePathToSMBFilePath(srcPath);//ÍøÂçÂ·¾¶
 				NtlmPasswordAuthentication auth = smbAuthUtil
 						.getsmbAuth(srcPath);
 				if (auth == null) {
@@ -142,9 +142,9 @@ public class HandArchive extends HttpServlet {
 				}
 				SmbFile remoteFile = new SmbFile(srcPath, auth);
 				if (!remoteFile.exists()) {
-					out.print(srcPath + ":å½’æ¡£è·¯å¾„ä¸å­˜åœ¨ï¼");
+					out.print(srcPath + ":¹éµµÂ·¾¶²»´æÔÚ£¡");
 				} else {
-					out.println("æ­£åœ¨å½’æ¡£!");
+					out.println("ÕıÔÚ¹éµµ!");
 					MyHmArchiveThread pThread = new MyHmArchiveThread(srcPath);
 					pThread.setTaskName(taskname);
 					ThreadManager pthreadpool = new ThreadManager();
@@ -152,7 +152,7 @@ public class HandArchive extends HttpServlet {
 				}
 
 			} else if (flag == -1) {
-				out.print(srcPath + ":å½’æ¡£è·¯å¾„ä¸å­˜åœ¨ï¼");
+				out.print(srcPath + ":¹éµµÂ·¾¶²»´æÔÚ£¡");
 			}
 
 		}

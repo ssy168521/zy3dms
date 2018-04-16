@@ -1292,7 +1292,7 @@ String username="";
 												省/市/自治区 
 											</td>
 											<td width=60%>
-												<select id="province" class="selectpicker" data-done-button="true" onchange="selectprovince(this);" style=" width:95px;" multiple runat="server" ></select>
+												<select id="province" class="selectpicker" data-done-button="true" onchange="selectprovince(this);" style=" width:100%;" multiple runat="server" ></select>
 											</td>															
 										</tr>
 										<tr height=30%>
@@ -1300,7 +1300,7 @@ String username="";
 												地级市/区 
 											</td>
 											<td width=60%>
-												<select id="city" class="selectpicker" data-done-button="true" onchange="selectcity(this);" style="width:95px;" multiple runat="server"></select>
+												<select id="city" class="selectpicker" data-done-button="true" onchange="selectcity(this);" style="width:100%;" multiple runat="server"></select>
 											</td>															
 										</tr>
 										<tr height=30%>
@@ -1308,7 +1308,7 @@ String username="";
 												县
 											</td>
 											<td width=60%>
-												<select id="county" class="selectpicker" data-done-button="true" onchange="selectcounty(this);" style="width:95px;" multiple runat="server"></select>
+												<select id="county" class="selectpicker" data-done-button="true" onchange="selectcounty(this);" style="width:100%;" multiple runat="server"></select>
 											</td>
 										</tr>
 									</table>

@@ -14,6 +14,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
+import com.sasmac.jni.Gdal_resample;
 import com.sasmac.jni.ImageProduce;
 import com.sasmac.meta.Meta2Database;
 import com.web.common.Constants;
@@ -167,13 +168,17 @@ public class SviCopyArchiveThread extends BaseThread implements Runnable{
 					flag = 3;
 					satellite = "TH";
 				}else if(filename.substring(0,filename.indexOf("_")+1).  //
-						matches("zy301a_")){
+						matches("ZY301")){
 					flag = 4;
-					satellite = "zy301a";
+					satellite = "ZY301";
 				}else if(filename.substring(0,filename.indexOf("_")+1).
-						matches("zy302a_")){
+						matches("ZY302_")){
 					flag = 5;
-					satellite = "zy302a";
+					satellite = "ZY302";
+				}else if(filename.substring(0,filename.indexOf("_")+1).
+						matches("ZY302_")){
+					flag = 5;
+					satellite = "ZY3";
 				}else{
 					myLogger.info("file format is not support: " + filename);
 					continue;
@@ -227,15 +232,41 @@ public class SviCopyArchiveThread extends BaseThread implements Runnable{
 						if (!dest.exists()) {
 							dest.mkdirs();
 						}
-						// 图像重采样
-						res = imgprodu.ImageRectify(tifpath, destpath
+
+						boolean res1=false;
+						res1 = imgprodu.ImageRectify(tifpath, destpath
 								+ File.separator + filename + ".png", 256, 256);
-						if (!res) {
-							myLogger.info(filename + " :png overview build error !");
-						} else {
-							myLogger.info("finish ImageRectify overiew-png: "
-									+ filename + ".png");
+						if(!res1){
+							myLogger.info("第一次重采样失败！快视图建立错误！");
+						}else{
+							myLogger.info("第一次重采样成功！开始判断是否重投影！");
+							boolean res2=false;
+							//判断是否能进行重投影
+							res2 = Gdal_resample.Resample( destpath+ File.separator + filename + ".png",
+									destpath+ File.separator+"temp.png");
+							if(!res2){
+								myLogger.info("无法进行重投影！快视图生成结束！");
+
+							}else{
+								myLogger.info("需要重投影！开始投影！");
+								//先删除第一次重采样图片
+								File tempResmple = new File(destpath+ File.separator + filename + ".png");
+								tempResmple.delete();
+								//重采样后进行投影变换，再次重采样，将投影变换的输出文件作为重采样的输入文件
+								res = imgprodu.ImageRectify(destpath+ File.separator+"temp.png",
+										destpath+ File.separator + filename + ".png",256,256);
+								
+								if (!res) {
+									myLogger.info(filename + " :png overview build error !");
+								} else {
+									File tempfile = new File(destpath+ File.separator+"temp.png");
+									tempfile.delete();   //删除临时的重投影文件
+									myLogger.info("finish ImageRectify overiew-png: "
+											+ filename + ".png");
+								}
+							}
 						}
+	                                 //************
 					}
 				
 				myLogger.info("finish archive "

@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.sasmac.common.DataModel;
+import com.sasmac.jni.Gdal_resample;
 import com.sasmac.jni.ImageProduce;
 import com.sasmac.meta.Meta2Database;
 import com.web.common.Constants;
@@ -146,27 +147,28 @@ public class SviScanArchiveThread extends BaseThread implements Runnable {
 
 				String satellite = "";
 				int flag = 0;
+				int idx = filename.indexOf("_");
 				//正则表达式比较  
-				if (filename.substring(0,filename.indexOf("_")+1)   //
-						.matches("GF1_")){
+				String prefixname=filename.substring(0,idx);
+				if (prefixname.compareToIgnoreCase("GF1")==0){
 					flag = 1;
 					satellite = "GF1";
-				}else if(filename.substring(0,filename.indexOf("_")+1).  //
-						matches("GF2_")){
+				}else if(prefixname.compareToIgnoreCase("GF2")==0){
 					flag = 2;
 					satellite = "GF2";
-				}else if(filename.substring(0,filename.indexOf("_")+1).  //TH_006149_20160204_020842_19_M
-						matches("TH_")){
+				}else if(prefixname.compareToIgnoreCase("TH")==0){
 					flag = 3;
 					satellite = "TH";
-				}else if(filename.substring(0,filename.indexOf("_")+1).  //
-						matches("zy301a_")){
+				}else if(prefixname.compareToIgnoreCase("ZY301")==0){
 					flag = 4;
-					satellite = "zy301a";
-				}else if(filename.substring(0,filename.indexOf("_")+1).
-						matches("zy302a_")){
+					satellite = "ZY301";
+				}else if(prefixname.compareToIgnoreCase("ZY302")==0){
 					flag = 5;
-					satellite = "zy302a";
+					satellite = "ZY302";
+				}
+				else if(prefixname.compareToIgnoreCase("ZY3")==0){
+					flag = 5;
+					satellite = "ZY3";
 				}else{
 					myLogger.info("file format is not support: " + filename);
 					continue;
@@ -198,8 +200,8 @@ public class SviScanArchiveThread extends BaseThread implements Runnable {
 						// tif图像原路径
 						String tifpath = myPath.getPath() + fF.separator
 								+ fF.getName();
-						String[] ss=filename.split("_");
-						String StoragePath = ss[0]+"\\"+ss[1]+"\\"+ss[4];
+						//String[] ss=filename.split("_");
+						//String StoragePath = ss[0]+"\\"+ss[1]+"\\"+ss[4];
 						String path = Constants.class.getClassLoader()
 								.getResource("/").toURI().getPath();
 						PropertiesUtil propertiesUtil = new PropertiesUtil(path
@@ -222,14 +224,43 @@ public class SviScanArchiveThread extends BaseThread implements Runnable {
 							dest.mkdirs();//创建此抽象路径名指定的目录，包括所有必需但不存在的父目录
 						}
 						// 图像重采样
-						res = imgprodu.ImageRectify(tifpath, destpath
+						/*res = imgprodu.ImageRectify(tifpath, destpath
+								+ File.separator + filename + ".png", 256, 256);*/
+
+						boolean res1=false;
+						res1 = imgprodu.ImageRectify(tifpath, destpath
 								+ File.separator + filename + ".png", 256, 256);
-						if (!res) {
-							myLogger.info(filename + " :png overview build error !");
-						} else {
-							myLogger.info("finish ImageRectify overiew-png: "
-									+ filename + ".png");
+						if(!res1){
+							myLogger.info("第一次重采样失败！快视图建立错误！");
+						}else{
+							myLogger.info("第一次重采样成功！开始判断是否重投影！");
+							boolean res2=false;
+							//判断是否能进行重投影
+							res2 = Gdal_resample.Resample( destpath+ File.separator + filename + ".png",
+									destpath+ File.separator+"temp.png");
+							if(!res2){
+								myLogger.info("无法进行重投影！快视图生成结束！");
+
+							}else{
+								myLogger.info("需要重投影！开始投影！");
+								//先删除第一次重采样图片
+								File tempResmple = new File(destpath+ File.separator + filename + ".png");
+								tempResmple.delete();
+								//重采样后进行投影变换，再次重采样，将投影变换的输出文件作为重采样的输入文件
+								res = imgprodu.ImageRectify(destpath+ File.separator+"temp.png",
+										destpath+ File.separator + filename + ".png",256,256);
+								
+								if (!res) {
+									myLogger.info(filename + " :png overview build error !");
+								} else {
+									File tempfile = new File(destpath+ File.separator+"temp.png");
+									tempfile.delete();   //删除临时的重投影文件
+									myLogger.info("finish ImageRectify overiew-png: "
+											+ filename + ".png");
+								}
+							}
 						}
+	                                 //************
 					}
 				
 				myLogger.info("finish archive "
