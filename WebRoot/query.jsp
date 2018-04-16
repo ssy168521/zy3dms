@@ -35,7 +35,7 @@ String username="";
 	<!--
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
-<!-- 	<script src="./lib/jquery-3.2.0.js"></script> -->
+ 	<script src="./lib/jquery-3.2.0.js"></script>
 	<script src="./lib/jquery.js"></script>
 	<script src="./lib/bootstrap/js/bootstrap.js"></script>	
 	<script src="./lib/bootstrap-table/bootstrap-table.js"></script>	

@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
   <display-name>zy3dms</display-name>
-  <context-param>  
-    <param-name>log4jConfiguration</param-name>  
-    <param-value>/WEB-INF/log4j2.xml</param-value>  
-  </context-param>  
-  
-  <listener>  
-	    <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>  
-  </listener>  
+  <context-param>
+    <param-name>log4jConfiguration</param-name>
+    <param-value>/WEB-INF/log4j2.xml</param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+  </listener>
   <servlet>
     <description>This is the description of my J2EE component</description>
     <display-name>This is the display name of my J2EE component</display-name>
@@ -111,17 +110,14 @@
     <servlet-name>ExportSHP</servlet-name>
     <servlet-class>com.sasmac.servlet.ExportSHP</servlet-class>
   </servlet>
-  
   <servlet>
     <servlet-name>tableField</servlet-name>
     <servlet-class>com.sasmac.servlet.TableField</servlet-class>
   </servlet>
-
   <servlet-mapping>
     <servlet-name>tableField</servlet-name>
     <url-pattern>/servlet/*</url-pattern>
   </servlet-mapping>
-  
   <servlet>
     <description>UploadFileServlet</description>
     <display-name>UploadFileServlet</display-name>
@@ -152,15 +148,6 @@
     <servlet-name>RegionSelect</servlet-name>
     <servlet-class>com.sasmac.servlet.RegionSelect</servlet-class>
   </servlet>
-
-
-
-
-
-
-
-
-
   <servlet-mapping>
     <servlet-name>Query</servlet-name>
     <url-pattern>/servlet/Query</url-pattern>
@@ -253,26 +240,25 @@
     <welcome-file>default.html</welcome-file>
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
-        <welcome-file>query.jsp</welcome-file>
+    <welcome-file>query.jsp</welcome-file>
   </welcome-file-list>
-  
   <filter>
-        <filter-name>permissionFilter</filter-name>
-        <filter-class>com.sasmac.filter.PermissionFilter</filter-class>
+    <filter-name>permissionFilter</filter-name>
+    <filter-class>com.sasmac.filter.PermissionFilter</filter-class>
   </filter>
   <filter-mapping>
-        <filter-name>permissionFilter</filter-name>
-        <url-pattern>*.jsp</url-pattern>
-        <url-pattern>/servlet/*</url-pattern>
+    <filter-name>permissionFilter</filter-name>
+    <url-pattern>*.jsp</url-pattern>
+    <url-pattern>/servlet/*</url-pattern>
   </filter-mapping>
   <filter-mapping>
-        <filter-name>permissionFilter</filter-name>
-        <url-pattern>*.html</url-pattern>
+    <filter-name>permissionFilter</filter-name>
+    <url-pattern>*.html</url-pattern>
   </filter-mapping>
-    <servlet>
-        <servlet-name>CountStatisticservlet</servlet-name>
-        <servlet-class>com.sasmac.servlet.CountStatisticservlet</servlet-class>
-    </servlet>
+  <servlet>
+    <servlet-name>CountStatisticservlet</servlet-name>
+    <servlet-class>com.sasmac.servlet.CountStatisticservlet</servlet-class>
+  </servlet>
   <servlet>
     <description>This is the description of my J2EE component</description>
     <display-name>This is the display name of my J2EE component</display-name>
@@ -291,13 +277,10 @@
     <servlet-name>FramingArchive</servlet-name>
     <servlet-class>com.sasmac.servlet.FramingArchive</servlet-class>
   </servlet>
-
-
-
-    <servlet-mapping>
-        <servlet-name>CountStatisticservlet</servlet-name>
-        <url-pattern>/servlet/CountStatisticservlet</url-pattern>
-    </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CountStatisticservlet</servlet-name>
+    <url-pattern>/servlet/CountStatisticservlet</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>Loadoverview1</servlet-name>
     <url-pattern>/servlet/Loadoverview1</url-pattern>
