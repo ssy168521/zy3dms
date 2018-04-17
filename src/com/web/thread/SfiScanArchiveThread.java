@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.sasmac.common.DataModel;
 import com.sasmac.jni.Gdal_resample;
 import com.sasmac.jni.ImageProduce;
 import com.sasmac.meta.Meta2Database;
@@ -161,14 +162,15 @@ public class SfiScanArchiveThread extends BaseThread implements Runnable {
 				if (bmatch) {
 					flag = 1;
 					satellite = "ZY3-1";
-					productLevel = "SC";
+					productLevel = "DOM";
 
 				} else {
 					myLogger.info("file format is not support: " + filename);
 					continue;
 				}
 				// 表名
-				String tablename = "tb_domframe_product"; // 所有标准分幅产品信息都存于此表
+				//表名
+				String tablename = DataModel.GetProductTabName("分幅DOM");
 				String productName = "标准分幅产品"; // 产品名字
 				if (service.isFileArchive(conn, tablename, filename)) {
 					myLogger.info("file had exist database:" + filename);
@@ -177,15 +179,7 @@ public class SfiScanArchiveThread extends BaseThread implements Runnable {
 				if (!isFinishCopy(fF.getAbsoluteFile()))
 					continue;
 
-				// xml文件全路径
-//				String xmlName = myPath.getPath() + fF.separator + fF.getName();
-//				if (xmlName.substring(xmlName.lastIndexOf(".") - 3)
-//						.equalsIgnoreCase("tif.xml")) {
-//					Meta2Database mdb = new Meta2Database();
-//					mdb.xml2Db(filename, productName, tablename, xmlName);
-//				} else {
-//					myLogger.info("文件格式不对,继续！");
-//				}
+
 
 				//geotiff文件全路径
 				String tiffpath = myPath.getPath() + fF.separator
@@ -217,7 +211,8 @@ public class SfiScanArchiveThread extends BaseThread implements Runnable {
 							+ filename + ".png");
 					ImageProduce imgprodu = new ImageProduce();
 					boolean res = false;
-					String destpath = OverviewStoragePath + StoragePath;
+					String RelativePath=DataModel.generateoverviewpath("分幅DOM", filename);
+					String destpath = OverviewStoragePath + RelativePath;
 
 					// String destpath1 = OverviewStoragePath + StoragePath;
 					File dest = new File(destpath);

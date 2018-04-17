@@ -8,6 +8,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -425,7 +428,29 @@ public class FileUtil {
 			e.printStackTrace();
 		}
 	}
-
+	public static int mappedBuffer(String srcfile, String destFile) throws IOException {
+		
+		FileChannel read = new FileInputStream(srcfile).getChannel();
+		FileChannel writer = new RandomAccessFile(destFile, "rw").getChannel();
+		long i = 0;
+		long size = read.size() / 30;
+		ByteBuffer bb, cc = null;
+		while (i < read.size() && (read.size() - i) > size) {
+			bb = read.map(FileChannel.MapMode.READ_ONLY, i, size);
+			cc = writer.map(FileChannel.MapMode.READ_WRITE, i, size);
+			cc.put(bb);
+			i += size;
+			bb.clear();
+			cc.clear();
+		}
+		bb = read.map(FileChannel.MapMode.READ_ONLY, i, read.size() - i);
+		cc.put(bb);
+		bb.clear();
+		cc.clear();
+		read.close();
+		writer.close();
+		return 1;
+	}
 	public static void main(String[] args) throws Exception {
 
 	}

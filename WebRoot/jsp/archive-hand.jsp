@@ -33,25 +33,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </style>
   </head> 
 <body> 
-    <div class="panel-head"><strong class="icon-reorder">自动归档</strong></div>
-	<div class="col-md-4 column" style="height:100%;width:100%">
-		<div class="tabbable" id="tabs-237916">
+<div class="panel-head"><strong class="icon-reorder">归档</strong></div>
+	  <div class="tabbable" id="tabs-724231">
            <div style="text-align:center; padding-top:15px">
-		     <ul class="nav nav-tabs" style="width:100%">
+		     <ul class="nav nav-tabs">
 				<li class="active" style="width:33%">
 					 <a href="#sc-query-region" data-toggle="tab">传感器校正产品</a>
 				</li>
 				<li style="width:33%">
-					 <a href="#sfi-query-region" data-toggle="tab">标准分幅产品</a>
+					 <a href="#sc-query-region" data-toggle="tab">标准分幅DOM产品</a>
 				</li>
 				<li style="width:33%">
-					 <a href="#svi-query-region" data-toggle="tab">分景产品</a>
+					 <a href="#sc-query-region" data-toggle="tab">分景DOM产品</a>
 				</li>
 			</ul>
 		  </div>
 	<div class="tab-content">
 	  <div class="tab-pane active" id="sc-query-region">	
-		  <div class="body-content" style="padding-left:10px;padding-top:50px;">
+		  <form id="queryform" >
+		  <input type="hidden" id="ProductType" name="ProductType" >
 		    <table >
 		    	<tr height="45">
 					<td width="400" style="text-align:right; padding-right:0px;">
@@ -69,23 +69,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<input id="path" class="i-text" name="name-archivepath" type="text"  maxlength="1000" value="" style="width: 272px; "/>
 					</td>
 				</tr>
-				<form id="queryform" >
+				
 				<tr class="advancequerycls"; height="10%">
-				   	<td width="20%" style="text-align:left; padding-left:0px;">				
-					</td>
-				   <!--  <td width="80%" style="text-align:left; padding-left:20px;">										
+				   <td width="80%" style="text-align:right; padding-left:20px;">										
 					 <label title="扫描式归档">
 						<input id="scanning" name="sc-Archive" value="SXZ" type="radio">
 						扫描归档
 					</label>
+				   </td>
+				   <td width="80%" style="text-align:left; padding-left:20px;">										
 					 <label title="迁移式归档">
 						<input id="copy" name="sc-Archive" value="SS" type="radio">
 						迁移归档
-					</label>
+					 </label>
 				   </td>
-				   -->
 				</tr>
-				</form>			
+					
 				<tr height="45">
 					<td width="100" style="text-align:right; padding-right:0px;">
 						
@@ -93,127 +92,32 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<td width="500" style="text-align:left; padding-left:10px;">
 						<input id="btn_archive" class="btn btn-primary" type="button" maxlength="1000" value="开始归档" style="height: 33px; width: 91px; ">
 					</td>
-				</tr>
-										
-			</table>
-		  </div>
-	  </div>
-	  <div class="tab-pane" id="sfi-query-region"><!-- 标准分幅归档 -->
-		 <div class="body-content" style="padding-left:10px;padding-top:50px;">
-		    <table >
-		    	<tr height="45">
-					<td width="150" style="text-align:right; padding-right:0px;">
-						<label>任务名称：</label>
-					</td>
-					<td width="500" style="text-align:left; padding-left:0px;">
-						<input id="taskname2" class="i-text" name="name-taskname2" type="text"  maxlength="1000" value="" style="width: 272px; "/>
-					</td>
-				</tr>
-				<tr height="45">
-					<td width="400" style="text-align:right; padding-right:0px;">
-						<label>归档源路径：</label>
-					</td>
-					<td width="500" style="text-align:left; padding-left:0px;">
-						<input id="path2" class="i-text" name="name-archivepath2" type="text"  maxlength="1000" value="" style="width: 272px; "/>
-					</td>
-				</tr>
-			<form id="queryform">
-			<tr class="advancequerycls"; height="10%">
-				   	<td width="20%" style="text-align:left; padding-left:0px;">				
-					</td>
-				   <td width="80%" style="text-align:left; padding-left:20px;">										
-					 <label title="扫描式归档">
-						<input id="scanning" name="sfi-Archive" value="sfiScan" type="radio" checked>
-						扫描归档
-					 </label>
-					 <label title="迁移式归档">
-						<input id="copy" name="sfi-Archive" value="sfiCopy" type="radio">
-						迁移归档
-					</label>
-				   </td>
-				</tr>
-				</form>
-				<tr height="45">
-					<td width="100" style="text-align:right; padding-right:0px;">
-						
-					</td>
-					<td width="500" style="text-align:left; padding-left:10px;">
-						<input id="btn_archive2" class="btn btn-primary" type="button" maxlength="1000" value="开始归档" style="height: 33px; width: 91px; ">
-					</td>
 				</tr>					
-				
 			</table>
-		 </div>
-		</div>
-	 <div class="tab-pane" id="svi-query-region"><!-- 分景产品归档 -->
-		 <div class="body-content" style="padding-left:10px;padding-top:50px;">
-		    <table >
-		    	<tr height="45">
-					<td width="400" style="text-align:right; padding-right:0px;">
-						<label>任务名称：</label>
-					</td>
-					<td width="500" style="text-align:left; padding-left:0px;">
-						<input id="taskname3" class="i-text" name="name-taskname3" type="text"  maxlength="1000" value="" style="width:272px; "/>
-					</td>
-				</tr>
-				<tr height="45">
-					<td width="150" style="text-align:right; padding-right:0px;">
-						<label>归档源路径：</label>
-					</td>
-					<td width="500" style="text-align:left; padding-left:0px;">
-						<input id="path3" class="i-text" name="name-archivepath3" type="text"  maxlength="1000" value="" style="width:272px; "/>
-					</td>
-				</tr>
-			<form id="queryform">
-				<tr class="advancequerycls"; height="10%">
-				   	<td width="20%" style="text-align:left; padding-left:0px;">				
-					</td>
-				   <td width="80%" style="text-align:left; padding-left:20px;">										
-					 <label title="扫描式归档">
-						<input id="scanning" name="svi-Archive" value="sviScan" type="radio" checked>
-						扫描归档
-					</label>
-					 <label title="迁移式归档">
-						<input id="copy" name="svi-Archive" value="sviCopy" type="radio">
-						迁移归档
-					</label>                              
-				   </td>
-				</tr>
-				</form>
-				<tr height="45">
-					<td width="100" style="text-align:right; padding-right:0px;">
-						
-					</td>
-					<td width="500" style="text-align:left; padding-left:10px;">
-						<input id="btn_archive3" class="btn btn-primary" type="button" maxlength="1000" value="开始归档" style="height: 33px; width: 91px; ">
-					</td>
-				</tr>					
-				
-			</table>
-		 </div>
-	 </div>
+			</form>		
 	  </div>
-
-	  </div>
-	  </div>
+	</div>
+</div>
 <script type="text/javascript">
+
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {            
+       var  activeTab = $(e.target).text();
+       $("#ProductType").val(activeTab);
+     });
 $(function(){
 	var pDate=new Date();
+	var strProductType=$("#ProductType").val();
 	//SC归档
-	var taskname= "SC产品数据归档"+pDate.getFullYear()+"-"+(pDate.getMonth()+1)+"-"+pDate.getDate()+" "+pDate.getHours()+":"+pDate.getMinutes()+":"+pDate.getSeconds();
+	var taskname= strProductType+pDate.getFullYear()+"-"+(pDate.getMonth()+1)+"-"+pDate.getDate()+" "+pDate.getHours()+":"+pDate.getMinutes()+":"+pDate.getSeconds();
 	$("#taskname").val(taskname);
-	//标准分幅
-	var taskname2= "标准分幅产品归档"+pDate.getFullYear()+"-"+(pDate.getMonth()+1)+"-"+pDate.getDate()+" "+pDate.getHours()+":"+pDate.getMinutes()+":"+pDate.getSeconds();
-	$("#taskname2").val(taskname2);
-    //分景
-	var taskname3= "分景产品数据归档"+pDate.getFullYear()+"-"+(pDate.getMonth()+1)+"-"+pDate.getDate()+" "+pDate.getHours()+":"+pDate.getMinutes()+":"+pDate.getSeconds();
-	$("#taskname3").val(taskname3);
+	
 });
 
   //SC产品归档
 $("#btn_archive").click(function(){
 	var strtaskname=$("#taskname").val();
 	var strarchivepath=$("#path").val(); 
+	var strProductType=$("#ProductType").val();
 	if(strarchivepath =="")
 	{
 	    alert("请设置归档路径");
@@ -277,7 +181,7 @@ $("#btn_archive2").click(function(){
     //分景产品归档
 $("#btn_archive3").click(function(){
 	var arcmethod = "";  //单选框
-	var archive=document.getElementsByName("svi-Archive");
+	var archive=document.getElementsByName("sfi-Archive");
 	for (i = 0; i < archive.length; i++) {
 		if(archive[i].checked){
 			arcmethod = archive[i].value
@@ -290,10 +194,9 @@ $("#btn_archive3").click(function(){
 	    alert("请设置归档路径");
 	    return;
 	}
-	//文件路径转为绝对路径
 	strarchivepath=strarchivepath.replace(/\\/g,"\\\\");
-	var tmp="{\"ArchivePath\":\""+strarchivepath+"\",\"taskname\":\""+strtaskname+"\",\"arcmethod\":\""+arcmethod+"\"}";  
-	
+	var tmp="{\"ArchivePath\":\""+strarchivepath+"\",\"taskname\":\""+strtaskname+"\"}";  
+
 	$.ajax(
 		{url:"<%=basePath%>"+"/servlet/FramingArchive",
 		type:"POST",

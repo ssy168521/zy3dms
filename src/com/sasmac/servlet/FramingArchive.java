@@ -23,6 +23,7 @@ import com.web.thread.SfiScanArchiveThread;
 import com.web.thread.MyHmArchiveThread;
 import com.web.thread.SviCopyArchiveThread;
 import com.web.thread.SviScanArchiveThread;
+import com.web.thread.ArchiveThread;
 import com.web.util.AppUtil;
 
 public class FramingArchive extends HttpServlet {
@@ -92,109 +93,25 @@ public class FramingArchive extends HttpServlet {
 		
 		if (srcPath.isEmpty()) {
 			out.print("请设置归档路径!!!");
-		} else {
-		  if(arcmethod.compareTo("sfiScan")==0){    /**SXZ表示标准分幅产品扫描归档*/
-
-				int flag = -1;
-				try {
-					//判断是否为网络路径  -1为错误，2为smb，0为不存在，1为smb路径正确
-					flag = Constants.AssertFileIsSMBFileDir(srcPath);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (flag == 0){                   //0为本地路径
-					File pf = new File(srcPath);
+			return ;
+		} 
 		
-					if (!pf.exists()) {
-						out.println(srcPath + ":归档路径不存在！");
-					} else {
-						out.println("正在归档!");
-						SfiScanArchiveThread pThread = new SfiScanArchiveThread(srcPath);
-						pThread.setTaskName(taskname);
-						ThreadManager pthreadpool = new ThreadManager();
-						pthreadpool.submmitJob(pThread);    //开始归档
-					}
-				}else if (flag == -1) {
-					out.print(srcPath + ":归档路径不存在！");
-				}
-		  }else if(arcmethod.compareTo("sfiCopy")==0){   /**SS表示标准分幅产品迁移式归档*/
-					int flag = -1;
-					try {
-						//判断是否为网络路径  -1为错误，2为smb，0为不存在，1为smb路径正确
-						flag = Constants.AssertFileIsSMBFileDir(srcPath);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (flag == 0){                   //0为本地路径
-						File pf = new File(srcPath);
-	
-						if (!pf.exists()) {
-							out.println(srcPath + ":归档路径不存在！");
-						} else {
-							out.println("正在归档!");
-							SfiCopyArchiveThread pThread = new SfiCopyArchiveThread(srcPath);//归档时要拷贝文件
-							pThread.setTaskName(taskname);
-							ThreadManager pthreadpool = new ThreadManager();
-							pthreadpool.submmitJob(pThread);    //开始归档
-						}
-					}else if (flag == -1) {
-						out.print(srcPath + ":归档路径不存在！");
-					}
-		  }else if(arcmethod.compareTo("sviScan")==0){     /**分景产品扫描归档*/
-				int flag = -1;
-				try {
-					//判断是否为网络路径  -1为错误，2为smb，0为不存在，1为smb路径正确
-					flag = Constants.AssertFileIsSMBFileDir(srcPath);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				if (flag == 0){                   //0为本地路径
-					File pf = new File(srcPath);
-
-					if (!pf.exists()) {
-						out.println(srcPath + ":归档路径不存在！");
-					} else {
-						out.println("正在归档!");
-						SviScanArchiveThread pThread = new SviScanArchiveThread(srcPath);
-						pThread.setTaskName(taskname);
-						ThreadManager pthreadpool = new ThreadManager();
-						pthreadpool.submmitJob(pThread);    //开始归档
-					}
-				}else if (flag == -1) {
-					out.print(srcPath + ":归档路径不存在！");
-				}
-				
-		  }else if(arcmethod.compareTo("sviCopy")==0){     /**分景产品迁移归档*/
-					int flag = -1;
-					try {
-						//判断是否为网络路径  -1为错误，2为smb，0为不存在，1为smb路径正确
-						flag = Constants.AssertFileIsSMBFileDir(srcPath);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					if (flag == 0){                   //0为本地路径
-						File pf = new File(srcPath);
-	
-						if (!pf.exists()) {
-							out.println(srcPath + ":归档路径不存在！");
-						} else {
-							out.println("正在归档!");
-							SviCopyArchiveThread pThread = new SviCopyArchiveThread(srcPath);//归档时要拷贝文件
-							pThread.setTaskName(taskname);
-							ThreadManager pthreadpool = new ThreadManager();
-							pthreadpool.submmitJob(pThread);    //开始归档
-						}
-					}else if (flag == -1) {
-						out.print(srcPath + ":归档路径不存在！");
-					}
-				
-		  }
-		  else{
-			  out.print("请选择归档方式！");
-		  }
+		File pf = new File(srcPath);
+		
+		if (!pf.exists()) {
+			out.println(srcPath + ":归档路径不存在！");
+			return ;
 		}
+		int Arcmethod=0;
+		String ProductType="";
+		
+		
+		out.println("正在归档!");
+		ArchiveThread pThread = new ArchiveThread(ProductType,srcPath,Arcmethod);
+		pThread.setTaskName(taskname);
+		ThreadManager pthreadpool = new ThreadManager();
+		pthreadpool.submmitJob(pThread);    //开始归档
+
 		out.flush();
 		out.close();
 	}

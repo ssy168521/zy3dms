@@ -359,7 +359,7 @@ public class ImportMeta2Database {
 					myLogger.info("file copy -mappedBuffer mode !");
 					
 					TarUtils.fileProber(StoragePath);
-					int ret = mappedBuffer(strfile, StoragePath +"\\"+ strName);
+					int ret = FileUtil.mappedBuffer(strfile, StoragePath +"\\"+ strName);
 				} else {
 					myLogger.info("file copy -file copy webservice mode !");
 					FileCopy s = new FileCopy(new java.net.URL(
@@ -398,29 +398,7 @@ public class ImportMeta2Database {
 		}
 	}
 
-	public int mappedBuffer(String srcfile, String destFile) throws IOException {
 	
-		FileChannel read = new FileInputStream(srcfile).getChannel();
-		FileChannel writer = new RandomAccessFile(destFile, "rw").getChannel();
-		long i = 0;
-		long size = read.size() / 30;
-		ByteBuffer bb, cc = null;
-		while (i < read.size() && (read.size() - i) > size) {
-			bb = read.map(FileChannel.MapMode.READ_ONLY, i, size);
-			cc = writer.map(FileChannel.MapMode.READ_WRITE, i, size);
-			cc.put(bb);
-			i += size;
-			bb.clear();
-			cc.clear();
-		}
-		bb = read.map(FileChannel.MapMode.READ_ONLY, i, read.size() - i);
-		cc.put(bb);
-		bb.clear();
-		cc.clear();
-		read.close();
-		writer.close();
-		return 1;
-	}
 
 	public String genertateStoragePath(String destpath,
 			spatialmetadata spatialmeta) {

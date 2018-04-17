@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.web.common.Constants;
-import com.web.thread.MyMianThread;
+//import com.web.thread.MyMianThread;
 import com.web.util.PropertiesUtil;
 
 public class InitServlet extends HttpServlet {

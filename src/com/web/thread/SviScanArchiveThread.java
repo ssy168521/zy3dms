@@ -142,9 +142,6 @@ public class SviScanArchiveThread extends BaseThread implements Runnable {
 				filename = fF.getName().substring(0, fF.getName().lastIndexOf("."));
 				myLogger.info("start archive " + Integer.toString(iCurridx)
 						+ " file");
-				int intNowHour = Calendar.getInstance().get(
-						Calendar.HOUR_OF_DAY);
-
 				String satellite = "";
 				int flag = 0;
 				int idx = filename.indexOf("_");

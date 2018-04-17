@@ -163,36 +163,29 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 				}
 				myLogger.info("start archive " + Integer.toString(iCurridx + 1)
 						+ " file");
-				int intNowHour = Calendar.getInstance().get(
-						Calendar.HOUR_OF_DAY);
+				
 				String satellite = "";
 				String productLevel = "";
-				int flag = 0;
-
 				String filename = fF.getName();
 				boolean bmatch = filename
 						.matches("zy301a_[a-z]{3}_[0-9]{6}_[0-9]{6}_[0-9]{14}_[0-9]{2}_sec_[0-9]{4}_[0-9]{10}.tar");
 				if (bmatch) {
-					flag = 1;
 					satellite = "ZY3-1";
 					productLevel = "SC";
 					int idx = filename.lastIndexOf(".tar");
 					filename = filename.substring(0, idx);
 				} else if (filename
 						.matches("zy302a_[a-z]{3}_[0-9]{6}_[0-9]{6}_[0-9]{14}_[0-9]{2}_sec_[0-9]{4}_[0-9]{10}.tar")) {
-					flag = 2;
 					satellite = "ZY3-2";
 					productLevel = "SC";
 					int idx = filename.lastIndexOf(".tar");
 					filename = filename.substring(0, idx);
 				} else if (filename.startsWith("GF1_PMS")) {
-					flag = 3;
 					satellite = "GF1";
 					productLevel = "LEVEL1A";
 					int idx = filename.lastIndexOf(".tar.gz");
 					filename = filename.substring(0, idx);
 				} else if (filename.startsWith("GF2_PMS")) {
-					flag = 4;
 					satellite = "GF2";
 					productLevel = "LEVEL1A";
 					int idx = filename.lastIndexOf(".tar.gz");
@@ -274,17 +267,12 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 				filename = fF.getName();
 				myLogger.info("start archive " + Integer.toString(iCurridx)
 						+ " file");
-				int intNowHour = Calendar.getInstance().get(
-						Calendar.HOUR_OF_DAY);
-
 				String satellite = "";
 				String productLevel = "";
-				int flag = 0;
 				//正则表达式比较
 				boolean bmatch = filename
 						.matches("zy301a_[a-z]{3}_[0-9]{6}_[0-9]{6}_[0-9]{14}_[0-9]{2}_sec_[0-9]{4}_[0-9]{10}.tar");
 				if (bmatch) {
-					flag = 1;
 					satellite = "ZY3-1";
 					productLevel = "SC";
 
@@ -294,7 +282,6 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 					filename = filename.substring(0, idx);
 				} else if (filename
 						.matches("zy302a_[a-z]{3}_[0-9]{6}_[0-9]{6}_[0-9]{14}_[0-9]{2}_sec_[0-9]{4}_[0-9]{10}.tar")) {
-					flag = 2;
 					int idx = filename.lastIndexOf(".tar");
 					if (idx == -1)
 						continue;
@@ -302,7 +289,6 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 					productLevel = "SC";
 					filename = filename.substring(0, idx);
 				} else if (filename.startsWith("GF1_PMS")) {
-					flag = 3;
 					int idx = filename.lastIndexOf(".tar.gz");
 					if (idx == -1)
 						continue;
@@ -310,7 +296,6 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 					satellite = "GF1";
 					productLevel = "LEVEL1A";
 				} else if (filename.startsWith("GF2_PMS")) {
-					flag = 4;
 					int idx = filename.lastIndexOf(".tar.gz");
 					if (idx == -1)
 						continue;
@@ -335,7 +320,7 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 				if (fF.getName().toLowerCase().endsWith(".tar")
 						|| fF.getName().toLowerCase().endsWith(".tar.gz")) {
 					//xml文件全路径
-					String xmlName = myPath.getPath() + fF.separator
+					String xmlName = myPath.getPath() + File.separator
 							+ fF.getName();
 					// windowsXMLFile = xmlName.replace("tar", "xml");
 					if (Constants.IS_LINUX) {

@@ -14,6 +14,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
+import com.sasmac.common.DataModel;
 import com.sasmac.jni.Gdal_resample;
 import com.sasmac.jni.ImageProduce;
 import com.sasmac.meta.Meta2Database;
@@ -154,29 +155,26 @@ public class SviCopyArchiveThread extends BaseThread implements Runnable{
 
 				String satellite = "";
 				int flag = 0;
+				int idx = filename.indexOf("_");
 				//正则表达式比较  
-				if (filename.substring(0,filename.indexOf("_")+1)   //
-						.matches("GF1_")){
+				String prefixname=filename.substring(0,idx);
+				if (prefixname.compareToIgnoreCase("GF1")==0){
 					flag = 1;
 					satellite = "GF1";
-				}else if(filename.substring(0,filename.indexOf("_")+1).  //
-						matches("GF2_")){
+				}else if(prefixname.compareToIgnoreCase("GF2")==0){
 					flag = 2;
 					satellite = "GF2";
-				}else if(filename.substring(0,filename.indexOf("_")+1).  //TH_006149_20160204_020842_19_M
-						matches("TH_")){
+				}else if(prefixname.compareToIgnoreCase("TH")==0){
 					flag = 3;
 					satellite = "TH";
-				}else if(filename.substring(0,filename.indexOf("_")+1).  //
-						matches("ZY301")){
+				}else if(prefixname.compareToIgnoreCase("ZY301")==0){
 					flag = 4;
 					satellite = "ZY301";
-				}else if(filename.substring(0,filename.indexOf("_")+1).
-						matches("ZY302_")){
+				}else if(prefixname.compareToIgnoreCase("ZY302")==0){
 					flag = 5;
 					satellite = "ZY302";
-				}else if(filename.substring(0,filename.indexOf("_")+1).
-						matches("ZY302_")){
+				}
+				else if(prefixname.compareToIgnoreCase("ZY3")==0){
 					flag = 5;
 					satellite = "ZY3";
 				}else{
@@ -184,7 +182,8 @@ public class SviCopyArchiveThread extends BaseThread implements Runnable{
 					continue;
 				}
 				//表名
-				String tablename = "tb_domscene_product";      //所有标准分幅产品信息都存于此表
+				//表名
+				String tablename = DataModel.GetProductTabName("分景DOM");
                // String productName = "分景产品";  //产品名字
 				if (service.isFileArchive(conn, tablename, filename)) {
 					myLogger.info("file had exist database:" + filename);
