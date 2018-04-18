@@ -73,13 +73,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<tr class="advancequerycls"; height="10%">
 				   <td width="80%" style="text-align:right; padding-left:20px;">										
 					 <label title="扫描式归档">
-						<input id="scanning" name="sc-Archive" value="SXZ" type="radio">
+						<input id="scanning" name="Archivemodename" value="SXZ" type="radio">
 						扫描归档
 					</label>
 				   </td>
 				   <td width="80%" style="text-align:left; padding-left:20px;">										
 					 <label title="迁移式归档">
-						<input id="copy" name="sc-Archive" value="SS" type="radio">
+						<input id="copy" name="Archivemodename" value="SS" type="radio">
 						迁移归档
 					 </label>
 				   </td>
@@ -118,87 +118,28 @@ $("#btn_archive").click(function(){
 	var strtaskname=$("#taskname").val();
 	var strarchivepath=$("#path").val(); 
 	var strProductType=$("#ProductType").val();
+	var strArchiveMode="";
 	if(strarchivepath =="")
 	{
 	    alert("请设置归档路径");
 	    return;
 	}
+	var Archivemodename = document.getEementsByName(“Archivemodename”);
+    var Archivemode;
+	for(var i = 0; i < Archivemodename.length; i++)
+	{
+		if(Archivemodename[i].checked)
+		{
+			Archivemode = Archivemodename[i].value;
+		}
 	
+	}
 	strarchivepath=strarchivepath.replace(/\\/g,"\\\\");
-	var tmp="{\"ArchivePath\":\""+strarchivepath+"\",\"taskname\":\""+strtaskname+"\"}";
+	var tmp="{\"ArchivePath\":\""+strarchivepath+"\",\"taskname\":\""+strtaskname+"\",\"ProductType\":\""+strProductType+"\",\"ArchiveMode\":\""+Archivemode+"\"}";
 	
 	//document.getElementsByName("name-archivepath")
 	$.ajax(
 		{url:"<%=basePath%>"+"/servlet/HandArchive",
-		type:"POST",
-		data:eval("("+tmp+")"),
-		async:false,
-		error:function(request){
-			alert(" network error!");
-		},
-		success:function(data){
-			document.write(data);
-			document.close();
-		}
-	});
-});
-    //标准分幅产品归档
-$("#btn_archive2").click(function(){
-	var arcmethod = "";//单选框
-	var archive=document.getElementsByName("sfi-Archive");
-	for (i = 0; i < archive.length; i++) {
-		if(archive[i].checked){
-			arcmethod = archive[i].value
-			}  
-	}
-	//alert(arcmethod);
-	var strtaskname=$("#taskname2").val();
-	var strarchivepath=$("#path2").val(); 
-	if(strarchivepath =="")
-	{
-	    alert("请设置归档路径");
-	    return;
-	}
-	//文件路径转为绝对路径
-	strarchivepath=strarchivepath.replace(/\\/g,"\\\\");
-	var tmp="{\"ArchivePath\":\""+strarchivepath+"\",\"taskname\":\""+strtaskname+"\",\"arcmethod\":\""+arcmethod+"\"}";  
-	
-	//document.getElementsByName("name-archivepath")
-	$.ajax(
-		{url:"<%=basePath%>"+"/servlet/FramingArchive",
-		type:"POST",
-		data:eval("("+tmp+")"),
-		async:false,
-		error:function(request){
-			alert(" network error!");
-		},
-		success:function(data){
-			document.write(data);
-			document.close();
-		}
-	});
-});
-    //分景产品归档
-$("#btn_archive3").click(function(){
-	var arcmethod = "";  //单选框
-	var archive=document.getElementsByName("sfi-Archive");
-	for (i = 0; i < archive.length; i++) {
-		if(archive[i].checked){
-			arcmethod = archive[i].value
-		}  
-	}
-	var strtaskname=$("#taskname3").val();
-	var strarchivepath=$("#path3").val(); 
-	if(strarchivepath =="")
-	{
-	    alert("请设置归档路径");
-	    return;
-	}
-	strarchivepath=strarchivepath.replace(/\\/g,"\\\\");
-	var tmp="{\"ArchivePath\":\""+strarchivepath+"\",\"taskname\":\""+strtaskname+"\"}";  
-
-	$.ajax(
-		{url:"<%=basePath%>"+"/servlet/FramingArchive",
 		type:"POST",
 		data:eval("("+tmp+")"),
 		async:false,
