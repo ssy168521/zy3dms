@@ -35,8 +35,7 @@ public class DataUtils<T> {
 		return update((String) map.get("sql"), (Object[]) map.get("params"));
 	}
 
-	public int delete(Document document, String deleteID, Object deleteValue)
-			throws Exception {
+	public int delete(Document document, String deleteID, Object deleteValue) throws Exception {
 		Map<String, Object> map = getDeleteSql(document, deleteID, deleteValue);
 		return update((String) map.get("sql"), (Object[]) map.get("params"));
 	}
@@ -60,27 +59,22 @@ public class DataUtils<T> {
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public List search(String sql, Object[] params) throws SQLException {
-		return (List) new QueryRunner().query(connection, sql, params,
-				new MapListHandler());
+		return (List) new QueryRunner().query(connection, sql, params, new MapListHandler());
 	}
 
 	@SuppressWarnings("unchecked")
 	public List search(String sql) throws SQLException {
-		return (List) new QueryRunner().query(connection, sql,
-				new MapListHandler());
+		return (List) new QueryRunner().query(connection, sql, new MapListHandler());
 	}
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public Map searchSingle(String sql, Object[] params) throws SQLException {
-		return (Map) new QueryRunner().query(connection, sql, params,
-				new MapHandler());
+		return (Map) new QueryRunner().query(connection, sql, params, new MapHandler());
 	}
 
 	@SuppressWarnings({ "deprecation", "unchecked" })
-	public int searchForInt(String sql, Object[] params, String key)
-			throws SQLException {
-		Map map = (Map) new QueryRunner().query(connection, sql, params,
-				new MapHandler());
+	public int searchForInt(String sql, Object[] params, String key) throws SQLException {
+		Map map = (Map) new QueryRunner().query(connection, sql, params, new MapHandler());
 		if (map == null || map.size() == 0) {
 			return -1;
 		}
@@ -91,10 +85,8 @@ public class DataUtils<T> {
 	}
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
-	public String searchForString(String sql, Object[] params, String key)
-			throws SQLException {
-		Map map = (Map) new QueryRunner().query(connection, sql, params,
-				new MapHandler());
+	public String searchForString(String sql, Object[] params, String key) throws SQLException {
+		Map map = (Map) new QueryRunner().query(connection, sql, params, new MapHandler());
 		if (map == null || map.size() == 0) {
 			return null;
 		}
@@ -102,10 +94,8 @@ public class DataUtils<T> {
 	}
 
 	@SuppressWarnings({ "deprecation", "unchecked" })
-	public long searchForLong(String sql, Object[] params, String key)
-			throws SQLException {
-		Map map = (Map) new QueryRunner().query(connection, sql, params,
-				new MapHandler());
+	public long searchForLong(String sql, Object[] params, String key) throws SQLException {
+		Map map = (Map) new QueryRunner().query(connection, sql, params, new MapHandler());
 		if (map.get(key) == null || map.size() == 0) {
 			return 0;
 		}
@@ -117,22 +107,17 @@ public class DataUtils<T> {
 		return getInsertSql(document);
 	}
 
-	private Map<String, Object> getDeleteSql(Document document,
-			String deleteID, Object deleteValue) throws DocumentException {
+	private Map<String, Object> getDeleteSql(Document document, String deleteID, Object deleteValue)
+			throws DocumentException {
 
-		String tableName = document.selectSingleNode("//MAIMS/TableName")
-				.getText();
+		String tableName = document.selectSingleNode("//MAIMS/TableName").getText();
 		String sql = "delete " + tableName + " where " + deleteID + " = ?";
 
 		Object param;
 		if (deleteValue == null) {
-			Node deleteIdField = document
-					.selectSingleNode("//MAIMS/Field[FieldName='" + deleteID
-							+ "']");
-			String fieldType = deleteIdField.selectSingleNode("./FieldType")
-					.getText();
-			String fieldValue = deleteIdField.selectSingleNode("./FieldValue")
-					.getText();
+			Node deleteIdField = document.selectSingleNode("//MAIMS/Field[FieldName='" + deleteID + "']");
+			String fieldType = deleteIdField.selectSingleNode("./FieldType").getText();
+			String fieldValue = deleteIdField.selectSingleNode("./FieldValue").getText();
 			param = new Object[] { getEntity(fieldType, fieldValue) };
 		} else {
 			param = deleteValue;
@@ -145,21 +130,16 @@ public class DataUtils<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> getInsertSql(Document document)
-			throws DocumentException {
-		String tableName = document.selectSingleNode("//MAIMS/TableName")
-				.getText();
+	private Map<String, Object> getInsertSql(Document document) throws DocumentException {
+		String tableName = document.selectSingleNode("//MAIMS/TableName").getText();
 		List<Element> fieldElements = document.selectNodes("//MAIMS/Field");
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append("insert into " + tableName + " (");
 		for (Element fieldElement : fieldElements) {
-			String fieldName = fieldElement.selectSingleNode("./FieldName")
-					.getText();
-			String fieldType = fieldElement.selectSingleNode("./FieldType")
-					.getText();
-			String fieldValue = fieldElement.selectSingleNode("./FieldValue")
-					.getText();
+			String fieldName = fieldElement.selectSingleNode("./FieldName").getText();
+			String fieldType = fieldElement.selectSingleNode("./FieldType").getText();
+			String fieldValue = fieldElement.selectSingleNode("./FieldValue").getText();
 			sql.append(fieldName + ",");
 			params.add(getEntity(fieldType, fieldValue));
 		}
@@ -193,8 +173,7 @@ public class DataUtils<T> {
 		}
 	}
 
-	public List<T> search(String sql, ResultSetHandler<List<T>> handler,
-			Object[] params) throws SQLException {
+	public List<T> search(String sql, ResultSetHandler<List<T>> handler, Object[] params) throws SQLException {
 		return new QueryRunner().query(connection, sql, handler, params);
 	}
 }

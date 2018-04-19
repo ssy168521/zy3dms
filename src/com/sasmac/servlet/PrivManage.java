@@ -34,13 +34,16 @@ public class PrivManage extends HttpServlet {
 	 *
 	 * This method is called when a form has its tag value method equals to get.
 	 * 
-	 * @param request the request send by the client to the server
-	 * @param response the response send by the server to the client
-	 * @throws ServletException if an error occurred
-	 * @throws IOException if an error occurred
+	 * @param request
+	 *            the request send by the client to the server
+	 * @param response
+	 *            the response send by the server to the client
+	 * @throws ServletException
+	 *             if an error occurred
+	 * @throws IOException
+	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -60,47 +63,47 @@ public class PrivManage extends HttpServlet {
 	/**
 	 * The doPost method of the servlet. <br>
 	 *
-	 * This method is called when a form has its tag value method equals to post.
+	 * This method is called when a form has its tag value method equals to
+	 * post.
 	 * 
-	 * @param request the request send by the client to the server
-	 * @param response the response send by the server to the client
-	 * @throws ServletException if an error occurred
-	 * @throws IOException if an error occurred
+	 * @param request
+	 *            the request send by the client to the server
+	 * @param response
+	 *            the response send by the server to the client
+	 * @throws ServletException
+	 *             if an error occurred
+	 * @throws IOException
+	 *             if an error occurred
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// 设置response的编码
 		response.setCharacterEncoding("utf-8");
 		// 设置request的编码
 		request.setCharacterEncoding("utf-8");
-		PrintWriter out=response.getWriter();
+		PrintWriter out = response.getWriter();
 		String btnAddPriv = request.getParameter("btnAddPriv");
 		String btnDelPriv = request.getParameter("btnDelPriv");
-		
-		//DebugFun.showParams(request);
-		if(btnAddPriv!=null){
+
+		// DebugFun.showParams(request);
+		if (btnAddPriv != null) {
 			String privname = request.getParameter("privname");
-			
-			
-		}else if(btnDelPriv!=null){
+
+		} else if (btnDelPriv != null) {
 			System.out.println("权限删除……");
-			String privid= request.getParameter("privid");
-			ManagementService manaServ=new ManagementService();
-			
-			
-			
-			boolean result=false;
-			
-			if(result){
+			String privid = request.getParameter("privid");
+			ManagementService manaServ = new ManagementService();
+
+			boolean result = false;
+
+			if (result) {
 				out.print(result);
-			}
-			else {
+			} else {
 				out.print("权限删除失败！");
 				System.out.println("权限删除失败！");
 			}
 		}
-		
+
 		out.flush();
 		out.close();
 	}
@@ -108,7 +111,8 @@ public class PrivManage extends HttpServlet {
 	/**
 	 * Initialization of the servlet. <br>
 	 *
-	 * @throws ServletException if an error occurs
+	 * @throws ServletException
+	 *             if an error occurs
 	 */
 	public void init() throws ServletException {
 		// Put your code here

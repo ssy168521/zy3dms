@@ -16,10 +16,10 @@ package com.web.form;
  */
 public class BaseForm {
 	// for web
-	//分页
-	private int page;//页码
-	private int rows;//显示多少行
-	//排序
+	// 分页
+	private int page;// 页码
+	private int rows;// 显示多少行
+	// 排序
 	private String sort;
 	private String order;
 

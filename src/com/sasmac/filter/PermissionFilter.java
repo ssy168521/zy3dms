@@ -40,8 +40,8 @@ public class PermissionFilter implements Filter {
 	 * @throws ServletException
 	 */
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response,
-			FilterChain chain) throws IOException, ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
 
 		this.request = (HttpServletRequest) request;
 
@@ -49,15 +49,11 @@ public class PermissionFilter implements Filter {
 		// ??????????????��??:
 		String currentURL = this.request.getRequestURI();
 		// ???????????????????
-		String targetURL = currentURL.substring(currentURL.indexOf("/", 1),
-				currentURL.length());
+		String targetURL = currentURL.substring(currentURL.indexOf("/", 1), currentURL.length());
 
-		if ("/login.jsp".equals(targetURL) || "/query.jsp".equals(targetURL)
-				|| targetURL.contains("/default.jsp")
-				|| targetURL.contains("/servlet/Login")
-				|| targetURL.contains("/servlet/RegionSelect")
-				|| targetURL.contains("/servlet/DBQuery")
-				|| targetURL.contains("/servlet/Loadoverview")) {
+		if ("/login.jsp".equals(targetURL) || "/query.jsp".equals(targetURL) || targetURL.contains("/default.jsp")
+				|| targetURL.contains("/servlet/Login") || targetURL.contains("/servlet/RegionSelect")
+				|| targetURL.contains("/servlet/DBQuery") || targetURL.contains("/servlet/Loadoverview")) {
 			chain.doFilter(request, response);
 			return;
 		}
@@ -65,8 +61,7 @@ public class PermissionFilter implements Filter {
 		HttpSession session = this.request.getSession(false);
 		if (session == null) {
 
-			this.request.getRequestDispatcher("/login.jsp").forward(request,
-					response);
+			this.request.getRequestDispatcher("/login.jsp").forward(request, response);
 
 			return;
 		}
@@ -76,8 +71,7 @@ public class PermissionFilter implements Filter {
 		if (obj != null) {
 			username = session.getAttribute("username").toString();
 			if (username.isEmpty()) {
-				this.request.getRequestDispatcher("/login.jsp").forward(
-						request, response);
+				this.request.getRequestDispatcher("/login.jsp").forward(request, response);
 
 				return;
 			}
@@ -98,8 +92,7 @@ public class PermissionFilter implements Filter {
 		}
 		if ("/Taskmanager.jsp".equals(targetURL)) {
 			if (!bIslogin) {
-				this.request.getRequestDispatcher("/login.jsp").forward(
-						request, response);
+				this.request.getRequestDispatcher("/login.jsp").forward(request, response);
 				return;
 			}
 			if (!user.IsContainPriv(username, "dataarchive")) {
@@ -109,8 +102,7 @@ public class PermissionFilter implements Filter {
 			}
 		} else if ("/sysmanager.jsp".equals(targetURL)) {
 			if (!bIslogin) {
-				this.request.getRequestDispatcher("/login.jsp").forward(
-						request, response);
+				this.request.getRequestDispatcher("/login.jsp").forward(request, response);
 				return;
 			}
 			if (!user.IsContainPriv(username, "systemmanage")) {
@@ -120,8 +112,7 @@ public class PermissionFilter implements Filter {
 			}
 		} else if ("/Archive.jsp".equals(targetURL)) {
 			if (!bIslogin) {
-				this.request.getRequestDispatcher("/login.jsp").forward(
-						request, response);
+				this.request.getRequestDispatcher("/login.jsp").forward(request, response);
 				return;
 			}
 			if (!user.IsContainPriv(username, "dataarchive")) {
@@ -132,8 +123,7 @@ public class PermissionFilter implements Filter {
 
 		} else if (targetURL.contains("/DownloadData")) {
 			if (!bIslogin) {
-				this.request.getRequestDispatcher("/login.jsp").forward(
-						request, response);
+				this.request.getRequestDispatcher("/login.jsp").forward(request, response);
 				return;
 			}
 			if (!user.IsContainPriv(username, "datadownload")) {
@@ -144,8 +134,7 @@ public class PermissionFilter implements Filter {
 			}
 		} else if (targetURL.contains("/HandArchive")) {
 			if (!bIslogin) {
-				this.request.getRequestDispatcher("/login.jsp").forward(
-						request, response);
+				this.request.getRequestDispatcher("/login.jsp").forward(request, response);
 				return;
 			}
 			if (!user.IsContainPriv(username, "dataarchive")) {
@@ -154,8 +143,7 @@ public class PermissionFilter implements Filter {
 			}
 		} else if (targetURL.contains("/DataManager")) {
 			if (!bIslogin) {
-				this.request.getRequestDispatcher("/login.jsp").forward(
-						request, response);
+				this.request.getRequestDispatcher("/login.jsp").forward(request, response);
 				return;
 			}
 			if (!user.IsContainPriv(username, "dataoperater")) {

@@ -55,8 +55,7 @@ public class UploadFileServlet extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setCharacterEncoding("UTF-8");
 		// 获得磁盘文件条目工厂
@@ -67,8 +66,7 @@ public class UploadFileServlet extends HttpServlet {
 		 * 原理 它是先存到 暂时存储室，然后在真正写到 对应目录的硬盘上， 按理来说 当上传一个文件时，其实是上传了两份，第一个是以 .tem
 		 * 格式的 然后再将其真正写到 对应目录的硬盘上
 		 */
-		String path = request.getSession().getServletContext()
-				.getRealPath("/upload");
+		String path = request.getSession().getServletContext().getRealPath("/upload");
 		factory.setRepository(new File(path));
 		// 设置 缓存的大小，当上传文件的容量超过该缓存时，直接放到 暂时存储室
 		factory.setSizeThreshold(1024 * 1024);
@@ -98,8 +96,7 @@ public class UploadFileServlet extends HttpServlet {
 					// 它抛出的异常 用exception 捕捉
 					// item.write( new File(path,filename) );//第三方提供的
 					// 手动写的
-					OutputStream out = new FileOutputStream(new File(path,
-							filename));
+					OutputStream out = new FileOutputStream(new File(path, filename));
 					InputStream in = item.getInputStream();
 					int length = 0;
 					byte[] buf = new byte[1024];
@@ -137,8 +134,7 @@ public class UploadFileServlet extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();

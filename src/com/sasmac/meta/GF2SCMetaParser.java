@@ -117,8 +117,7 @@ public class GF2SCMetaParser implements MetaParser {
 		node = doc.selectSingleNode("//ProductMetaData/BottomRightLongitude");
 		if (node != null) {
 			BottomRightLong = node.getText();
-			m_SpatialMeta.setBottomRightLong(Double
-					.parseDouble(BottomRightLong));
+			m_SpatialMeta.setBottomRightLong(Double.parseDouble(BottomRightLong));
 		}
 		node = doc.selectSingleNode("//ProductMetaData/BottomRightLatitude");
 		if (node != null) {

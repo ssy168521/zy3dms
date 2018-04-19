@@ -12,8 +12,7 @@ public class SmbTest {
 		try {
 			String SmbFilepath = "smb://172.20.3.241/Multimedia/test/";
 
-			NtlmPasswordAuthentication auth = smbAuthUtil
-					.getsmbAuth(SmbFilepath);
+			NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(SmbFilepath);
 			if (auth == null) {
 				Constants.WriteLog(" smb:user password auth error! ");
 				return;

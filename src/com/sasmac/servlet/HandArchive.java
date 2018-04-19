@@ -24,6 +24,7 @@ import com.web.util.AppUtil;
 
 /**
  * ��Servlet�ж��ļ��鵵��ʽ�����ع鵵����smb�������鵵
+ * 
  * @author Administrator
  * @ClassName:HandArchive
  * @date 2018年3月12日 上午10:32:14
@@ -60,8 +61,7 @@ public class HandArchive extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setCharacterEncoding("utf-8");
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -81,64 +81,58 @@ public class HandArchive extends HttpServlet {
 	/**
 	 * doPost��ǰ̨����
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setCharacterEncoding("utf-8");
 		response.setContentType("text/html");
-		String srcPath = request.getParameter("ArchivePath");//�鵵Դ·��
-		String taskname = request.getParameter("taskname");  //��������
-		String ProductType = request.getParameter("ProductType"); 
+		String srcPath = request.getParameter("ArchivePath");// �鵵Դ·��
+		String taskname = request.getParameter("taskname"); // ��������
+		String ProductType = request.getParameter("ProductType");
 		String ArchiveMode = request.getParameter("ArchiveMode");
-		int iArchiveMode=0;
-		if(ArchiveMode.compareToIgnoreCase("迁移归档")==0)
-		{
-			iArchiveMode=1;
-		}
-		else if(ArchiveMode.compareToIgnoreCase("扫描归档")==0)
-		{
-			iArchiveMode=0;
-		}
-		else 
-		{
+		int iArchiveMode = 0;
+		if (ArchiveMode.compareToIgnoreCase("copy") == 0) {
+			iArchiveMode = 1;
+		} else if (ArchiveMode.compareToIgnoreCase("scan") == 0) {
+			iArchiveMode = 0;
+		} else {
 			myLogger.info("archive mode is not set！");
-			return ;
+			return;
 		}
 		PrintWriter out = response.getWriter();
 
-		if(ProductType.compareToIgnoreCase("分幅DOM")==0)
-		{
+		if (ProductType.compareToIgnoreCase("分幅DOM") == 0) {
 			out.println("Archive is begining");
-			ArchiveThread pThread = new ArchiveThread(ProductType,srcPath,iArchiveMode);
+			out.flush();
+			out.close();
+			ArchiveThread pThread = new ArchiveThread(ProductType, srcPath, iArchiveMode);
 			pThread.setTaskName(taskname);
 			ThreadManager pthreadpool = new ThreadManager();
-			pthreadpool.submmitJob(pThread);   
+			pthreadpool.submmitJob(pThread);
+			return;
+		} else if (ProductType.compareToIgnoreCase("分景DOM") == 0) {
+			out.println("Archive is begining");
+			out.flush();
+			out.close();
+			ArchiveThread pThread = new ArchiveThread(ProductType, srcPath, iArchiveMode);
+			pThread.setTaskName(taskname);
+			ThreadManager pthreadpool = new ThreadManager();
+			pthreadpool.submmitJob(pThread);
 			return;
 		}
-		else if(ProductType.compareToIgnoreCase("分景DOM")==0)
-		{
-			out.println("Archive is begining");
-			ArchiveThread pThread = new ArchiveThread(ProductType,srcPath,iArchiveMode);
-			pThread.setTaskName(taskname);
-			ThreadManager pthreadpool = new ThreadManager();
-			pthreadpool.submmitJob(pThread);   
-			return;		
-		}
-			
-		
+
 		if (srcPath.isEmpty()) {
 			out.print("src path is empty!!");
 		} else {
 
 			int flag = -1;
 			try {
-				
+
 				flag = Constants.AssertFileIsSMBFileDir(srcPath);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (flag == 0) {                 
+			if (flag == 0) {
 				File pf = new File(srcPath);
 
 				if (!pf.exists()) {
@@ -148,11 +142,10 @@ public class HandArchive extends HttpServlet {
 					MyHmArchiveThread pThread = new MyHmArchiveThread(srcPath);
 					pThread.setTaskName(taskname);
 					ThreadManager pthreadpool = new ThreadManager();
-					pthreadpool.submmitJob(pThread);   
+					pthreadpool.submmitJob(pThread);
 				}
 			} else if (flag == 2) {
-				NtlmPasswordAuthentication auth = smbAuthUtil
-						.getsmbAuth(srcPath);
+				NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(srcPath);
 				if (auth == null) {
 					myLogger.error(" smb:user password auth error! ");
 					return;
@@ -170,8 +163,7 @@ public class HandArchive extends HttpServlet {
 				}
 			} else if (flag == 1) {
 				srcPath = AppUtil.localFilePathToSMBFilePath(srcPath);
-				NtlmPasswordAuthentication auth = smbAuthUtil
-						.getsmbAuth(srcPath);
+				NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(srcPath);
 				if (auth == null) {
 					myLogger.error(" smb:user password auth error! ");
 					return;

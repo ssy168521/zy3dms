@@ -31,8 +31,7 @@ public class FileNotFoundException_Exception extends Exception {
 	}
 
 	public FileNotFoundException_Exception(String message,
-			com.sasmac.service.FileNotFoundException fileNotFoundException,
-			Throwable cause) {
+			com.sasmac.service.FileNotFoundException fileNotFoundException, Throwable cause) {
 		super();
 		this.fileNotFoundException = fileNotFoundException;
 	}

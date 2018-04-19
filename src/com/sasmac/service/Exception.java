@@ -5,11 +5,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Exception complex typeµÄ Java Àà¡£
+ * <p>
+ * Exception complex typeï¿½ï¿½ Java ï¿½à¡£
  * 
- * <p>ÒÔÏÂÄ£Ê½Æ¬¶ÎÖ¸¶¨°üº¬ÔÚ´ËÀàÖÐµÄÔ¤ÆÚÄÚÈÝ¡£
+ * <p>
+ * ï¿½ï¿½ï¿½ï¿½Ä£Ê½Æ¬ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½Ðµï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½Ý¡ï¿½
  * 
  * <pre>
  * &lt;complexType name="Exception">
@@ -26,35 +27,30 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Exception", propOrder = {
-    "message"
-})
+@XmlType(name = "Exception", propOrder = { "message" })
 public class Exception {
 
-    protected String message;
+	protected String message;
 
-    /**
-     * »ñÈ¡messageÊôÐÔµÄÖµ¡£
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMessage() {
-        return message;
-    }
+	/**
+	 * ï¿½ï¿½È¡messageï¿½ï¿½ï¿½Ôµï¿½Öµï¿½ï¿½
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMessage() {
+		return message;
+	}
 
-    /**
-     * ÉèÖÃmessageÊôÐÔµÄÖµ¡£
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMessage(String value) {
-        this.message = value;
-    }
+	/**
+	 * ï¿½ï¿½ï¿½ï¿½messageï¿½ï¿½ï¿½Ôµï¿½Öµï¿½ï¿½
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMessage(String value) {
+		this.message = value;
+	}
 
 }

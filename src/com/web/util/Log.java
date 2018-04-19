@@ -10,10 +10,10 @@ import java.util.Date;
 public class Log {
 	public static String errorMessage;
 	public static String strPath = "D:\\amp\\";
-	public static boolean bDebug   = true;
+	public static boolean bDebug = true;
 
 	public static synchronized void writeTaskLog(int taskID, String strLog) {
-		if(taskID<0||taskID==0){
+		if (taskID < 0 || taskID == 0) {
 			return;
 		}
 		FileOutputStream fos = null;
@@ -25,7 +25,7 @@ public class Log {
 				f.mkdirs();
 			}
 
-			strFileName = strPath.concat("Task_"+taskID+".log");
+			strFileName = strPath.concat("Task_" + taskID + ".log");
 			File file = new File(strFileName);
 			if (file.exists()) {
 				fos = new FileOutputStream(strFileName, true);
@@ -39,12 +39,13 @@ public class Log {
 			ps.println(strLog);
 			ps.flush();
 		} catch (Exception ex) {
-			System.out.println("Errors occured in log.writeTaskLog():" + ex.getMessage() + "strFileName=" + strFileName);
+			System.out
+					.println("Errors occured in log.writeTaskLog():" + ex.getMessage() + "strFileName=" + strFileName);
 		} finally {
 			closeIO(ps, fos);
 		}
 	}
-	
+
 	public static String getExceptionMsg(Exception e) {
 		StringBuffer sb = null;
 		Throwable te = null;
@@ -75,8 +76,8 @@ public class Log {
 	}
 
 	/**
-	 * 按日期输出日志
-	 * 2013-10-22 zhang.daping
+	 * 按日期输出日志 2013-10-22 zhang.daping
+	 * 
 	 * @param strLog
 	 */
 	public static void println(String strLog) {
@@ -110,7 +111,7 @@ public class Log {
 			closeIO(ps, fos);
 		}
 	}
-	
+
 	public static void println(String type, String strLog, String methodName) {
 		FileOutputStream fos = null;
 		PrintStream ps = null;
@@ -153,7 +154,8 @@ public class Log {
 				}
 			}
 
-			strLog = date.toString().concat("        ".concat("method :" + "[" + methodName + "]   ").concat(strLog) + "\n");
+			strLog = date.toString()
+					.concat("        ".concat("method :" + "[" + methodName + "]   ").concat(strLog) + "\n");
 			ps.println(strLog);
 			ps.flush();
 		} catch (Exception ex) {
@@ -192,7 +194,7 @@ public class Log {
 	 * @param strMsg
 	 * @param format
 	 */
-	public static String println(String strMsg,String format) {
+	public static String println(String strMsg, String format) {
 		FileOutputStream fos = null;
 		PrintStream ps = null;
 		String strPath = "";
@@ -204,7 +206,7 @@ public class Log {
 				f.mkdirs();
 			}
 			strFileName = strPath.concat(format);
-			
+
 			File file = new File(strFileName);
 			if (file.exists()) {
 				fos = new FileOutputStream(strFileName, true);
@@ -221,12 +223,12 @@ public class Log {
 		} finally {
 			closeIO(ps, fos);
 		}
-		
+
 		return strFileName;
 	}
-	
+
 	public static synchronized void writeTaskLog(int taskID, String extTaskId, int dataId, String strLog) {
-		if(taskID<0||taskID==0){
+		if (taskID < 0 || taskID == 0) {
 			return;
 		}
 		FileOutputStream fos = null;
@@ -238,7 +240,7 @@ public class Log {
 				f.mkdirs();
 			}
 
-			strFileName = strPath.concat("Task_" + taskID + "_" + extTaskId + "_" + dataId +".log");
+			strFileName = strPath.concat("Task_" + taskID + "_" + extTaskId + "_" + dataId + ".log");
 			File file = new File(strFileName);
 			if (file.exists()) {
 				fos = new FileOutputStream(strFileName, true);
@@ -252,12 +254,13 @@ public class Log {
 			ps.println(strLog);
 			ps.flush();
 		} catch (Exception ex) {
-			System.out.println("Errors occured in log.writeTaskLog():" + ex.getMessage() + "strFileName=" + strFileName);
+			System.out
+					.println("Errors occured in log.writeTaskLog():" + ex.getMessage() + "strFileName=" + strFileName);
 		} finally {
 			closeIO(ps, fos);
 		}
 	}
-	
+
 	private static void closeIO(PrintStream ps, FileOutputStream fos) {
 		try {
 			if (ps != null) {

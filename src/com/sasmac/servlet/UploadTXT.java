@@ -29,8 +29,7 @@ public class UploadTXT extends HttpServlet {
 	private static String PATH_FOLDER = "/";
 	// 存放临时文件的目录
 	private static String TEMP_FOLDER = "/";
-	
-	
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		ServletContext servletCtx = config.getServletContext();
@@ -40,7 +39,6 @@ public class UploadTXT extends HttpServlet {
 		// 存放临时文件的目录,存放xxx.tmp文件的目录
 		TEMP_FOLDER = servletCtx.getRealPath("/upload");
 	}
-	
 
 	/**
 	 * Destruction of the servlet. <br>
@@ -55,13 +53,16 @@ public class UploadTXT extends HttpServlet {
 	 *
 	 * This method is called when a form has its tag value method equals to get.
 	 * 
-	 * @param request the request send by the client to the server
-	 * @param response the response send by the server to the client
-	 * @throws ServletException if an error occurred
-	 * @throws IOException if an error occurred
+	 * @param request
+	 *            the request send by the client to the server
+	 * @param response
+	 *            the response send by the server to the client
+	 * @throws ServletException
+	 *             if an error occurred
+	 * @throws IOException
+	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -81,22 +82,26 @@ public class UploadTXT extends HttpServlet {
 	/**
 	 * The doPost method of the servlet. <br>
 	 *
-	 * This method is called when a form has its tag value method equals to post.
+	 * This method is called when a form has its tag value method equals to
+	 * post.
 	 * 
-	 * @param request the request send by the client to the server
-	 * @param response the response send by the server to the client
-	 * @throws ServletException if an error occurred
-	 * @throws IOException if an error occurred
+	 * @param request
+	 *            the request send by the client to the server
+	 * @param response
+	 *            the response send by the server to the client
+	 * @throws ServletException
+	 *             if an error occurred
+	 * @throws IOException
+	 *             if an error occurred
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		request.setCharacterEncoding("utf-8"); // 设置编码
 		response.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=UTF-8");
 		// 获得磁盘文件条目工厂
 		DiskFileItemFactory factory = new DiskFileItemFactory();
-		
+
 		// 如果没以下两行设置的话，上传大的 文件 会占用 很多内存，
 		// 设置暂时存放的 存储室 , 这个存储室，可以和 最终存储文件 的目录不同
 		/**
@@ -109,7 +114,7 @@ public class UploadTXT extends HttpServlet {
 
 		// 高水平的API文件上传处理
 		ServletFileUpload upload = new ServletFileUpload(factory);
-		
+
 		try {
 			// 提交上来的信息都在这个list里面
 			// 这意味着可以上传多个文件
@@ -122,7 +127,8 @@ public class UploadTXT extends HttpServlet {
 			// 保存后的文件名
 			String saveName = new Date().getTime() + filename.substring(filename.lastIndexOf("."));
 			// 保存后图片的浏览器访问路径
-			String picUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/upload/"+saveName;
+			String picUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+					+ request.getContextPath() + "/upload/" + saveName;
 
 			System.out.println("存放目录:" + PATH_FOLDER);
 			System.out.println("文件名:" + filename);
@@ -130,39 +136,39 @@ public class UploadTXT extends HttpServlet {
 
 			// 真正写到磁盘上
 			item.write(new File(PATH_FOLDER, saveName)); // 第三方提供的
-			
-			File uploadFile= new File(PATH_FOLDER+"//"+saveName);
-			String outstr="";
-			if(uploadFile.exists()){
-				InputStreamReader reader=new InputStreamReader(new FileInputStream(uploadFile));
-				BufferedReader bufferedReader=new BufferedReader(reader);
-				String strline="";
-				while((strline=bufferedReader.readLine())!=null){
-					outstr+=strline+" ";
+
+			File uploadFile = new File(PATH_FOLDER + "//" + saveName);
+			String outstr = "";
+			if (uploadFile.exists()) {
+				InputStreamReader reader = new InputStreamReader(new FileInputStream(uploadFile));
+				BufferedReader bufferedReader = new BufferedReader(reader);
+				String strline = "";
+				while ((strline = bufferedReader.readLine()) != null) {
+					outstr += strline + " ";
 				}
 			}
-			
+
 			PrintWriter writer = response.getWriter();
-			writer.write("{\"resu\":\""+outstr+"\"}");
-			
+			writer.write("{\"resu\":\"" + outstr + "\"}");
+
 			writer.close();
-			
-			} catch (FileUploadException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+
+		} catch (FileUploadException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	private FileItem getUploadFileItem(List<FileItem> list) {
 		for (FileItem fileItem : list) {
-			if(!fileItem.isFormField()) {
+			if (!fileItem.isFormField()) {
 				return fileItem;
 			}
 		}
 		return null;
 	}
-	
+
 	private String getUploadFileName(FileItem item) {
 		// 获取路径名
 		String value = item.getName();
@@ -170,14 +176,15 @@ public class UploadTXT extends HttpServlet {
 		int start = value.lastIndexOf("/");
 		// 截取 上传文件的 字符串名字，加1是 去掉反斜杠，
 		String filename = value.substring(start + 1);
-		
+
 		return filename;
 	}
 
 	/**
 	 * Initialization of the servlet. <br>
 	 *
-	 * @throws ServletException if an error occurs
+	 * @throws ServletException
+	 *             if an error occurs
 	 */
 	public void init() throws ServletException {
 		// Put your code here

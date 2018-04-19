@@ -78,8 +78,7 @@ public class ExportSHP extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// doPost(request, response);
 		/*
 		 * response.setContentType("text/html"); PrintWriter out =
@@ -94,8 +93,7 @@ public class ExportSHP extends HttpServlet {
 		 */
 		// download file
 
-		String downloadFilePath = this.getServletContext().getRealPath(
-				"/download");
+		String downloadFilePath = this.getServletContext().getRealPath("/download");
 		File file = new File(downloadFilePath + "\\download.rar");
 		response = downloadZip(file, response);
 		file.deleteOnExit();
@@ -117,8 +115,7 @@ public class ExportSHP extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setCharacterEncoding("utf-8");
 		request.setCharacterEncoding("utf-8");
@@ -139,8 +136,7 @@ public class ExportSHP extends HttpServlet {
 			int param;
 
 			QueryRunner qr = new QueryRunner();
-			ResultSetHandler<List<spatialmetadata>> rsh = new BeanListHandler<spatialmetadata>(
-					spatialmetadata.class);
+			ResultSetHandler<List<spatialmetadata>> rsh = new BeanListHandler<spatialmetadata>(spatialmetadata.class);
 			String strSQL = "select dataid,id,FileName,FilePath,scenePath,sceneRow,orbitID,satellite,sensor,acquisitionTime,productLevel,cloudPercent,astext(shape) as wktstring from ";
 			strSQL += tbname;
 			String where = " where dataid=? ";
@@ -169,8 +165,7 @@ public class ExportSHP extends HttpServlet {
 			int num = AllSMDlist.size();
 			if (num <= 0)
 				return;
-			String downloadFilePath = this.getServletContext().getRealPath(
-					"/download");
+			String downloadFilePath = this.getServletContext().getRealPath("/download");
 
 			String filename = downloadFilePath + "\\download.shp";
 			File tmpfile = new File(filename);
@@ -186,8 +181,7 @@ public class ExportSHP extends HttpServlet {
 			if (tmpfile.exists())
 				tmpfile.delete();
 
-			boolean b = CreateSHP(AllSMDlist, downloadFilePath
-					+ "\\download.shp");
+			boolean b = CreateSHP(AllSMDlist, downloadFilePath + "\\download.shp");
 			if (b == false)
 				return;
 
@@ -282,7 +276,8 @@ public class ExportSHP extends HttpServlet {
 		SpatialReference sr = new SpatialReference();
 		// sr.ImportFromEPSG(4326);
 		// sr.ImportFromESRI(ppszInput)
-		sr.ImportFromWkt("GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]");
+		sr.ImportFromWkt(
+				"GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]");
 		Layer oLayer = oDS.CreateLayer("Polygon", sr, ogr.wkbPolygon, null);
 		if (oLayer == null) {
 			System.out.println("\n");
@@ -357,25 +352,22 @@ public class ExportSHP extends HttpServlet {
 		return true;
 	}
 
-	public HttpServletResponse downloadZip(File file,
-			HttpServletResponse response) {
+	public HttpServletResponse downloadZip(File file, HttpServletResponse response) {
 		try {
 			// ??????????????????
-			InputStream fis = new BufferedInputStream(new FileInputStream(
-					file.getPath()));
+			InputStream fis = new BufferedInputStream(new FileInputStream(file.getPath()));
 			byte[] buffer = new byte[fis.available()];
 			fis.read(buffer);
 			fis.close();
 
 			response.reset();
 
-			OutputStream toClient = new BufferedOutputStream(
-					response.getOutputStream());
+			OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
 			response.setContentType("application/octet-stream");
 
 			// ???????????????????????????????URLEncoder.encode???????д???
-			response.setHeader("Content-Disposition", "attachment;filename="
-					+ URLEncoder.encode(file.getName(), "UTF-8"));
+			response.setHeader("Content-Disposition",
+					"attachment;filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
 			toClient.write(buffer);
 			toClient.flush();
 			toClient.close();

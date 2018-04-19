@@ -1,4 +1,5 @@
 ﻿package com.sasmac.meta;
+
 import com.sasmac.meta.spatialmetadata;;
 
 public interface MetaParser {

@@ -47,8 +47,7 @@ public abstract class TarUtils {
 	 * @param destPath
 	 * @throws Exception
 	 */
-	public static void archive(String srcPath, String destPath)
-			throws Exception {
+	public static void archive(String srcPath, String destPath) throws Exception {
 
 		File srcFile = new File(srcPath);
 
@@ -66,8 +65,7 @@ public abstract class TarUtils {
 	 * @throws Exception
 	 */
 	public static void archive(File srcFile, File destFile) throws Exception {
-		TarArchiveOutputStream taos = new TarArchiveOutputStream(
-				new FileOutputStream(destFile));
+		TarArchiveOutputStream taos = new TarArchiveOutputStream(new FileOutputStream(destFile));
 
 		archive(srcFile, taos, BASE_DIR);
 
@@ -122,8 +120,7 @@ public abstract class TarUtils {
 	 *            归档包内相对路径
 	 * @throws Exception
 	 */
-	private static void archive(File srcFile, TarArchiveOutputStream taos,
-			String basePath) throws Exception {
+	private static void archive(File srcFile, TarArchiveOutputStream taos, String basePath) throws Exception {
 		if (srcFile.isDirectory()) {
 			archiveDir(srcFile, taos, basePath);
 		} else {
@@ -140,13 +137,11 @@ public abstract class TarUtils {
 	 * @param basePath
 	 * @throws Exception
 	 */
-	private static void archiveDir(File dir, TarArchiveOutputStream taos,
-			String basePath) throws Exception {
+	private static void archiveDir(File dir, TarArchiveOutputStream taos, String basePath) throws Exception {
 		File[] files = dir.listFiles();
 
 		if (files.length < 1) {
-			TarArchiveEntry entry = new TarArchiveEntry(basePath
-					+ dir.getName() + PATH);
+			TarArchiveEntry entry = new TarArchiveEntry(basePath + dir.getName() + PATH);
 
 			taos.putArchiveEntry(entry);
 			taos.closeArchiveEntry();
@@ -172,8 +167,7 @@ public abstract class TarUtils {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("static-access")
-	private static void archiveFile(File file, TarArchiveOutputStream taos,
-			String dir) throws Exception {
+	private static void archiveFile(File file, TarArchiveOutputStream taos, String dir) throws Exception {
 		/**
 		 * 
 		 * <pre>
@@ -187,8 +181,7 @@ public abstract class TarUtils {
 		taos.setLongFileMode(taos.LONGFILE_GNU);
 		taos.putArchiveEntry(entry);
 
-		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(
-				file));
+		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
 		int count;
 		byte data[] = new byte[BUFFER_SIZE];
 		while ((count = bis.read(data, 0, BUFFER_SIZE)) != -1) {
@@ -219,8 +212,7 @@ public abstract class TarUtils {
 	 * @throws Exception
 	 */
 	public static void dearchive(File srcFile, File destFile) throws Exception {
-		TarArchiveInputStream tais = new TarArchiveInputStream(
-				new FileInputStream(srcFile));
+		TarArchiveInputStream tais = new TarArchiveInputStream(new FileInputStream(srcFile));
 		dearchive(destFile, tais);
 
 		tais.close();
@@ -233,10 +225,8 @@ public abstract class TarUtils {
 	 * @param destFile
 	 * @throws Exception
 	 */
-	public static String dearchive(File srcFile, File destFile, String fileName)
-			throws Exception {
-		TarArchiveInputStream tais = new TarArchiveInputStream(
-				new FileInputStream(srcFile));
+	public static String dearchive(File srcFile, File destFile, String fileName) throws Exception {
+		TarArchiveInputStream tais = new TarArchiveInputStream(new FileInputStream(srcFile));
 		String xmlNam = dearchive(destFile, tais, fileName);
 
 		tais.close();
@@ -244,13 +234,11 @@ public abstract class TarUtils {
 		return xmlNam;
 	}
 
-	public static String dearchive(String srctarFile, String destFilePath,
-			String fileName) throws Exception {
+	public static String dearchive(String srctarFile, String destFilePath, String fileName) throws Exception {
 		int bIsSmbFile = Constants.AssertFileIsSMBFileDir(srctarFile);
 		InputStream is = null;
 		if (bIsSmbFile == 2) {
-			NtlmPasswordAuthentication auth = smbAuthUtil
-					.getsmbAuth(srctarFile);
+			NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(srctarFile);
 			if (auth == null) {
 				Constants.WriteLog(" smb:user password auth error! ");
 				return "";
@@ -260,8 +248,7 @@ public abstract class TarUtils {
 			SmbFileInputStream in = new SmbFileInputStream(smbFile);
 			is = in;
 		} else if (bIsSmbFile == 1) {
-			NtlmPasswordAuthentication auth = smbAuthUtil
-					.getsmbAuth(srctarFile);
+			NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(srctarFile);
 			if (auth == null) {
 				Constants.WriteLog(" smb:user password auth error! ");
 				return "";
@@ -290,8 +277,7 @@ public abstract class TarUtils {
 	 * @param destPath
 	 * @throws Exception
 	 */
-	public static void dearchive(File srcFile, String destPath)
-			throws Exception {
+	public static void dearchive(File srcFile, String destPath) throws Exception {
 		dearchive(srcFile, new File(destPath));
 	}
 
@@ -304,8 +290,7 @@ public abstract class TarUtils {
 	 *            TarArchiveInputStream
 	 * @throws Exception
 	 */
-	private static void dearchive(File destFile, TarArchiveInputStream tais)
-			throws Exception {
+	private static void dearchive(File destFile, TarArchiveInputStream tais) throws Exception {
 		TarArchiveEntry entry = null;
 		while ((entry = tais.getNextTarEntry()) != null) {
 			// 文件
@@ -333,8 +318,7 @@ public abstract class TarUtils {
 	 *            TarArchiveInputStream
 	 * @throws Exception
 	 */
-	private static String dearchive(File destFile, TarArchiveInputStream tais,
-			String fileName) throws Exception {
+	private static String dearchive(File destFile, TarArchiveInputStream tais, String fileName) throws Exception {
 		TarArchiveEntry entry = null;
 		String xmlName = "";
 		String strName = "";
@@ -366,8 +350,7 @@ public abstract class TarUtils {
 		return xmlName;
 	}
 
-	private static String dearchive(String destFilePath,
-			TarArchiveInputStream tais, String fileName) throws Exception {
+	private static String dearchive(String destFilePath, TarArchiveInputStream tais, String fileName) throws Exception {
 
 		TarArchiveEntry entry = null;
 		String xmlName = "";
@@ -409,8 +392,7 @@ public abstract class TarUtils {
 	 *            目标文件路径
 	 * @throws Exception
 	 */
-	public static void dearchive(String srcPath, String destPath)
-			throws Exception {
+	public static void dearchive(String srcPath, String destPath) throws Exception {
 		File srcFile = new File(srcPath);
 		dearchive(srcFile, destPath);
 	}
@@ -424,10 +406,8 @@ public abstract class TarUtils {
 	 *            TarArchiveInputStream
 	 * @throws Exception
 	 */
-	private static void dearchiveFile(File destFile, TarArchiveInputStream tais)
-			throws Exception {
-		BufferedOutputStream bos = new BufferedOutputStream(
-				new FileOutputStream(destFile));
+	private static void dearchiveFile(File destFile, TarArchiveInputStream tais) throws Exception {
+		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(destFile));
 
 		int count;
 		byte data[] = new byte[BUFFER_SIZE];
@@ -438,8 +418,7 @@ public abstract class TarUtils {
 		bos.close();
 	}
 
-	private static void dearchiveFile(String destFile,
-			TarArchiveInputStream tais) throws Exception {
+	private static void dearchiveFile(String destFile, TarArchiveInputStream tais) throws Exception {
 		int flag = Constants.AssertFileIsSMBFileDir(destFile);
 		if (flag == 2) {
 			NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(destFile);
@@ -448,8 +427,7 @@ public abstract class TarUtils {
 				return;
 			}
 			SmbFile remoteFile = new SmbFile(destFile);
-			BufferedOutputStream bos = new BufferedOutputStream(
-					new SmbFileOutputStream(remoteFile));
+			BufferedOutputStream bos = new BufferedOutputStream(new SmbFileOutputStream(remoteFile));
 
 			int count;
 			byte data[] = new byte[BUFFER_SIZE];
@@ -466,8 +444,7 @@ public abstract class TarUtils {
 			}
 			destFile = AppUtil.localFileNameToSMBFileName(destFile);
 			SmbFile remoteFile = new SmbFile(destFile, auth);
-			BufferedOutputStream bos = new BufferedOutputStream(
-					new SmbFileOutputStream(remoteFile));
+			BufferedOutputStream bos = new BufferedOutputStream(new SmbFileOutputStream(remoteFile));
 
 			int count;
 			byte data[] = new byte[BUFFER_SIZE];
@@ -480,8 +457,7 @@ public abstract class TarUtils {
 			File df = new File(destFile);
 			if (df.exists())
 				df.delete();
-			BufferedOutputStream bos = new BufferedOutputStream(
-					new FileOutputStream(df));
+			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(df));
 
 			int count;
 			byte data[] = new byte[BUFFER_SIZE];
@@ -545,8 +521,7 @@ public abstract class TarUtils {
 
 	}
 
-	public static void fileProber(String dirFile) throws Exception,
-			SmbException {
+	public static void fileProber(String dirFile) throws Exception, SmbException {
 		int flag = Constants.AssertFileIsSMBFileDir(dirFile);
 		if (flag == 1) {
 			NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(dirFile);
@@ -576,9 +551,7 @@ public abstract class TarUtils {
 		try {
 			// archive(path);
 
-			dearchive(
-					path
-							+ "adckik890skcosik8193872103821034skfjiwqkdfjiskyuvhaleiekso.tar",
+			dearchive(path + "adckik890skcosik8193872103821034skfjiwqkdfjiskyuvhaleiekso.tar",
 					"D:\\workspace\\jwDmsServer\\WebRoot\\WEB-INF\\classes\\com\\marstor\\dms\\dss\\");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -586,29 +559,22 @@ public abstract class TarUtils {
 	}
 
 	// /////////
-	public static List<String> unTarGZ(File tarFile, String destDir)
-			throws Exception {
+	public static List<String> unTarGZ(File tarFile, String destDir) throws Exception {
 		if (StringUtils.isBlank(destDir)) {
 			destDir = tarFile.getParent();
 		}
-		destDir = destDir.endsWith(File.separator) ? destDir : destDir
-				+ File.separator;
-		return unTar(
-				new GzipCompressorInputStream(new FileInputStream(tarFile)),
-				destDir);
+		destDir = destDir.endsWith(File.separator) ? destDir : destDir + File.separator;
+		return unTar(new GzipCompressorInputStream(new FileInputStream(tarFile)), destDir);
 	}
 
-	public static List<String> unTarGZ(String file, String destDir)
-			throws Exception {
+	public static List<String> unTarGZ(String file, String destDir) throws Exception {
 		File tarFile = new File(file);
 		return unTarGZ(tarFile, destDir);
 	}
 
-	private static List<String> unTar(InputStream inputStream, String destDir)
-			throws Exception {
+	private static List<String> unTar(InputStream inputStream, String destDir) throws Exception {
 		List<String> fileNames = new ArrayList<String>();
-		TarArchiveInputStream tarIn = new TarArchiveInputStream(inputStream,
-				BUFFER_SIZE);
+		TarArchiveInputStream tarIn = new TarArchiveInputStream(inputStream, BUFFER_SIZE);
 		TarArchiveEntry entry = null;
 		try {
 			while ((entry = tarIn.getNextTarEntry()) != null) {
@@ -616,8 +582,7 @@ public abstract class TarUtils {
 				if (entry.isDirectory()) {
 					createDirectory(destDir, entry.getName());//
 				} else {// 是文�?
-					File tmpFile = new File(destDir + File.separator
-							+ entry.getName());
+					File tmpFile = new File(destDir + File.separator + entry.getName());
 					createDirectory(tmpFile.getParent() + File.separator, null);//
 					OutputStream out = null;
 					try {
@@ -656,8 +621,7 @@ public abstract class TarUtils {
 		}
 	}
 
-	public static boolean unTarGZsinglefile(String targzfile, String destDir,
-			String toUntarfilename) throws Exception {
+	public static boolean unTarGZsinglefile(String targzfile, String destDir, String toUntarfilename) throws Exception {
 		int flag = Constants.AssertFileIsSMBFileDir(targzfile);
 		if (flag == 1) {
 			NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(targzfile);
@@ -670,10 +634,9 @@ public abstract class TarUtils {
 			if (StringUtils.isBlank(destDir)) {
 				destDir = tarFile.getParent();
 			}
-			destDir = destDir.endsWith(File.separator) ? destDir : destDir
-					+ File.separator;
-			return unTarsinglefile(new GzipCompressorInputStream(
-					new SmbFileInputStream(tarFile)), destDir, toUntarfilename);
+			destDir = destDir.endsWith(File.separator) ? destDir : destDir + File.separator;
+			return unTarsinglefile(new GzipCompressorInputStream(new SmbFileInputStream(tarFile)), destDir,
+					toUntarfilename);
 
 		} else if (flag == 2) {
 			NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(targzfile);
@@ -685,42 +648,36 @@ public abstract class TarUtils {
 			if (StringUtils.isBlank(destDir)) {
 				destDir = tarFile.getParent();
 			}
-			destDir = destDir.endsWith(File.separator) ? destDir : destDir
-					+ File.separator;
-			return unTarsinglefile(new GzipCompressorInputStream(
-					new SmbFileInputStream(tarFile)), destDir, toUntarfilename);
+			destDir = destDir.endsWith(File.separator) ? destDir : destDir + File.separator;
+			return unTarsinglefile(new GzipCompressorInputStream(new SmbFileInputStream(tarFile)), destDir,
+					toUntarfilename);
 
 		} else {
 			File tarFile = new File(targzfile);
 			if (StringUtils.isBlank(destDir)) {
 				destDir = tarFile.getParent();
 			}
-			destDir = destDir.endsWith(File.separator) ? destDir : destDir
-					+ File.separator;
-			return unTarsinglefile(new GzipCompressorInputStream(
-					new FileInputStream(tarFile)), destDir, toUntarfilename);
+			destDir = destDir.endsWith(File.separator) ? destDir : destDir + File.separator;
+			return unTarsinglefile(new GzipCompressorInputStream(new FileInputStream(tarFile)), destDir,
+					toUntarfilename);
 
 		}
 
 	}
 
-	public static boolean unTarGZsinglefile(File tarFile, String destDir,
-			String toUntarfilename) throws Exception {
+	public static boolean unTarGZsinglefile(File tarFile, String destDir, String toUntarfilename) throws Exception {
 		if (StringUtils.isBlank(destDir)) {
 			destDir = tarFile.getParent();
 		}
-		destDir = destDir.endsWith(File.separator) ? destDir : destDir
-				+ File.separator;
-		return unTarsinglefile(new GzipCompressorInputStream(
-				new FileInputStream(tarFile)), destDir, toUntarfilename);
+		destDir = destDir.endsWith(File.separator) ? destDir : destDir + File.separator;
+		return unTarsinglefile(new GzipCompressorInputStream(new FileInputStream(tarFile)), destDir, toUntarfilename);
 	}
 
-	private static boolean unTarsinglefile(InputStream inputStream,
-			String destDir, String toUntarfilename) throws Exception {
+	private static boolean unTarsinglefile(InputStream inputStream, String destDir, String toUntarfilename)
+			throws Exception {
 		int flag = Constants.AssertFileIsSMBFileDir(destDir);
 
-		TarArchiveInputStream tarIn = new TarArchiveInputStream(inputStream,
-				BUFFER_SIZE);
+		TarArchiveInputStream tarIn = new TarArchiveInputStream(inputStream, BUFFER_SIZE);
 		TarArchiveEntry entry = null;
 		boolean bret = false;
 		try {
@@ -732,13 +689,10 @@ public abstract class TarUtils {
 					fileProber(destDir);
 				} else {
 					if (flag == 1) {
-						String path = destDir + File.separator
-								+ entry.getName();
-						NtlmPasswordAuthentication auth = smbAuthUtil
-								.getsmbAuth(path);
+						String path = destDir + File.separator + entry.getName();
+						NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(path);
 						if (auth == null) {
-							Constants
-									.WriteLog(" smb:user password auth error! ");
+							Constants.WriteLog(" smb:user password auth error! ");
 							return false;
 						}
 						SmbFile tmpFile = new SmbFile(path, auth);
@@ -757,13 +711,10 @@ public abstract class TarUtils {
 							out.close();
 						}
 					} else if (flag == 2) {
-						String path = destDir + File.separator
-								+ entry.getName();
-						NtlmPasswordAuthentication auth = smbAuthUtil
-								.getsmbAuth(path);
+						String path = destDir + File.separator + entry.getName();
+						NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(path);
 						if (auth == null) {
-							Constants
-									.WriteLog(" smb:user password auth error! ");
+							Constants.WriteLog(" smb:user password auth error! ");
 							return false;
 						}
 						SmbFile tmpFile = new SmbFile(path, auth);
@@ -783,10 +734,8 @@ public abstract class TarUtils {
 							out.close();
 						}
 					} else {
-						File tmpFile = new File(destDir + File.separator
-								+ entry.getName());
-						createDirectory(tmpFile.getParent() + File.separator,
-								null);// 创建输出目录
+						File tmpFile = new File(destDir + File.separator + entry.getName());
+						createDirectory(tmpFile.getParent() + File.separator, null);// 创建输出目录
 						OutputStream out = null;
 						try {
 							out = new FileOutputStream(tmpFile);

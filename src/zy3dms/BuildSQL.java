@@ -93,8 +93,7 @@ public class BuildSQL {
 		 */
 		// 判断最后一个单词是否为Or
 		if (strWhereSQL.lastIndexOf("or") > strWhereSQL.length() - 4) {
-			strWhereSQL = strWhereSQL.substring(0,
-					strWhereSQL.lastIndexOf("or"));
+			strWhereSQL = strWhereSQL.substring(0, strWhereSQL.lastIndexOf("or"));
 		}
 
 		return strWhereSQL;
@@ -108,8 +107,7 @@ public class BuildSQL {
 		return strSQL;
 	}
 
-	
-	public static String querySQLbySC(HttpServletRequest request,boolean bisSenceDOM) {
+	public static String querySQLbySC(HttpServletRequest request, boolean bisSenceDOM) {
 		String[] zy301sensor = request.getParameterValues("zy301sensor");
 		String[] zy302sensor = request.getParameterValues("zy302sensor");
 		String[] gf1sensor = request.getParameterValues("gf1sensor");
@@ -125,32 +123,32 @@ public class BuildSQL {
 		String orbitid = request.getParameter("orbitid");
 		String dataid = request.getParameter("dataid");
 
-		String[] zy3_sensorradio = request
-				.getParameterValues("zy3_sensorradio");
+		String[] zy3_sensorradio = request.getParameterValues("zy3_sensorradio");
 
 		String[] zy3_radio = request.getParameterValues("zy3_radio");
 
 		// String tbname = "TB_ZY301_SC";
 
 		// String strSQL =
-		// "select FID,FileName,FilePath,scenePath,sceneRow,orbitID,satellite,sensor,acquisitionTime,productLevel,cloudPercent from "+
+		// "select
+		// FID,FileName,FilePath,scenePath,sceneRow,orbitID,satellite,sensor,acquisitionTime,productLevel,cloudPercent
+		// from "+
 		// tbname;
 		// strSQL += " where ";
 
 		String strSQL = "";
 
-		if(!bisSenceDOM)
-		{
+		if (!bisSenceDOM) {
 			if (cloud1 != "" && cloud1 != null) {
 				strSQL += "cloudPercent>=" + cloud1;
 				strSQL += " and ";
-			}	
+			}
 			if (cloud2 != "" && cloud2 != null) {
 				strSQL += "cloudPercent<=" + cloud2;
 				strSQL += " and ";
 			}
 		}
-		
+
 		if (orbitid != "" && orbitid != null) {
 			strSQL += "orbitID=" + orbitid;
 			strSQL += " and ";
@@ -195,8 +193,7 @@ public class BuildSQL {
 					strSQL += "sensor='" + zy301sensor[j] + "'";
 					strSQL += " or ";
 				}
-				strSQL += "sensor='" + zy301sensor[zy301sensor.length - 1]
-						+ "')";
+				strSQL += "sensor='" + zy301sensor[zy301sensor.length - 1] + "')";
 				strSQL += " or ";
 			}
 			if (zy302sensor != null) {
@@ -207,8 +204,7 @@ public class BuildSQL {
 					strSQL += "sensor='" + zy302sensor[j] + "'";
 					strSQL += " or ";
 				}
-				strSQL += "sensor='" + zy302sensor[zy302sensor.length - 1]
-						+ "')";
+				strSQL += "sensor='" + zy302sensor[zy302sensor.length - 1] + "')";
 				strSQL += " or ";
 			}
 			if (gf1sensor != null) {
@@ -238,8 +234,7 @@ public class BuildSQL {
 
 		int nstrSQLlength = strSQL.length();
 
-		if(nstrSQLlength>6)
-		{
+		if (nstrSQLlength > 6) {
 			// 判断最后一个单词是否为where
 			if (strSQL.indexOf("where") >= nstrSQLlength - 6) {
 				strSQL = strSQL.substring(0, strSQL.lastIndexOf("where") - 1);
@@ -251,7 +246,7 @@ public class BuildSQL {
 			// 判断最后一个单词是否为or
 			if (strSQL.lastIndexOf("or") > nstrSQLlength - 4) {
 				strSQL = strSQL.substring(0, strSQL.lastIndexOf("or") - 1);
-			}			
+			}
 		}
 
 		return strSQL;

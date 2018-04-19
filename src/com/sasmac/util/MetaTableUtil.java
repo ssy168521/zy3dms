@@ -6,8 +6,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 public class MetaTableUtil {
-	public static String GetTableName(Connection conn, String satellite,
-			String productLevel) {
+	public static String GetTableName(Connection conn, String satellite, String productLevel) {
 		if (conn == null)
 			return "";
 		String strTableName = "";
@@ -17,8 +16,7 @@ public class MetaTableUtil {
 
 		try {
 			QueryRunner QR = new QueryRunner();
-			strTableName = QR.query(conn, Sql, new ScalarHandler<String>(),
-					params);
+			strTableName = QR.query(conn, Sql, new ScalarHandler<String>(), params);
 
 		} catch (Exception e) {
 			e.printStackTrace();

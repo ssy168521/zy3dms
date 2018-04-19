@@ -18,6 +18,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
+import com.sasmac.common.DataModel;
 import com.sasmac.jni.Gdal_resample;
 import com.sasmac.jni.ImageProduce;
 import com.sasmac.meta.Meta2Database;
@@ -69,8 +70,7 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 	 */
 	public SfiCopyArchiveThread(String strArchivedir) {
 		// 调用父类BaseThread的构造方法
-		super("archive", THREADSTATUS.THREAD_STATUS_UNKNOWN.ordinal(), "数据归档",
-				new Date(), null, 0, "");
+		super("archive", THREADSTATUS.THREAD_STATUS_UNKNOWN.ordinal(), "数据归档", new Date(), null, 0, "");
 
 		archivePath = strArchivedir;
 		service = new WebServiceImpl();
@@ -99,8 +99,7 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 				}
 				calcFileCount(archivePath);
 
-				myLogger.info("All archive files count: "
-						+ Integer.toString(fileCount));
+				myLogger.info("All archive files count: " + Integer.toString(fileCount));
 
 				ergodicDir(rootPath);
 
@@ -112,8 +111,7 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 				myLogger.info("finish archive " + archivePath);
 				setTaskStatus(THREADSTATUS.THREAD_STATUS_FINISHED.ordinal());
 				setTaskEndTime(new Date());
-				setTaskMarkinfo(archivePath + " " + Integer.toString(fileCount)
-						+ " files archive");
+				setTaskMarkinfo(archivePath + " " + Integer.toString(fileCount) + " files archive");
 				setTaskProgress(100);
 				PrintTaskInfo(conn);
 				FinishThread();
@@ -155,17 +153,14 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 					setTaskStatus(THREADSTATUS.THREAD_STATUS_STOPED.ordinal());
 					setTaskEndTime(new Date());
 					myLogger.info(" archive  task is Stoped");
-					int iProgress = (int) ((double) iCurridx
-							/ (double) fileCount * 100);
+					int iProgress = (int) ((double) iCurridx / (double) fileCount * 100);
 					setTaskProgress(iProgress);
 					break;// 如果中断线程
 				}
 				// 无后缀名的文件名
 				filename = fF.getName().substring(0, fF.getName().indexOf("."));
-				myLogger.info("start archive " + Integer.toString(iCurridx)
-						+ " file");
-				int intNowHour = Calendar.getInstance().get(
-						Calendar.HOUR_OF_DAY);
+				myLogger.info("start archive " + Integer.toString(iCurridx) + " file");
+				int intNowHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
 				String satellite = "";
 				String productLevel = "";
@@ -204,10 +199,8 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 				// }
 
 				// geotiff文件全路径
-				String tiffpath = myPath.getPath() + fF.separator
-						+ fF.getName();
-				if (tiffpath.substring(tiffpath.lastIndexOf("."))
-						.equalsIgnoreCase(".tif")) {
+				String tiffpath = myPath.getPath() + fF.separator + fF.getName();
+				if (tiffpath.substring(tiffpath.lastIndexOf(".")).equalsIgnoreCase(".tif")) {
 					Meta2Database mdb = new Meta2Database();
 					mdb.tifToDb(filename, tablename, tiffpath);
 				} else {
@@ -215,26 +208,23 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 				}
 
 				// tif重采样
-				if (tiffpath.substring(tiffpath.lastIndexOf("."))
-						.equalsIgnoreCase(".tif")) {
+				if (tiffpath.substring(tiffpath.lastIndexOf(".")).equalsIgnoreCase(".tif")) {
 
 					// tif图像原路径
-					String tifpath = myPath.getPath() + fF.separator
-							+ fF.getName();
-					String StoragePath = filename.substring(0, 4);
-					String path = Constants.class.getClassLoader()
-							.getResource("/").toURI().getPath();
-					PropertiesUtil propertiesUtil = new PropertiesUtil(path
-							+ Constants.STR_CONF_PATH);
+					String tifpath = myPath.getPath() + fF.separator + fF.getName();
+					// String StoragePath = filename.substring(0, 4);
+					String path = Constants.class.getClassLoader().getResource("/").toURI().getPath();
+					PropertiesUtil propertiesUtil = new PropertiesUtil(path + Constants.STR_CONF_PATH);
 					// 快视图路径
-					String OverviewStoragePath = propertiesUtil
-							.getProperty("overviewfilepath");
+					String OverviewStoragePath = propertiesUtil.getProperty("overviewfilepath");
 
-					myLogger.info(" start ImageRectify overiew-png: "
-							+ filename + ".png");
+					myLogger.info(" start ImageRectify overiew-png: " + filename + ".png");
 					ImageProduce imgprodu = new ImageProduce();
 					boolean res = false;
-					String destpath = OverviewStoragePath + StoragePath;
+					String RelativePath = DataModel.generateoverviewpath("分幅DOM", filename);
+
+					String destpath = OverviewStoragePath + RelativePath;
+					// String destpath = OverviewStoragePath + StoragePath;
 
 					// String destpath1 = OverviewStoragePath + StoragePath;
 					File dest = new File(destpath);
@@ -242,44 +232,41 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 						dest.mkdirs();
 					}
 
-					boolean res1=false;
-					res1 = imgprodu.ImageRectify(tifpath, destpath
-							+ File.separator + filename + ".png", 256, 256);
-					if(!res1){
+					boolean res1 = false;
+					res1 = imgprodu.ImageRectify(tifpath, destpath + File.separator + filename + ".png", 256, 256);
+					if (!res1) {
 						myLogger.info("第一次重采样失败！快视图建立错误！");
-					}else{
+					} else {
 						myLogger.info("第一次重采样成功！开始判断是否重投影！");
-						boolean res2=false;
-						//判断是否能进行重投影
-						res2 = Gdal_resample.Resample( destpath+ File.separator + filename + ".png",
-								destpath+ File.separator+"temp.png");
-						if(!res2){
+						boolean res2 = false;
+						// 判断是否能进行重投影
+						res2 = Gdal_resample.Resample(destpath + File.separator + filename + ".png",
+								destpath + File.separator + "temp.png");
+						if (!res2) {
 							myLogger.info("无法进行重投影！快视图生成结束！");
 
-						}else{
+						} else {
 							myLogger.info("需要重投影！开始投影！");
-							//先删除第一次重采样图片
-							File tempResmple = new File(destpath+ File.separator + filename + ".png");
+							// 先删除第一次重采样图片
+							File tempResmple = new File(destpath + File.separator + filename + ".png");
 							tempResmple.delete();
-							//重采样后进行投影变换，再次重采样，将投影变换的输出文件作为重采样的输入文件
-							res = imgprodu.ImageRectify(destpath+ File.separator+"temp.png",
-									destpath+ File.separator + filename + ".png",256,256);
-							
+							// 重采样后进行投影变换，再次重采样，将投影变换的输出文件作为重采样的输入文件
+							res = imgprodu.ImageRectify(destpath + File.separator + "temp.png",
+									destpath + File.separator + filename + ".png", 256, 256);
+
 							if (!res) {
 								myLogger.info(filename + " :png overview build error !");
 							} else {
-								File tempfile = new File(destpath+ File.separator+"temp.png");
-								tempfile.delete();   //删除临时的重投影文件
-								myLogger.info("finish ImageRectify overiew-png: "
-										+ filename + ".png");
+								File tempfile = new File(destpath + File.separator + "temp.png");
+								tempfile.delete(); // 删除临时的重投影文件
+								myLogger.info("finish ImageRectify overiew-png: " + filename + ".png");
 							}
 						}
 					}
-                               
+
 				}
 
-				myLogger.info("finish archive "
-						+ Integer.toString(iCurridx + 1) + " file");
+				myLogger.info("finish archive " + Integer.toString(iCurridx + 1) + " file");
 
 				int iProgress = (int) ((double) iCurridx / (double) fileCount * 100);
 				setTaskProgress(iProgress);
@@ -330,8 +317,7 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 				windowsXMLFile = xmlName.replace("tar", "xml");
 
 				if (Constants.IS_LINUX) {
-					String[] cmd = { "/bin/sh", "-c",
-							"tar tvf " + fileName.getAbsolutePath() };
+					String[] cmd = { "/bin/sh", "-c", "tar tvf " + fileName.getAbsolutePath() };
 
 					java.lang.Runtime runtime = java.lang.Runtime.getRuntime();
 					Process p = runtime.exec(cmd);
@@ -339,23 +325,19 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 
 					java.io.InputStream is = p.getInputStream();
 
-					java.io.BufferedReader br = new java.io.BufferedReader(
-							new java.io.InputStreamReader(is));
+					java.io.BufferedReader br = new java.io.BufferedReader(new java.io.InputStreamReader(is));
 					String line = null;
 
 					while ((line = br.readLine()) != null) {
 
 						if (line.contains(".")) {
-							allFilesSuffix.append(
-									line.substring(line.lastIndexOf(".") + 1))
-									.append(",");
+							allFilesSuffix.append(line.substring(line.lastIndexOf(".") + 1)).append(",");
 						}
 					}
 					br.close();
 					is.close();
 
-					String myFileCheck = StringUtils.removeEnd(
-							allFilesSuffix.toString(), ",");
+					String myFileCheck = StringUtils.removeEnd(allFilesSuffix.toString(), ",");
 
 					/*
 					 * for(String rule : checkRule) {
@@ -391,14 +373,11 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 			if (fF.isDirectory()) {
 				getAllFiles(fF.getAbsoluteFile());
 			} else {
-				String fileName = fF.getAbsolutePath().substring(
-						fF.getAbsolutePath().lastIndexOf("\\") + 1);
+				String fileName = fF.getAbsolutePath().substring(fF.getAbsolutePath().lastIndexOf("\\") + 1);
 				if (fileName.equalsIgnoreCase(windowsXMLFile)) {
 					windowsXMLFile = fF.getAbsolutePath();
 				}
-				allFilesSuffix.append(
-						fF.getAbsolutePath().substring(
-								fF.getAbsolutePath().lastIndexOf(".") + 1))
+				allFilesSuffix.append(fF.getAbsolutePath().substring(fF.getAbsolutePath().lastIndexOf(".") + 1))
 						.append(",");
 			}
 		}
@@ -424,8 +403,7 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 		} else {
 			String SmbFilepath = strPath;
 
-			NtlmPasswordAuthentication auth = smbAuthUtil
-					.getsmbAuth(SmbFilepath);
+			NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(SmbFilepath);
 			if (auth == null) {
 				Constants.WriteLog(" smb:user password auth error! ");
 				return;
@@ -460,8 +438,7 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 		// 获取Constants类路径 E:\MyEclipse2014 workspace\zy3dms\src
 		String path = null;
 		try {
-			path = Constants.class.getClassLoader().getResource("/").toURI()
-					.getPath();
+			path = Constants.class.getClassLoader().getResource("/").toURI().getPath();
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -473,7 +450,7 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 		} catch (DocumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}// 读取conf文件下存储路径
+		} // 读取conf文件下存储路径
 
 		// xml设置的归档路径最多7个层级，不到7层级的不填。
 		Node node01 = document.selectSingleNode("/StoragePath/diskname");
@@ -494,8 +471,7 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 		String Levelfive = node06.getText();
 		Node node07 = document.selectSingleNode("/StoragePath/Levelsix");
 		String Levelsix = node07.getText();
-		String[] Path = { diskname, Levelone, Leveltwo, Levelthree, Levelfour,
-				Levelfive, Levelsix };
+		String[] Path = { diskname, Levelone, Leveltwo, Levelthree, Levelfour, Levelfive, Levelsix };
 		storagePath = "";
 		for (String s : Path) {
 			if (s != null && s.trim() != "") {
@@ -503,8 +479,7 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 			}
 		}
 		String filename = fF.getName().substring(0, fF.getName().indexOf("."));
-		storagePath = storagePath.substring(0, storagePath.lastIndexOf("\\"))
-				+ "\\" + filename.substring(0, 4);
+		storagePath = storagePath.substring(0, storagePath.lastIndexOf("\\")) + "\\" + filename.substring(0, 4);
 		myLogger.info("归档路径：" + storagePath);
 		// storagePath = "E:\\database\\标准分幅" + "\\" + "J46" ;
 	}
@@ -517,8 +492,7 @@ public class SfiCopyArchiveThread extends BaseThread implements Runnable {
 	private void fileArchive(java.io.File sourceFile) throws Exception {
 		genertateStoragePath(sourceFile);
 		// copyFileToDirectory()拷贝文件到指定目录文件
-		FileUtils.copyFileToDirectory(sourceFile, new java.io.File(
-				this.storagePath));
+		FileUtils.copyFileToDirectory(sourceFile, new java.io.File(this.storagePath));
 	}
 
 	/**

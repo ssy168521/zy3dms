@@ -16,17 +16,16 @@ public class XMLUtil {
 		this.xmlfilename = xmlfilename;
 	}
 
-	public static HashMap<String, String> getMaplistByDiskname(String xmlpath,
-			String inputVal) throws Exception {
+	public static HashMap<String, String> getMaplistByDiskname(String xmlpath, String inputVal) throws Exception {
 		HashMap<String, String> map = new HashMap<String, String>();
-		SAXReader saxReader = new SAXReader();//xml节点读取
+		SAXReader saxReader = new SAXReader();// xml节点读取
 		Document doc = saxReader.read(xmlpath);
 		Element root = doc.getRootElement();
 		for (Iterator iter = root.elementIterator(); iter.hasNext();) {
 			Element element = (Element) iter.next();
 			QName qname = element.getQName();
 			String tagname = qname.getName();
-			Attribute name = element.attribute("diskname");//smb本地共享盘符
+			Attribute name = element.attribute("diskname");// smb本地共享盘符
 			if (name == null)
 				continue;
 			String value = name.getValue();
@@ -42,8 +41,7 @@ public class XMLUtil {
 		return map;
 	}
 
-	public static HashMap<String, String> getMaplistBySmbPath(String xmlpath,
-			String inputVal) throws Exception {
+	public static HashMap<String, String> getMaplistBySmbPath(String xmlpath, String inputVal) throws Exception {
 		HashMap<String, String> map = new HashMap<String, String>();
 		SAXReader saxReader = new SAXReader();
 		Document doc = saxReader.read(xmlpath);
@@ -85,8 +83,7 @@ public class XMLUtil {
 	 * 
 	 * } return map; }
 	 */
-	public static String getValueByKey(String xmlpath, String key)
-			throws Exception {
+	public static String getValueByKey(String xmlpath, String key) throws Exception {
 		SAXReader saxReader = new SAXReader();
 		Document doc = saxReader.read(xmlpath);
 		Element root = doc.getRootElement();

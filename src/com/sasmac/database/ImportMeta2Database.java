@@ -93,13 +93,10 @@ public class ImportMeta2Database {
 	 */
 	public boolean Import2Database() throws Exception {
 		try {
-			String path = DbUtils.class.getClassLoader().getResource("/")
-					.toURI().getPath();
-			PropertiesUtil propertiesUtil = new PropertiesUtil(path
-					+ Constants.STR_CONF_PATH);
+			String path = DbUtils.class.getClassLoader().getResource("/").toURI().getPath();
+			PropertiesUtil propertiesUtil = new PropertiesUtil(path + Constants.STR_CONF_PATH);
 			// 快视图路径
-			String stroverviewfilepath = propertiesUtil
-					.getProperty("overviewfilepath");
+			String stroverviewfilepath = propertiesUtil.getProperty("overviewfilepath");
 			String tmpfilepath = propertiesUtil.getProperty("tmpfilepath");
 			// 归档方式（0 为扫描归档， 1 为迁移归档）
 			String strArchiveMode = propertiesUtil.getProperty("ArchiveMode");
@@ -107,8 +104,7 @@ public class ImportMeta2Database {
 			if (!strArchiveMode.isEmpty()) {
 				ArchiveMode = Integer.parseInt(strArchiveMode);
 			}
-			int overviewDirIsSMBPath = Constants
-					.AssertFileIsSMBFileDir(stroverviewfilepath);
+			int overviewDirIsSMBPath = Constants.AssertFileIsSMBFileDir(stroverviewfilepath);
 			int srcDataDirIsSMBPath = Constants.AssertFileIsSMBFileDir(strfile);
 
 			String srcFilePath = "";
@@ -124,8 +120,7 @@ public class ImportMeta2Database {
 				fileSize = fF.length() / 1024 / 1024;
 			} else if (srcDataDirIsSMBPath == 1) {
 				strfile = AppUtil.localFilePathToSMBFilePath(strfile);
-				NtlmPasswordAuthentication auth = smbAuthUtil
-						.getsmbAuth(strfile);
+				NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(strfile);
 				if (auth == null) {
 					myLogger.error(" smb:user password auth error! ");
 					return false;
@@ -135,8 +130,7 @@ public class ImportMeta2Database {
 				fileSize = fF.getContentLength() / 1024 / 1024;
 				srcFilePath = fF.getParent();
 			} else if (srcDataDirIsSMBPath == 2) {
-				NtlmPasswordAuthentication auth = smbAuthUtil
-						.getsmbAuth(strfile);
+				NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(strfile);
 				if (auth == null) {
 					myLogger.error(" smb:user password auth error! ");
 					return false;
@@ -160,8 +154,7 @@ public class ImportMeta2Database {
 			} else if (strName.startsWith("GF2_PMS")) {
 				flag = 4;
 			} else {
-				myLogger.info("XML file: " + strName
-						+ "  meta xml format is not support");
+				myLogger.info("XML file: " + strName + "  meta xml format is not support");
 
 				return false;
 			}
@@ -182,13 +175,11 @@ public class ImportMeta2Database {
 					parser = new ZY301SCMetaParser();
 				else if (flag == 2)
 					parser = new ZY302SCMetaParser();
-				strFilename = strFilename.substring(0,
-						strFilename.indexOf(".tar"));
+				strFilename = strFilename.substring(0, strFilename.indexOf(".tar"));
 				windowsXMLFile = strName.replace(".tar", ".xml");
 				myLogger.info("start dearchive: " + windowsXMLFile);
 
-				strwindowsXMLFile = TarUtils.dearchive(strfile, destPath,
-						windowsXMLFile);
+				strwindowsXMLFile = TarUtils.dearchive(strfile, destPath, windowsXMLFile);
 				myLogger.info("finish dearchive: " + windowsXMLFile);
 
 				myLogger.info("start ParseMeta: " + windowsXMLFile);
@@ -205,8 +196,7 @@ public class ImportMeta2Database {
 				else if (flag == 4)
 					parser = new GF2SCMetaParser();
 
-				strFilename = strFilename.substring(0,
-						strFilename.indexOf(".tar.gz"));
+				strFilename = strFilename.substring(0, strFilename.indexOf(".tar.gz"));
 				if (strName.startsWith("GF1_PMS1"))
 					windowsXMLFile = strName.replace(".tar.gz", "-MSS1.xml");
 				else if (strName.startsWith("GF1_PMS2"))
@@ -220,10 +210,8 @@ public class ImportMeta2Database {
 					return false;
 				}
 				myLogger.info("start dearchive: " + windowsXMLFile);
-				if (!TarUtils.unTarGZsinglefile(strfile, destPath,
-						windowsXMLFile)) {
-					myLogger.info("XML file: " + windowsXMLFile
-							+ " untar error");
+				if (!TarUtils.unTarGZsinglefile(strfile, destPath, windowsXMLFile)) {
+					myLogger.info("XML file: " + windowsXMLFile + " untar error");
 					return false;
 				}
 				myLogger.info("   finish dearchive: " + windowsXMLFile);
@@ -231,10 +219,8 @@ public class ImportMeta2Database {
 				windowsXMLFile = windowsXMLFile.replace(".xml", ".jpg");
 
 				myLogger.info("start dearchive: " + windowsXMLFile);
-				if (!TarUtils.unTarGZsinglefile(strfile, stroverviewfilepath,
-						windowsXMLFile)) {
-					myLogger.info("jpg file: " + windowsXMLFile
-							+ " untar error");
+				if (!TarUtils.unTarGZsinglefile(strfile, stroverviewfilepath, windowsXMLFile)) {
+					myLogger.info("jpg file: " + windowsXMLFile + " untar error");
 					return false;
 				}
 				myLogger.info("finish dearchive: " + windowsXMLFile);
@@ -257,15 +243,13 @@ public class ImportMeta2Database {
 			{
 				conf = getconfigure(m_metadata.getSatellite());
 				if (conf == null) {
-					myLogger.info(" no exist configure  file: "
-							+ m_metadata.getSatellite());
+					myLogger.info(" no exist configure  file: " + m_metadata.getSatellite());
 					return false;
 				}
-                //strStoragePath 为目标路径，从sysconfig中读取
+				// strStoragePath 为目标路径，从sysconfig中读取
 				String strStoragePath = conf.getDestPath();
 				if (strStoragePath.isEmpty()) {
-					myLogger.info(m_metadata.getSatellite()
-							+ "archive target path is no set ");
+					myLogger.info(m_metadata.getSatellite() + "archive target path is no set ");
 					return false;
 				}
 
@@ -292,13 +276,11 @@ public class ImportMeta2Database {
 
 			String worldfilePath = strjpgfile.replace(".jpg", ".jgw");
 			try {
-				Iterator<ImageReader> readers = ImageIO
-						.getImageReadersByFormatName("jpg");
+				Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("jpg");
 				ImageReader reader = (ImageReader) readers.next();
 				ImageInputStream iis = ImageIO.createImageInputStream(jpgfile);
 				reader.setInput(iis, true);
-				generatejgwfile(reader.getHeight(0), reader.getWidth(0),
-						pointlist, worldfilePath);
+				generatejgwfile(reader.getHeight(0), reader.getWidth(0), pointlist, worldfilePath);
 				iis.close();
 
 			} catch (IOException e) {
@@ -306,27 +288,22 @@ public class ImportMeta2Database {
 				myLogger.error(e);
 			}
 
-			String OverviewStoragePath = genertateStoragePath(
-					stroverviewfilepath, m_metadata);
+			String OverviewStoragePath = genertateStoragePath(stroverviewfilepath, m_metadata);
 
 			TarUtils.fileProber(OverviewStoragePath);
 
-			myLogger.info("   start ImageRectify overiew-png: " + strFilename
-					+ ".png");
+			myLogger.info("   start ImageRectify overiew-png: " + strFilename + ".png");
 			ImageProduce imgprodu = new ImageProduce();
 			boolean res = false;
 			// 图像重采样
-			res = imgprodu
-					.ImageRectify(stroverviewfilepath + windowsXMLFile,
-							OverviewStoragePath + File.separator + strFilename
-									+ ".png", 256, 256);
+			res = imgprodu.ImageRectify(stroverviewfilepath + windowsXMLFile,
+					OverviewStoragePath + File.separator + strFilename + ".png", 256, 256);
 			if (!res) {
 				myLogger.info(windowsXMLFile + " :png overview build error !");
 			} else {
-				myLogger.info("finish ImageRectify overiew-png: " + strFilename
-						+ ".png");
-				FileUtil.deletefile(stroverviewfilepath + windowsXMLFile);//删除已有jpg快视图
-				FileUtil.deletefile(worldfilePath);   //删除已有jgw快视图
+				myLogger.info("finish ImageRectify overiew-png: " + strFilename + ".png");
+				FileUtil.deletefile(stroverviewfilepath + windowsXMLFile);// 删除已有jpg快视图
+				FileUtil.deletefile(worldfilePath); // 删除已有jgw快视图
 
 			}
 
@@ -338,48 +315,41 @@ public class ImportMeta2Database {
 
 			if (ArchiveMode == 1) // 迁移归档
 			{
-				com.sasmac.util.AppConfUtil util = com.sasmac.util.AppConfUtil
-						.getInstance();
+				com.sasmac.util.AppConfUtil util = com.sasmac.util.AppConfUtil.getInstance();
 
-				SimpleDateFormat sdf = new SimpleDateFormat(
-						"yyyy-MM-dd HH:mm:ss");
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				java.util.Date date = new java.util.Date();
 				String str = sdf.format(date);
-				myLogger.info("start copy archive data: " + strFilename+ " time:" + str);
-				
-//				if(!new File(StoragePath).exists()){  //判断文件是否存在，没有就新建一个
-//					new File(StoragePath).mkdir();
-//				}
-//				fileArchive(srcFilePath+"\\"+strName,StoragePath+"\\"+strName);//文件拷贝
+				myLogger.info("start copy archive data: " + strFilename + " time:" + str);
+
+				// if(!new File(StoragePath).exists()){ //判断文件是否存在，没有就新建一个
+				// new File(StoragePath).mkdir();
+				// }
+				// fileArchive(srcFilePath+"\\"+strName,StoragePath+"\\"+strName);//文件拷贝
 
 				util.SetAppconFile("appconf.xml");
 				String filecopywebservice = util.getProperty("filecopy_ws");
-			
-				if (filecopywebservice == null ||filecopywebservice.isEmpty()) {
+
+				if (filecopywebservice == null || filecopywebservice.isEmpty()) {
 					myLogger.info("file copy -mappedBuffer mode !");
-					
+
 					TarUtils.fileProber(StoragePath);
-					int ret = FileUtil.mappedBuffer(strfile, StoragePath +"\\"+ strName);
+					int ret = FileUtil.mappedBuffer(strfile, StoragePath + "\\" + strName);
 				} else {
 					myLogger.info("file copy -file copy webservice mode !");
-					FileCopy s = new FileCopy(new java.net.URL(
-							filecopywebservice));
+					FileCopy s = new FileCopy(new java.net.URL(filecopywebservice));
 					FileCopyPortType server = s.getFileCopyPort();
 					// 转换到服务器本地盘符
-					
-					String serverStoragePath = AppUtil
-							.localFilePathToSMBFilePath(StoragePath);
+
+					String serverStoragePath = AppUtil.localFilePathToSMBFilePath(StoragePath);
 					strfile = AppUtil.localFilePathToSMBFilePath(strfile);
 
-					
-					int ret = server.filetransaction(strfile, serverStoragePath
-							+"\\"+ strName);
+					int ret = server.filetransaction(strfile, serverStoragePath + "\\" + strName);
 				}
 
 				java.util.Date date1 = new java.util.Date();
 				str = sdf.format(date1);
-				myLogger.info("finish copy archive data: " + strFilename
-						+ " time:" + str);
+				myLogger.info("finish copy archive data: " + strFilename + " time:" + str);
 				m_metadata.setFilePath(StoragePath);
 			} else {
 				m_metadata.setFilePath(srcFilePath);
@@ -398,10 +368,7 @@ public class ImportMeta2Database {
 		}
 	}
 
-	
-
-	public String genertateStoragePath(String destpath,
-			spatialmetadata spatialmeta) {
+	public String genertateStoragePath(String destpath, spatialmetadata spatialmeta) {
 
 		if (spatialmeta == null)
 			return "";
@@ -412,27 +379,26 @@ public class ImportMeta2Database {
 			str += File.separator;
 		}
 
-		String storagePath = str + spatialmeta.getSatellite() + File.separator
-				+ spatialmeta.getProductLevel() + File.separator + photoDate
-				+ File.separator
-				+ String.format("%06d", spatialmeta.getOrbitID())
+		String storagePath = str + spatialmeta.getSatellite() + File.separator + spatialmeta.getProductLevel()
+				+ File.separator + photoDate + File.separator + String.format("%06d", spatialmeta.getOrbitID())
 				+ File.separator + spatialmeta.getSensor();
 		return storagePath;
 	}
 
 	/**
 	 * 文件拷贝
-	 * @param sourceFile 源文件
-	 * @param destpath  目标文件
+	 * 
+	 * @param sourceFile
+	 *            源文件
+	 * @param destpath
+	 *            目标文件
 	 * @throws Exception
 	 */
-	private void fileArchive(String sourceFile, String destpath)
-			throws Exception {
+	private void fileArchive(String sourceFile, String destpath) throws Exception {
 		FileUtils.copyFileToDirectory(new java.io.File(sourceFile), new java.io.File(destpath));
 	}
 
-	private boolean generatejgwfile(int nRow, int nCol, double[] pointlist,
-			String worldfilePath) {
+	private boolean generatejgwfile(int nRow, int nCol, double[] pointlist, String worldfilePath) {
 		// pointlis 为左上角点经纬度坐标，顺时针依次赋㽍
 		boolean bret = false;
 		int begin = 0;

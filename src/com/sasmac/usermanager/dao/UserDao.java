@@ -63,7 +63,7 @@ public class UserDao {
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}//
+			} //
 		}
 		return result;
 	}
@@ -90,7 +90,7 @@ public class UserDao {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}//
+		} //
 		return result;
 	}
 
@@ -139,13 +139,11 @@ public class UserDao {
 						ResultSet rsL = psmtL.executeQuery();// 列
 						while (rsL.next()) {
 							// 循环角色关联的 权限ID，查权限表，读权限信息
-							PreparedStatement psmtP = userCN
-									.prepareStatement(sqlP);
+							PreparedStatement psmtP = userCN.prepareStatement(sqlP);
 							psmtP.setString(1, rsL.getString(1));
 							ResultSet rsP = psmtP.executeQuery();// 列
 							if (rsP.next()) {
-								Privinfo myPri = new Privinfo(rsP.getString(1),
-										rsP.getString(2));
+								Privinfo myPri = new Privinfo(rsP.getString(1), rsP.getString(2));
 								myrole.getPrivlist().add(myPri);
 							}
 							psmtP.close();
@@ -232,7 +230,10 @@ public class UserDao {
 	public boolean IsContainPriv(String username, String privname) {
 
 		// String
-		// sql="select t1.username,t3.ROLEID ,t4.PRIVILEDGEID,t5.PRIVILEDGENAME from  tb_user t1, tb_userrole t3 , tb_rolepriviledge t4 ,tb_priviledge t5 where  t1.username=? and t1.id=t3.USERID and t4.ROLEID=t3.ROLEID and t4.PRIVILEDGEID=t5.id";
+		// sql="select t1.username,t3.ROLEID ,t4.PRIVILEDGEID,t5.PRIVILEDGENAME
+		// from tb_user t1, tb_userrole t3 , tb_rolepriviledge t4 ,tb_priviledge
+		// t5 where t1.username=? and t1.id=t3.USERID and t4.ROLEID=t3.ROLEID
+		// and t4.PRIVILEDGEID=t5.id";
 		String sql = "select t1.username,t3.ROLEID ,t4.PRIVILEDGEID,t5.PRIVILEDGENAME from  tb_user t1, tb_userrole t3 , tb_rolepriviledge t4 ,tb_priviledge t5 where  t1.username=? and t1.id=t3.USERID and t4.ROLEID=t3.ROLEID and t4.PRIVILEDGEID=t5.id and t5.PRIVILEDGENAME=?";
 		boolean result = false;
 		try {

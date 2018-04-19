@@ -17,33 +17,35 @@ public class MyDownloadThread implements Runnable {
 
 	@Override
 	public void run() {
-		while(true) {
+		while (true) {
 			try {
 				conn = DbUtils.getConnection(true);
-				
+
 				List<TaskInfo> list = service.getTask(conn);
-				
-				if(list != null) {
-					for(TaskInfo task : list) {
-						int taskId = 1;//task.getTaskId();
-						//String destPath = task.getDestPath();
-						
+
+				if (list != null) {
+					for (TaskInfo task : list) {
+						int taskId = 1;// task.getTaskId();
+						// String destPath = task.getDestPath();
+
 						List<TaskData> lData = service.getTaskData(conn, taskId);
-						
+
 						service.updataTaskStatus(conn, taskId, "EXECUTING");
-						
-						for(TaskData data : lData) {
-				//			FileUtils.copyFileToDirectory(new java.io.File(data.getFileName()), new java.io.File(destPath));
+
+						for (TaskData data : lData) {
+							// FileUtils.copyFileToDirectory(new
+							// java.io.File(data.getFileName()), new
+							// java.io.File(destPath));
 						}
-						
+
 						service.updataTaskStatus(conn, taskId, "COMPLETED");
-						
+
 						/*
 						 * 数据下载完成后的反馈
 						 */
 					}
 				}
-				
+
 				Thread.sleep(1000 * 60);
 			} catch (Exception e) {
 				e.printStackTrace();

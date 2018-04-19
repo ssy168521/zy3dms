@@ -100,17 +100,14 @@ public class test {
 					 */
 					// System.out.println(urlstr);
 
-					Col = "00000000"
-							+ String.format("%s", Integer.toHexString(x));
+					Col = "00000000" + String.format("%s", Integer.toHexString(x));
 					Col = "C" + Col.substring(Col.length() - 8);
-					String tmp = Layer + File.separator + Row + File.separator
-							+ Col + ".png";
+					String tmp = Layer + File.separator + Row + File.separator + Col + ".png";
 					File file = new File(srcdir + tmp);
 					if (file.exists()) {
 
-						FileUtils.copyFileToDirectory(file, new java.io.File(
-								destpath + Layer + File.separator + Row
-										+ File.separator));
+						FileUtils.copyFileToDirectory(file,
+								new java.io.File(destpath + Layer + File.separator + Row + File.separator));
 					}
 
 					// URL url = new URL(urlstr);

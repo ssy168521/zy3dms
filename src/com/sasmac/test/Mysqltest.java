@@ -67,8 +67,7 @@ class Mysqltest {
 	static MySQLDataStoreFactory factory = new MySQLDataStoreFactory();
 	static FeatureSource fsBC;
 
-	public static void topoQueryMethod(Geometry refGeo, String queryName,
-			String layerName) {
+	public static void topoQueryMethod(Geometry refGeo, String queryName, String layerName) {
 		FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
 		ArrayList<SimpleFeature> featurelist = new ArrayList<SimpleFeature>();
 		SimpleFeatureSource featureSource = null;
@@ -80,8 +79,7 @@ class Mysqltest {
 		}
 
 		SimpleFeatureType schema = featureSource.getSchema();
-		String geometryAttributeName = schema.getGeometryDescriptor()
-				.getLocalName();
+		String geometryAttributeName = schema.getGeometryDescriptor().getLocalName();
 		Filter filter1 = getGeoFilter(ff, geometryAttributeName, refGeo);
 		Filter filter2 = null;
 
@@ -116,8 +114,8 @@ class Mysqltest {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void ConnPostGis(String dbtype, String URL, int port,
-			String database, String user, String password) {
+	private static void ConnPostGis(String dbtype, String URL, int port, String database, String user,
+			String password) {
 		Map params = new HashMap();
 		params.put("dbtype", "mysql");
 		params.put("host", URL);
@@ -131,16 +129,13 @@ class Mysqltest {
 			pgDatastore = (DataStore) factory.createDataStore(params);
 
 			if (pgDatastore != null) {
-				System.out.println("系统连接到位于：" + URL + "的空间数据库" + database
-						+ "成功！");
+				System.out.println("系统连接到位于：" + URL + "的空间数据库" + database + "成功！");
 			} else {
-				System.out.println("系统连接到位于：" + URL + "的空间数据库" + database
-						+ "失败！请检查相关参数");
+				System.out.println("系统连接到位于：" + URL + "的空间数据库" + database + "失败！请检查相关参数");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("系统连接到位于：" + URL + "的空间数据库" + database
-					+ "失败！请检查相关参数");
+			System.out.println("系统连接到位于：" + URL + "的空间数据库" + database + "失败！请检查相关参数");
 		}
 	}
 
@@ -202,8 +197,7 @@ class Mysqltest {
 						Property pro = it.next();
 						if (pro.getValue() instanceof Geometry) {
 						} else {
-							System.out.println(pro.getName() + " = "
-									+ pro.getValue());
+							System.out.println(pro.getName() + " = " + pro.getValue());
 						}
 					}
 
@@ -224,8 +218,7 @@ class Mysqltest {
 		ShapefileDataStoreFactory dataStoreFactory = new ShapefileDataStoreFactory();
 		try {
 			ShapefileDataStore sds = (ShapefileDataStore) dataStoreFactory
-					.createDataStore(new File("D:\\work\\shpdir\\Poi.shp")
-							.toURI().toURL());
+					.createDataStore(new File("D:\\work\\shpdir\\Poi.shp").toURI().toURL());
 			sds.setCharset(Charset.forName("UTF8"));
 			SimpleFeatureSource featureSource = sds.getFeatureSource();
 
@@ -250,12 +243,10 @@ class Mysqltest {
 
 				ds.createSchema(schema);
 
-				FeatureWriter<SimpleFeatureType, SimpleFeature> writer = ds
-						.getFeatureWriter(schema.getTypeName(),
-								Transaction.AUTO_COMMIT);
+				FeatureWriter<SimpleFeatureType, SimpleFeature> writer = ds.getFeatureWriter(schema.getTypeName(),
+						Transaction.AUTO_COMMIT);
 
-				SimpleFeatureIterator itertor = featureSource.getFeatures()
-						.features();
+				SimpleFeatureIterator itertor = featureSource.getFeatures().features();
 
 				while (itertor.hasNext()) {
 					SimpleFeature feature = itertor.next();
@@ -282,12 +273,11 @@ class Mysqltest {
 	public static void insertFeatures(String featurename) {
 		WKTReader wktReader = new WKTReader();
 		try {
-			LineString geometry = (LineString) wktReader
-					.read("LINESTRING (10 10, 20 20)");
+			LineString geometry = (LineString) wktReader.read("LINESTRING (10 10, 20 20)");
 			String roadName = "珞瑜路";
 			FeatureSource source = pgDatastore.getFeatureSource(featurename);
-			FeatureWriter aWriter = pgDatastore.getFeatureWriterAppend(
-					featurename, ((FeatureStore) source).getTransaction());
+			FeatureWriter aWriter = pgDatastore.getFeatureWriterAppend(featurename,
+					((FeatureStore) source).getTransaction());
 			/** 如有批量导入数据要求，可使用 org.geotools.data.FeatureStore */
 			Feature feature = aWriter.next();
 			try {
@@ -312,8 +302,7 @@ class Mysqltest {
 	public static Filter getGeoFilter(FilterFactory2 ff, // 构建拓扑查询的filter
 			String geometryAttributeName, Geometry refGeo) {
 
-		return ff.intersects(ff.property(geometryAttributeName),
-				ff.literal(refGeo));
+		return ff.intersects(ff.property(geometryAttributeName), ff.literal(refGeo));
 
 	}
 

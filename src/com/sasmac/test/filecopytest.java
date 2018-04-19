@@ -5,8 +5,7 @@ import java.io.IOException;
 import com.sasmac.service.Exception_Exception;
 
 class filecopytest {
-	public static void main(String[] args) throws IOException,
-			Exception_Exception {
+	public static void main(String[] args) throws IOException, Exception_Exception {
 		/*
 		 * // FileCopy filecp = new FileCopyService().getFileCopyPort();
 		 * 

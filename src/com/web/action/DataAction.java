@@ -15,27 +15,27 @@ import com.web.service.impl.WebServiceImpl;
 import com.web.util.DbUtils;
 
 @Controller
-@Scope("prototype") 
+@Scope("prototype")
 @RequestMapping("/data")
 public class DataAction {
 
 	private WebService service = new WebServiceImpl();
-	
+
 	@ResponseBody
-    @RequestMapping("/dataGridInfo")
+	@RequestMapping("/dataGridInfo")
 	public DataGrid dataGridInfo() {
 		Connection conn = null;
-		
+
 		DataGrid dg = null;
-		
+
 		try {
 			conn = DbUtils.getConnection(true);
-			
+
 			dg = new DataGrid();
-			
+
 			List<DataInfo> list = service.getDataInfo(conn, null);
-			
-			if(list != null) {
+
+			if (list != null) {
 				dg.setTotal(Long.parseLong(String.valueOf(list.size())));
 				dg.setRows(list);
 			}
@@ -44,7 +44,7 @@ public class DataAction {
 		} finally {
 			DbUtils.closeQuietlyConnection(conn);
 		}
-		
+
 		return dg;
 	}
 }

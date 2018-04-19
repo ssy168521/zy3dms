@@ -14,8 +14,7 @@ public class Userinfo {
 	public Userinfo() {
 	}
 
-	public Userinfo(String userid, String username, String pwd, String regtime,
-			String ifvalid, String ifonline) {
+	public Userinfo(String userid, String username, String pwd, String regtime, String ifvalid, String ifonline) {
 		this.userID = userid;
 		this.userNAME = username;
 		this.passWORD = pwd;

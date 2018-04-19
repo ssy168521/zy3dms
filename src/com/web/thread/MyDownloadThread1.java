@@ -26,8 +26,7 @@ public class MyDownloadThread1 extends BaseThread implements Runnable {
 	String strDestpath;
 
 	public MyDownloadThread1(List<String> SrcFileArr, String Destpath) {
-		super("download", THREADSTATUS.THREAD_STATUS_UNKNOWN.ordinal(), "数据下载",
-				new Date(), null, 0, "");
+		super("download", THREADSTATUS.THREAD_STATUS_UNKNOWN.ordinal(), "数据下载", new Date(), null, 0, "");
 		int n = SrcFileArr.size();
 		srcFileArr = new String[n];
 		SrcFileArr.toArray(srcFileArr);
@@ -39,13 +38,11 @@ public class MyDownloadThread1 extends BaseThread implements Runnable {
 	public void run() {
 		String conffilepath = "";
 		try {
-			conffilepath = Loadoverview.class.getClassLoader().getResource("/")
-					.toURI().getPath();
+			conffilepath = Loadoverview.class.getClassLoader().getResource("/").toURI().getPath();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		PropertiesUtil propertiesUtil = new PropertiesUtil(conffilepath
-				+ Constants.STR_CONF_PATH);
+		PropertiesUtil propertiesUtil = new PropertiesUtil(conffilepath + Constants.STR_CONF_PATH);
 		String strDestpathconf = propertiesUtil.getProperty("downloadpath");
 		if (strDestpath == "")
 			strDestpath = strDestpathconf;
@@ -78,13 +75,11 @@ public class MyDownloadThread1 extends BaseThread implements Runnable {
 				}
 				srcFile = srcFileArr[i];
 
-				com.sasmac.util.AppConfUtil util = com.sasmac.util.AppConfUtil
-						.getInstance();
+				com.sasmac.util.AppConfUtil util = com.sasmac.util.AppConfUtil.getInstance();
 				util.SetAppconFile("appconf.xml");
 				String filecopywebservice = util.getProperty("filecopy_ws");
 				if (!filecopywebservice.isEmpty()) {
-					FileCopy s = new FileCopy(new java.net.URL(
-							filecopywebservice));
+					FileCopy s = new FileCopy(new java.net.URL(filecopywebservice));
 					FileCopyPortType server = s.getFileCopyPort();
 
 					srcFile = AppUtil.localFilePathToSMBFilePath(srcFile);
@@ -96,16 +91,14 @@ public class MyDownloadThread1 extends BaseThread implements Runnable {
 					FileUtil.fileCopy(srcFile, strDestpath);
 				}
 
-				setTaskProgress((int) Math.rint((float) (i + 1)
-						/ (float) ncount * 100));
+				setTaskProgress((int) Math.rint((float) (i + 1) / (float) ncount * 100));
 
 			}
 
 			if (!bStopThread) {
 				setTaskStatus(THREADSTATUS.THREAD_STATUS_FINISHED.ordinal());
 				setTaskEndTime(new Date());
-				setTaskMarkinfo(strDestpathconf + " "
-						+ Integer.toString(ncount) + " files download");
+				setTaskMarkinfo(strDestpathconf + " " + Integer.toString(ncount) + " files download");
 				setTaskProgress(100);
 			} else {
 				setTaskStatus(THREADSTATUS.THREAD_STATUS_STOPED.ordinal());

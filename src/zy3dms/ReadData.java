@@ -23,11 +23,9 @@ public class ReadData {
 
 		MySQLDataStoreFactory mySQLFactory = new MySQLDataStoreFactory();
 
-		JDBCDataStore mySQLDatastore = (JDBCDataStore) mySQLFactory
-				.createDataStore(params);
+		JDBCDataStore mySQLDatastore = (JDBCDataStore) mySQLFactory.createDataStore(params);
 
 		// Prepare feature sources
-		ContentFeatureSource fsStreets = mySQLDatastore
-				.getFeatureSource("streets");
+		ContentFeatureSource fsStreets = mySQLDatastore.getFeatureSource("streets");
 	}
 }

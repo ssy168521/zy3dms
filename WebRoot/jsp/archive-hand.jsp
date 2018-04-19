@@ -34,17 +34,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head> 
 <body> 
 <div class="panel-head"><strong class="icon-reorder">归档</strong></div>
-	  <div class="tabbable" id="tabs-724231">
+	  <div class="tabbable" id="myTab">
            <div style="text-align:center; padding-top:15px">
 		     <ul class="nav nav-tabs">
 				<li class="active" style="width:33%">
 					 <a href="#sc-query-region" data-toggle="tab">传感器校正产品</a>
 				</li>
 				<li style="width:33%">
-					 <a href="#sc-query-region" data-toggle="tab">标准分幅DOM产品</a>
+					 <a href="#sc-query-region" data-toggle="tab">分幅DOM</a>
 				</li>
 				<li style="width:33%">
-					 <a href="#sc-query-region" data-toggle="tab">分景DOM产品</a>
+					 <a href="#sc-query-region" data-toggle="tab">分景DOM</a>
 				</li>
 			</ul>
 		  </div>
@@ -52,44 +52,43 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  <div class="tab-pane active" id="sc-query-region">	
 		  <form id="queryform" >
 		  <input type="hidden" id="ProductType" name="ProductType" >
-		    <table >
+		    <table style="width: 100%; ">
 		    	<tr height="45">
-					<td width="400" style="text-align:right; padding-right:0px;">
+					<td width=40% style="text-align:right; padding-right:0px;">
 						<label>任务名称：</label>
 					</td>
-					<td width="500" style="text-align:left; padding-left:0px;">
-						<input id="taskname" class="i-text" name="name-taskname" type="text"  maxlength="1000" value="" style="width: 272px; "/>
+					<td width=60%  style="text-align:left; padding-left:0px;">
+						<input id="taskname" class="i-text" name="name-taskname" type="text"  maxlength="1000" value="" style="width: 100%; "/>
 					</td>
 				</tr>
 				<tr height="45">
-					<td width="150" style="text-align:right; padding-right:0px;">
+					<td width=40%  style="text-align:right; padding-right:0px;">
 						<label>归档源路径：</label>
 					</td>
-					<td width="500" style="text-align:left; padding-left:0px;">
-						<input id="path" class="i-text" name="name-archivepath" type="text"  maxlength="1000" value="" style="width: 272px; "/>
+					<td width=60%  style="text-align:left; padding-left:0px;">
+						<input id="path" class="i-text" name="name-archivepath" type="text"  maxlength="1000" value="" style="width: 100%; "/>
 					</td>
 				</tr>
 				
 				<tr class="advancequerycls"; height="10%">
-				   <td width="80%" style="text-align:right; padding-left:20px;">										
+				   <td width=40%  style="text-align:right; padding-left:20px;">										
 					 <label title="扫描式归档">
-						<input id="scanning" name="Archivemodename" value="SXZ" type="radio">
+						<input id="scanning" name="Archivemodename" value="scan" type="radio" checked="true">
 						扫描归档
 					</label>
 				   </td>
-				   <td width="80%" style="text-align:left; padding-left:20px;">										
+				   <td width=60%  style="text-align:left; padding-left:20px;">										
 					 <label title="迁移式归档">
-						<input id="copy" name="Archivemodename" value="SS" type="radio">
+						<input id="copy" name="Archivemodename" value="copy" type="radio">
 						迁移归档
 					 </label>
 				   </td>
 				</tr>
 					
 				<tr height="45">
-					<td width="100" style="text-align:right; padding-right:0px;">
-						
+					<td width=40%  style="text-align:right; padding-right:0px;">
 					</td>
-					<td width="500" style="text-align:left; padding-left:10px;">
+					<td width=60%  style="text-align:left; padding-left:10px;">
 						<input id="btn_archive" class="btn btn-primary" type="button" maxlength="1000" value="开始归档" style="height: 33px; width: 91px; ">
 					</td>
 				</tr>					
@@ -99,18 +98,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 </div>
 <script type="text/javascript">
+$(function(){
+	 $('#myTab li:eq(0) a').tab('show');
+	 
+});
 
 $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {            
        var  activeTab = $(e.target).text();
        $("#ProductType").val(activeTab);
-     });
-$(function(){
-	var pDate=new Date();
-	var strProductType=$("#ProductType").val();
-	//SC归档
-	var taskname= strProductType+pDate.getFullYear()+"-"+(pDate.getMonth()+1)+"-"+pDate.getDate()+" "+pDate.getHours()+":"+pDate.getMinutes()+":"+pDate.getSeconds();
-	$("#taskname").val(taskname);
-	
+       var pDate=new Date();
+	   var strProductType=$("#ProductType").val();
+	  //SC归档
+	   var taskname= strProductType+"归档"+pDate.getFullYear()+"-"+(pDate.getMonth()+1)+"-"+pDate.getDate()+" "+pDate.getHours()+":"+pDate.getMinutes()+":"+pDate.getSeconds();
+	  $("#taskname").val(taskname);
 });
 
   //SC产品归档
@@ -124,16 +124,17 @@ $("#btn_archive").click(function(){
 	    alert("请设置归档路径");
 	    return;
 	}
-	var Archivemodename = document.getEementsByName(“Archivemodename”);
-    var Archivemode;
-	for(var i = 0; i < Archivemodename.length; i++)
+	
+	var Archivemode = $("input[name='Archivemodename']:checked").val(); 
+	
+/* 	for(var i = 0; i < Archivemodename.length; i++)
 	{
 		if(Archivemodename[i].checked)
 		{
 			Archivemode = Archivemodename[i].value;
 		}
 	
-	}
+	} */
 	strarchivepath=strarchivepath.replace(/\\/g,"\\\\");
 	var tmp="{\"ArchivePath\":\""+strarchivepath+"\",\"taskname\":\""+strtaskname+"\",\"ProductType\":\""+strProductType+"\",\"ArchiveMode\":\""+Archivemode+"\"}";
 	

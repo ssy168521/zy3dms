@@ -41,8 +41,7 @@ public class Constants {
 	static {
 
 		try {
-			String path = Constants.class.getClassLoader().getResource("/")
-					.toURI().getPath();
+			String path = Constants.class.getClassLoader().getResource("/").toURI().getPath();
 			confUtil = new PropertiesUtil(path + STR_CONF_PATH);
 			logPath = confUtil.getProperty("logfilepath");
 		} catch (URISyntaxException e) {
@@ -51,42 +50,41 @@ public class Constants {
 		}
 
 	}
-    /**
-     * 
-     * @param strArchivedir 归档源路径
-     * @return
-     * @throws Exception
-     */
-	public static int AssertFileIsSMBFileDir(String strArchivedir)throws Exception {
+
+	/**
+	 * 
+	 * @param strArchivedir
+	 *            归档源路径
+	 * @return
+	 * @throws Exception
+	 */
+	public static int AssertFileIsSMBFileDir(String strArchivedir) throws Exception {
 		try {
 			if (strArchivedir == null)
 				return -1;
 			if (strArchivedir.isEmpty())
 				return -1;
-			int idx = strArchivedir.indexOf(":");//C:\Users\Administrator\Desktop,http://localhost:8080/zy3dms/upl
+			int idx = strArchivedir.indexOf(":");// C:\Users\Administrator\Desktop,http://localhost:8080/zy3dms/upl
 			if (idx <= -1)
 				return -1;
-            //磁盘  
+			// 磁盘
 			String Diskroot = strArchivedir.substring(0, idx);
 			if (Diskroot.isEmpty())
 				return -1;
 			if (Diskroot.compareToIgnoreCase("smb") == 0)
 				return 2;
-            //获取Constants类路径 E:\MyEclipse2014 workspace\zy3dms\src
-			String path = Constants.class.getClassLoader().getResource("/")
-					.toURI().getPath();
-			//解析 DiskMap.xml，获取smb参数
-			HashMap<String, String> paramap = XMLUtil.getMaplistByDiskname(path
-					+ Constants.STR_MAPDISK_CONF_PATH, Diskroot);
+			// 获取Constants类路径 E:\MyEclipse2014 workspace\zy3dms\src
+			String path = Constants.class.getClassLoader().getResource("/").toURI().getPath();
+			// 解析 DiskMap.xml，获取smb参数
+			HashMap<String, String> paramap = XMLUtil.getMaplistByDiskname(path + Constants.STR_MAPDISK_CONF_PATH,
+					Diskroot);
 			int n = paramap.size();
 			if (n <= 0)
 				return 0;
 
-			Iterator<Entry<String, String>> iter = paramap.entrySet()
-					.iterator();
+			Iterator<Entry<String, String>> iter = paramap.entrySet().iterator();
 			while (iter.hasNext()) {
-				HashMap.Entry<String, String> entry = (HashMap.Entry<String, String>) iter
-						.next();
+				HashMap.Entry<String, String> entry = (HashMap.Entry<String, String>) iter.next();
 				String key = (String) entry.getKey();
 				if (key.compareToIgnoreCase("path") == 0) {
 
@@ -105,10 +103,8 @@ public class Constants {
 		try {
 			String sDate = "";
 			String sYear = Calendar.getInstance().get(Calendar.YEAR) + "";
-			String sMonth = (Calendar.getInstance().get(Calendar.MONTH) + 1)
-					+ "";
-			String sDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-					+ "";
+			String sMonth = (Calendar.getInstance().get(Calendar.MONTH) + 1) + "";
+			String sDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "";
 			if (sMonth.length() == 1) {
 				sMonth = "0" + sMonth;
 			}
@@ -138,11 +134,8 @@ public class Constants {
 			strFileName = szLogFile.concat(strDate + ".log");
 
 			LogStream = new FileWriter(strFileName, true);
-			SimpleDateFormat DateStr = new SimpleDateFormat(
-					"yyyy-MM-dd HH:mm:ss");
-			LogStream
-					.write(DateStr.format(new Date(System.currentTimeMillis()))
-							+ ": " + szStr + " \r\n");
+			SimpleDateFormat DateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			LogStream.write(DateStr.format(new Date(System.currentTimeMillis())) + ": " + szStr + " \r\n");
 		} catch (Exception e) {
 		}
 		try {

@@ -5,7 +5,8 @@ import java.util.List;
 
 /**
  * 
- * ClassName: DataGrid 
+ * ClassName: DataGrid
+ * 
  * @Description: 封装界面显示的datagrid表格数据的对象
  * @param total:数据总量
  * @param rows:显示的数据信息

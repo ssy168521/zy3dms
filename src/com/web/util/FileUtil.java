@@ -51,8 +51,7 @@ public class FileUtil {
 
 		} else {
 
-			NtlmPasswordAuthentication auth = smbAuthUtil
-					.getsmbAuth(sourceFile);
+			NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(sourceFile);
 			if (auth == null) {
 				myLogger.error(" smb:user password auth error! ");
 				return false;
@@ -79,8 +78,7 @@ public class FileUtil {
 		return true;
 	}
 
-	public static void fileCopy(String sourceFile, String destpath)
-			throws Exception {
+	public static void fileCopy(String sourceFile, String destpath) throws Exception {
 		InputStream in = null;
 		OutputStream out = null;
 		String strFileName = "";
@@ -92,8 +90,7 @@ public class FileUtil {
 				in = new BufferedInputStream(new FileInputStream(localFile));
 				strFileName = localFile.getName();
 			} else {
-				NtlmPasswordAuthentication auth = smbAuthUtil
-						.getsmbAuth(sourceFile);
+				NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(sourceFile);
 				if (auth == null) {
 					myLogger.error(" smb:user password auth error! ");
 					return;
@@ -108,13 +105,11 @@ public class FileUtil {
 			TarUtils.fileProber(destpath);
 			int flag1 = Constants.AssertFileIsSMBFileDir(destpath);
 			if (flag1 == 0) {
-				File remoteFile = new File(destpath + File.separator
-						+ strFileName);
+				File remoteFile = new File(destpath + File.separator + strFileName);
 				out = new BufferedOutputStream(new FileOutputStream(remoteFile));
 			} else {
 
-				NtlmPasswordAuthentication auth = smbAuthUtil
-						.getsmbAuth(destpath);
+				NtlmPasswordAuthentication auth = smbAuthUtil.getsmbAuth(destpath);
 				if (auth == null) {
 					myLogger.error(" smb:user password auth error! ");
 					return;
@@ -123,8 +118,7 @@ public class FileUtil {
 				if (flag1 == 1)
 					destpath = AppUtil.localFilePathToSMBFilePath(destpath);
 				SmbFile remoteFile = new SmbFile(destpath + strFileName, auth);
-				out = new BufferedOutputStream(new SmbFileOutputStream(
-						remoteFile));
+				out = new BufferedOutputStream(new SmbFileOutputStream(remoteFile));
 			}
 
 			// org.apache.commons.io.IOUtils.copyLarge(in, out);
@@ -142,11 +136,9 @@ public class FileUtil {
 		}
 	}
 
-	private static List<String> unTar(InputStream inputStream, String destDir)
-			throws Exception {
+	private static List<String> unTar(InputStream inputStream, String destDir) throws Exception {
 		List<String> fileNames = new ArrayList<String>();
-		TarArchiveInputStream tarIn = new TarArchiveInputStream(inputStream,
-				BUFFER_SIZE);
+		TarArchiveInputStream tarIn = new TarArchiveInputStream(inputStream, BUFFER_SIZE);
 		TarArchiveEntry entry = null;
 		try {
 			while ((entry = tarIn.getNextTarEntry()) != null) {
@@ -154,8 +146,7 @@ public class FileUtil {
 				if (entry.isDirectory()) {// 鏄洰褰?
 					createDirectory(destDir, entry.getName());// 鍒涘缓绌虹洰褰?
 				} else {// 鏄枃浠?
-					File tmpFile = new File(destDir + File.separator
-							+ entry.getName());
+					File tmpFile = new File(destDir + File.separator + entry.getName());
 					createDirectory(tmpFile.getParent() + File.separator, null);// 鍒涘缓杈撳嚭鐩綍
 					OutputStream out = null;
 					try {
@@ -182,63 +173,50 @@ public class FileUtil {
 		return fileNames;
 	}
 
-	public static List<String> unTar(String tarFile, String destDir)
-			throws Exception {
+	public static List<String> unTar(String tarFile, String destDir) throws Exception {
 		File file = new File(tarFile);
 		return unTar(file, destDir);
 	}
 
-	public static List<String> unTar(File tarFile, String destDir)
-			throws Exception {
+	public static List<String> unTar(File tarFile, String destDir) throws Exception {
 		if (StringUtils.isBlank(destDir)) {
 			destDir = tarFile.getParent();
 		}
-		destDir = destDir.endsWith(File.separator) ? destDir : destDir
-				+ File.separator;
+		destDir = destDir.endsWith(File.separator) ? destDir : destDir + File.separator;
 		return unTar(new FileInputStream(tarFile), destDir);
 	}
 
-	public static List<String> unTarBZip2(File tarFile, String destDir)
-			throws Exception {
+	public static List<String> unTarBZip2(File tarFile, String destDir) throws Exception {
 		if (StringUtils.isBlank(destDir)) {
 			destDir = tarFile.getParent();
 		}
-		destDir = destDir.endsWith(File.separator) ? destDir : destDir
-				+ File.separator;
-		return unTar(new BZip2CompressorInputStream(
-				new FileInputStream(tarFile)), destDir);
+		destDir = destDir.endsWith(File.separator) ? destDir : destDir + File.separator;
+		return unTar(new BZip2CompressorInputStream(new FileInputStream(tarFile)), destDir);
 	}
 
-	public static List<String> unTarBZip2(String file, String destDir)
-			throws Exception {
+	public static List<String> unTarBZip2(String file, String destDir) throws Exception {
 		File tarFile = new File(file);
 		return unTarBZip2(tarFile, destDir);
 	}
 
-	public static List<String> unBZip2(String bzip2File, String destDir)
-			throws IOException {
+	public static List<String> unBZip2(String bzip2File, String destDir) throws IOException {
 		File file = new File(bzip2File);
 		return unBZip2(file, destDir);
 	}
 
-	public static List<String> unBZip2(File srcFile, String destDir)
-			throws IOException {
+	public static List<String> unBZip2(File srcFile, String destDir) throws IOException {
 		if (org.apache.commons.lang.StringUtils.isBlank(destDir)) {
 			destDir = srcFile.getParent();
 		}
-		destDir = destDir.endsWith(File.separator) ? destDir : destDir
-				+ File.separator;
+		destDir = destDir.endsWith(File.separator) ? destDir : destDir + File.separator;
 		List<String> fileNames = new ArrayList<String>();
 		InputStream is = null;
 		OutputStream os = null;
 		try {
-			File destFile = new File(destDir, FilenameUtils.getBaseName(srcFile
-					.toString()));
+			File destFile = new File(destDir, FilenameUtils.getBaseName(srcFile.toString()));
 			fileNames.add(FilenameUtils.getBaseName(srcFile.toString()));
-			is = new BZip2CompressorInputStream(new BufferedInputStream(
-					new FileInputStream(srcFile), BUFFER_SIZE));
-			os = new BufferedOutputStream(new FileOutputStream(destFile),
-					BUFFER_SIZE);
+			is = new BZip2CompressorInputStream(new BufferedInputStream(new FileInputStream(srcFile), BUFFER_SIZE));
+			os = new BufferedOutputStream(new FileOutputStream(destFile), BUFFER_SIZE);
 			IOUtils.copy(is, os);
 		} finally {
 			os.close();
@@ -249,30 +227,24 @@ public class FileUtil {
 		return fileNames;
 	}
 
-	public static List<String> unGZ(String gzFile, String destDir)
-			throws IOException {
+	public static List<String> unGZ(String gzFile, String destDir) throws IOException {
 		File file = new File(gzFile);
 		return unGZ(file, destDir);
 	}
 
-	public static List<String> unGZ(File srcFile, String destDir)
-			throws IOException {
+	public static List<String> unGZ(File srcFile, String destDir) throws IOException {
 		if (StringUtils.isBlank(destDir)) {
 			destDir = srcFile.getParent();
 		}
-		destDir = destDir.endsWith(File.separator) ? destDir : destDir
-				+ File.separator;
+		destDir = destDir.endsWith(File.separator) ? destDir : destDir + File.separator;
 		List<String> fileNames = new ArrayList<String>();
 		InputStream is = null;
 		OutputStream os = null;
 		try {
-			File destFile = new File(destDir, FilenameUtils.getBaseName(srcFile
-					.toString()));
+			File destFile = new File(destDir, FilenameUtils.getBaseName(srcFile.toString()));
 			fileNames.add(FilenameUtils.getBaseName(srcFile.toString()));
-			is = new GzipCompressorInputStream(new BufferedInputStream(
-					new FileInputStream(srcFile), BUFFER_SIZE));
-			os = new BufferedOutputStream(new FileOutputStream(destFile),
-					BUFFER_SIZE);
+			is = new GzipCompressorInputStream(new BufferedInputStream(new FileInputStream(srcFile), BUFFER_SIZE));
+			os = new BufferedOutputStream(new FileOutputStream(destFile), BUFFER_SIZE);
 			IOUtils.copy(is, os);
 		} finally {
 			os.close();
@@ -283,20 +255,15 @@ public class FileUtil {
 		return fileNames;
 	}
 
-	public static List<String> unTarGZ(File tarFile, String destDir)
-			throws Exception {
+	public static List<String> unTarGZ(File tarFile, String destDir) throws Exception {
 		if (StringUtils.isBlank(destDir)) {
 			destDir = tarFile.getParent();
 		}
-		destDir = destDir.endsWith(File.separator) ? destDir : destDir
-				+ File.separator;
-		return unTar(
-				new GzipCompressorInputStream(new FileInputStream(tarFile)),
-				destDir);
+		destDir = destDir.endsWith(File.separator) ? destDir : destDir + File.separator;
+		return unTar(new GzipCompressorInputStream(new FileInputStream(tarFile)), destDir);
 	}
 
-	public static List<String> unTarGZ(String file, String destDir)
-			throws Exception {
+	public static List<String> unTarGZ(String file, String destDir) throws Exception {
 		File tarFile = new File(file);
 		return unTarGZ(tarFile, destDir);
 	}
@@ -311,19 +278,16 @@ public class FileUtil {
 		}
 	}
 
-	public static List<String> unZip(File zipfile, String destDir)
-			throws Exception {
+	public static List<String> unZip(File zipfile, String destDir) throws Exception {
 		if (StringUtils.isBlank(destDir)) {
 			destDir = zipfile.getParent();
 		}
-		destDir = destDir.endsWith(File.separator) ? destDir : destDir
-				+ File.separator;
+		destDir = destDir.endsWith(File.separator) ? destDir : destDir + File.separator;
 		ZipArchiveInputStream is = null;
 		List<String> fileNames = new ArrayList<String>();
 
 		try {
-			is = new ZipArchiveInputStream(new BufferedInputStream(
-					new FileInputStream(zipfile), BUFFER_SIZE));
+			is = new ZipArchiveInputStream(new BufferedInputStream(new FileInputStream(zipfile), BUFFER_SIZE));
 			ZipArchiveEntry entry = null;
 			while ((entry = is.getNextZipEntry()) != null) {
 				fileNames.add(entry.getName());
@@ -333,8 +297,7 @@ public class FileUtil {
 				} else {
 					OutputStream os = null;
 					try {
-						os = new BufferedOutputStream(new FileOutputStream(
-								new File(destDir, entry.getName())),
+						os = new BufferedOutputStream(new FileOutputStream(new File(destDir, entry.getName())),
 								BUFFER_SIZE);
 						IOUtils.copy(is, os);
 					} finally {
@@ -354,14 +317,12 @@ public class FileUtil {
 		return fileNames;
 	}
 
-	public static List<String> unZip(String zipfile, String destDir)
-			throws Exception {
+	public static List<String> unZip(String zipfile, String destDir) throws Exception {
 		File zipFile = new File(zipfile);
 		return unZip(zipFile, destDir);
 	}
 
-	public static List<String> unCompress(String compressFile, String destDir)
-			throws Exception {
+	public static List<String> unCompress(String compressFile, String destDir) throws Exception {
 		String upperName = compressFile.toUpperCase();
 		List<String> ret = null;
 		if (upperName.endsWith(".ZIP")) {
@@ -428,8 +389,9 @@ public class FileUtil {
 			e.printStackTrace();
 		}
 	}
+
 	public static int mappedBuffer(String srcfile, String destFile) throws IOException {
-		
+
 		FileChannel read = new FileInputStream(srcfile).getChannel();
 		FileChannel writer = new RandomAccessFile(destFile, "rw").getChannel();
 		long i = 0;
@@ -451,6 +413,7 @@ public class FileUtil {
 		writer.close();
 		return 1;
 	}
+
 	public static void main(String[] args) throws Exception {
 
 	}

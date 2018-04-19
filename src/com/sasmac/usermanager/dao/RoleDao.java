@@ -249,7 +249,7 @@ public class RoleDao {
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}//
+			} //
 		}
 		return result;
 	}
@@ -278,7 +278,7 @@ public class RoleDao {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}//
+		} //
 		return result;
 	}
 
@@ -371,13 +371,11 @@ public class RoleDao {
 						ResultSet rsL = psmtL.executeQuery();// 列
 						while (rsL.next()) {
 							// 循环角色关联的 权限ID，查权限表，读权限信息
-							PreparedStatement psmtP = userCN
-									.prepareStatement(sqlP);
+							PreparedStatement psmtP = userCN.prepareStatement(sqlP);
 							psmtP.setString(1, rsL.getString(1));
 							ResultSet rsP = psmtP.executeQuery();// 列
 							if (rsP.next()) {
-								Privinfo myPri = new Privinfo(rsP.getString(1),
-										rsP.getString(2));
+								Privinfo myPri = new Privinfo(rsP.getString(1), rsP.getString(2));
 								myrole.getPrivlist().add(myPri);
 							}
 							psmtP.close();

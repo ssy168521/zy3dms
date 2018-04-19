@@ -40,8 +40,8 @@ public class ConfigureAction {
 	 * @Description: 璇诲彇鍒楄〃
 	 * @param @return
 	 * @return DataGrid
-	 * @throws
-	 * @date 2016-12-30
+	 * @throws @date
+	 *             2016-12-30
 	 */
 	@ResponseBody
 	@RequestMapping("/dataGridInfo")
@@ -74,8 +74,8 @@ public class ConfigureAction {
 	 * @Description: 娣诲姞淇℃伅
 	 * @param @return
 	 * @return DataGrid
-	 * @throws
-	 * @date 2016-12-30
+	 * @throws @date
+	 *             2016-12-30
 	 */
 	@ResponseBody
 	@RequestMapping("/addInfo")
@@ -106,8 +106,8 @@ public class ConfigureAction {
 	 * @Description: 缂栬緫淇℃伅
 	 * @param @return
 	 * @return DataGrid
-	 * @throws
-	 * @date 2016-12-30
+	 * @throws @date
+	 *             2016-12-30
 	 */
 	@ResponseBody
 	@RequestMapping("/editInfo")
@@ -137,8 +137,8 @@ public class ConfigureAction {
 	 * @Description: 鍒犻櫎淇℃伅
 	 * @param @return
 	 * @return DataGrid
-	 * @throws
-	 * @date 2016-12-30
+	 * @throws @date
+	 *             2016-12-30
 	 */
 	@ResponseBody
 	@RequestMapping("/deleteInfo")
@@ -151,13 +151,11 @@ public class ConfigureAction {
 		try {
 			conn = DbUtils.getConnection(true);
 
-			String satellite = service.getConfigById(conn,
-					configureForm.getId()).getSatellite();
+			String satellite = service.getConfigById(conn, configureForm.getId()).getSatellite();
 			if (service.deleteSysConfig(conn, configureForm)) {
 
 				// Constants.removeThread(satellite);
-				Log.println("Delete system config: " + satellite
-						+ " and the archive thread stoped.");
+				Log.println("Delete system config: " + satellite + " and the archive thread stoped.");
 
 				j.setSuccess(true);
 				j.setMsg("鍒犻櫎鎴愬姛!");

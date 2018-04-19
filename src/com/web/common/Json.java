@@ -2,7 +2,8 @@
 
 /**
  * 
- * ClassName: Json 
+ * ClassName: Json
+ * 
  * @Description: 用来封装给界面的反馈信息
  * @date 2016-12-30
  */
@@ -15,7 +16,7 @@ public class Json implements java.io.Serializable {
 
 	private Object obj = null;
 
-	private String returnType = "error";//用来标记前台提示框显示图标类型
+	private String returnType = "error";// 用来标记前台提示框显示图标类型
 
 	public boolean isSuccess() {
 		return success;

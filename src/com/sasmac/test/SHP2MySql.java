@@ -41,8 +41,7 @@ public class SHP2MySql {
 		ShapefileDataStoreFactory dataStoreFactory = new ShapefileDataStoreFactory();
 		try {
 			ShapefileDataStore sds = (ShapefileDataStore) dataStoreFactory
-					.createDataStore(new File("D:\\sharedisk\\world_sj.shp")
-							.toURI().toURL());
+					.createDataStore(new File("D:\\sharedisk\\world_sj.shp").toURI().toURL());
 			sds.setCharset(Charset.forName("UTF-8"));
 			SimpleFeatureSource featureSource = sds.getFeatureSource();
 
@@ -61,8 +60,7 @@ public class SHP2MySql {
 			JDBCDataStore ds;
 			try {
 				ds = (JDBCDataStore) factory1.createDataStore(params1);
-				ContentEntry entry = ds.getEntry(new NameImpl(null, schema
-						.getTypeName()));
+				ContentEntry entry = ds.getEntry(new NameImpl(null, schema.getTypeName()));
 				if (entry != null) {
 					ds.removeSchema(schema.getTypeName().toLowerCase());
 				}
@@ -72,11 +70,9 @@ public class SHP2MySql {
 				ds.createSchema(schema);
 
 				FeatureWriter<SimpleFeatureType, SimpleFeature> writer = ds
-						.getFeatureWriter(schema.getTypeName().toLowerCase(),
-								Transaction.AUTO_COMMIT);
+						.getFeatureWriter(schema.getTypeName().toLowerCase(), Transaction.AUTO_COMMIT);
 
-				SimpleFeatureIterator itertor = featureSource.getFeatures()
-						.features();
+				SimpleFeatureIterator itertor = featureSource.getFeatures().features();
 
 				while (itertor.hasNext()) {
 					SimpleFeature feature = itertor.next();
@@ -117,8 +113,7 @@ public class SHP2MySql {
 		map.setTitle("Quickstart");
 
 		Style style = (Style) SLD.createSimpleStyle(featureSource.getSchema());
-		FeatureLayer layer = new FeatureLayer(featureSource,
-				(org.geotools.styling.Style) style);
+		FeatureLayer layer = new FeatureLayer(featureSource, (org.geotools.styling.Style) style);
 
 		map.addLayer(layer);
 

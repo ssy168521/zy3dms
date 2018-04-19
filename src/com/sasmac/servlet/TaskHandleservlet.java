@@ -38,13 +38,16 @@ public class TaskHandleservlet extends HttpServlet {
 	 *
 	 * This method is called when a form has its tag value method equals to get.
 	 * 
-	 * @param request the request send by the client to the server
-	 * @param response the response send by the server to the client
-	 * @throws ServletException if an error occurred
-	 * @throws IOException if an error occurred
+	 * @param request
+	 *            the request send by the client to the server
+	 * @param response
+	 *            the response send by the server to the client
+	 * @throws ServletException
+	 *             if an error occurred
+	 * @throws IOException
+	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -64,28 +67,31 @@ public class TaskHandleservlet extends HttpServlet {
 	/**
 	 * The doPost method of the servlet. <br>
 	 *
-	 * This method is called when a form has its tag value method equals to post.
+	 * This method is called when a form has its tag value method equals to
+	 * post.
 	 * 
-	 * @param request the request send by the client to the server
-	 * @param response the response send by the server to the client
-	 * @throws ServletException if an error occurred
-	 * @throws IOException if an error occurred
+	 * @param request
+	 *            the request send by the client to the server
+	 * @param response
+	 *            the response send by the server to the client
+	 * @throws ServletException
+	 *             if an error occurred
+	 * @throws IOException
+	 *             if an error occurred
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-	//	DebugFun.showParams( request);
+		// DebugFun.showParams( request);
 		// 设置response的编码
 		response.setCharacterEncoding("utf-8");
 
 		String TaskID = request.getParameter("TaskID");
-		if(TaskID.isEmpty()) return;
-	
-		
-		ThreadManager pThreadManager= new ThreadManager();
+		if (TaskID.isEmpty())
+			return;
+
+		ThreadManager pThreadManager = new ThreadManager();
 		BaseThread pThread = pThreadManager.findThread(Integer.parseInt(TaskID));
-		if(pThread != null)
-		{
+		if (pThread != null) {
 			pThread.StopThread();
 		}
 
@@ -94,7 +100,8 @@ public class TaskHandleservlet extends HttpServlet {
 	/**
 	 * Initialization of the servlet. <br>
 	 *
-	 * @throws ServletException if an error occurs
+	 * @throws ServletException
+	 *             if an error occurs
 	 */
 	public void init() throws ServletException {
 		// Put your code here

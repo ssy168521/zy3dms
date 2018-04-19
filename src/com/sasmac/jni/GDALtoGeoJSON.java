@@ -5,7 +5,6 @@ public class GDALtoGeoJSON {
 		System.loadLibrary("GDALtoGeoJSON");
 	}
 
-	public native String Layer2GeoJSON(String connectstring, String strSQL,
-			String wktPoly, String dialect);
+	public native String Layer2GeoJSON(String connectstring, String strSQL, String wktPoly, String dialect);
 
 }

@@ -39,13 +39,16 @@ public class CountStatisticservlet extends HttpServlet {
 	 *
 	 * This method is called when a form has its tag value method equals to get.
 	 * 
-	 * @param request the request send by the client to the server
-	 * @param response the response send by the server to the client
-	 * @throws ServletException if an error occurred
-	 * @throws IOException if an error occurred
+	 * @param request
+	 *            the request send by the client to the server
+	 * @param response
+	 *            the response send by the server to the client
+	 * @throws ServletException
+	 *             if an error occurred
+	 * @throws IOException
+	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -65,33 +68,36 @@ public class CountStatisticservlet extends HttpServlet {
 	/**
 	 * The doPost method of the servlet. <br>
 	 *
-	 * This method is called when a form has its tag value method equals to post.
+	 * This method is called when a form has its tag value method equals to
+	 * post.
 	 * 
-	 * @param request the request send by the client to the server
-	 * @param response the response send by the server to the client
-	 * @throws ServletException if an error occurred
-	 * @throws IOException if an error occurred
+	 * @param request
+	 *            the request send by the client to the server
+	 * @param response
+	 *            the response send by the server to the client
+	 * @throws ServletException
+	 *             if an error occurred
+	 * @throws IOException
+	 *             if an error occurred
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 设置response的编码
 		response.setCharacterEncoding("utf-8");
 		// 设置request的编码
 		request.setCharacterEncoding("utf-8");
-		PrintWriter out = response.getWriter();	
-		//DebugFun.showParams(request);
-		
+		PrintWriter out = response.getWriter();
+		// DebugFun.showParams(request);
+
 		String operate = request.getParameter("operate");
-		List<ImageSize>listImg=null;
-		if(operate.equals("Size"))
-		{
+		List<ImageSize> listImg = null;
+		if (operate.equals("Size")) {
 			listImg = CountStatistic.ImgSizeStatistic();
-		}else if (operate.equals("Count")) {
+		} else if (operate.equals("Count")) {
 			listImg = CountStatistic.ImgCountStatistic();
 		}
-		
-		JSONArray jsonArray=JSONArray.fromObject(listImg);
-		String jsonlistImg=jsonArray.toString();
+
+		JSONArray jsonArray = JSONArray.fromObject(listImg);
+		String jsonlistImg = jsonArray.toString();
 		System.out.println(jsonlistImg);
 		out.print(jsonlistImg);
 
@@ -102,7 +108,8 @@ public class CountStatisticservlet extends HttpServlet {
 	/**
 	 * Initialization of the servlet. <br>
 	 *
-	 * @throws ServletException if an error occurs
+	 * @throws ServletException
+	 *             if an error occurs
 	 */
 	public void init() throws ServletException {
 		// Put your code here

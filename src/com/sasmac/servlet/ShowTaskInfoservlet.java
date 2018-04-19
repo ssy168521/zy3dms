@@ -55,8 +55,7 @@ public class ShowTaskInfoservlet extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -88,8 +87,7 @@ public class ShowTaskInfoservlet extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// 设置response的编码
 		response.setCharacterEncoding("utf-8");
@@ -123,8 +121,7 @@ public class ShowTaskInfoservlet extends HttpServlet {
 			String sql = "";
 
 			if (strtaskfinished != "" && strtaskstop != "")
-				where = where + "(taskStatus=" + strtaskfinished
-						+ " or taskStatus=" + strtaskstop + ")";
+				where = where + "(taskStatus=" + strtaskfinished + " or taskStatus=" + strtaskstop + ")";
 			else if (strtaskfinished != "")
 				where = where + "taskStatus=" + strtaskfinished;
 			else
@@ -142,8 +139,7 @@ public class ShowTaskInfoservlet extends HttpServlet {
 				DataUtils datautils = new DataUtils(conn);
 				try {
 
-					ResultSetHandler<List<TaskInfo>> rsh = new BeanListHandler<TaskInfo>(
-							TaskInfo.class);
+					ResultSetHandler<List<TaskInfo>> rsh = new BeanListHandler<TaskInfo>(TaskInfo.class);
 					pTaskInfo1 = new QueryRunner().query(conn, sql, rsh);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block

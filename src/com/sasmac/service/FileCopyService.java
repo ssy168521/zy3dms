@@ -19,20 +19,16 @@ public class FileCopyService extends Service {
 
 	public final static URL WSDL_LOCATION;
 
-	public final static QName SERVICE = new QName(
-			"http://webservices.sasmac.com/", "FileCopyService");
-	public final static QName FileCopyServerPort = new QName(
-			"http://webservices.sasmac.com/", "FileCopyServerPort");
+	public final static QName SERVICE = new QName("http://webservices.sasmac.com/", "FileCopyService");
+	public final static QName FileCopyServerPort = new QName("http://webservices.sasmac.com/", "FileCopyServerPort");
 	static {
 		URL url = null;
 		try {
 			url = new URL("http://localhost:8081/FileCopy/ws/CopyService?wsdl");
 		} catch (MalformedURLException e) {
-			java.util.logging.Logger
-					.getLogger(FileCopyService.class.getName())
-					.log(java.util.logging.Level.INFO,
-							"Can not initialize the default wsdl from {0}",
-							"http://localhost:8081/FileCopy/ws/CopyService?wsdl");
+			java.util.logging.Logger.getLogger(FileCopyService.class.getName()).log(java.util.logging.Level.INFO,
+					"Can not initialize the default wsdl from {0}",
+					"http://localhost:8081/FileCopy/ws/CopyService?wsdl");
 		}
 		WSDL_LOCATION = url;
 	}

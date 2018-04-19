@@ -27,7 +27,7 @@ public class DbUtils {
 
 	public static Connection getConnection(boolean autoCommit) throws SQLException {
 		Connection result = null;
-		synchronized(conn_block){
+		synchronized (conn_block) {
 			if (dataSource == null) {
 				init();
 			}
@@ -39,9 +39,11 @@ public class DbUtils {
 		StackTraceElement[] stack = (new Throwable()).getStackTrace();
 		if (stack.length >= 2) {
 			count++;
-//			String message = "get connection : count is " + count + " hashcode is ," + result.hashCode() + " ,call is "
-//				+ stackElement.getClassName() + "." + stackElement.getMethodName();
-//			Log.println(Constants.CONNECTION, message, "getConnection");
+			// String message = "get connection : count is " + count + "
+			// hashcode is ," + result.hashCode() + " ,call is "
+			// + stackElement.getClassName() + "." +
+			// stackElement.getMethodName();
+			// Log.println(Constants.CONNECTION, message, "getConnection");
 		}
 		return result;
 	}
@@ -61,8 +63,7 @@ public class DbUtils {
 		org.apache.commons.dbutils.DbUtils.rollbackAndCloseQuietly(connection);
 	}
 
-	public static void completeTransaction(Connection connection)
-			throws SQLException {
+	public static void completeTransaction(Connection connection) throws SQLException {
 		connection.commit();
 	}
 
@@ -74,11 +75,11 @@ public class DbUtils {
 		StackTraceElement[] stack = (new Throwable()).getStackTrace();
 		if (stack.length >= 2) {
 			count--;
-//			String message = "close connection : count is " + count
-//					+ " hashcode is ," + connection.hashCode() + " ,call is "
-//					+ stackElement.getClassName() + "."
-//					+ stackElement.getMethodName();
-//			Log.println(Constants.CONNECTION, message, "getConnection");
+			// String message = "close connection : count is " + count
+			// + " hashcode is ," + connection.hashCode() + " ,call is "
+			// + stackElement.getClassName() + "."
+			// + stackElement.getMethodName();
+			// Log.println(Constants.CONNECTION, message, "getConnection");
 		}
 		org.apache.commons.dbutils.DbUtils.commitAndCloseQuietly(connection);
 	}
@@ -91,11 +92,11 @@ public class DbUtils {
 			StackTraceElement[] stack = (new Throwable()).getStackTrace();
 			if (stack.length >= 2) {
 				count--;
-//				String message = "close connection : count is " + count
-//						+ " hashcode is ," + connection.hashCode()
-//						+ " ,call is " + stackElement.getClassName() + "."
-//						+ stackElement.getMethodName();
-//				Log.println(Constants.CONNECTION, message, "getConnection");
+				// String message = "close connection : count is " + count
+				// + " hashcode is ," + connection.hashCode()
+				// + " ,call is " + stackElement.getClassName() + "."
+				// + stackElement.getMethodName();
+				// Log.println(Constants.CONNECTION, message, "getConnection");
 			}
 			connection.close();
 		} catch (SQLException e) {
@@ -111,11 +112,11 @@ public class DbUtils {
 		StackTraceElement[] stack = (new Throwable()).getStackTrace();
 		if (stack.length >= 2) {
 			count--;
-//			String message = "close connection : count is " + count
-//					+ " hashcode is ," + connection.hashCode() + " ,call is "
-//					+ stackElement.getClassName() + "."
-//					+ stackElement.getMethodName();
-//			Log.println(Constants.CONNECTION, message, "getConnection");
+			// String message = "close connection : count is " + count
+			// + " hashcode is ," + connection.hashCode() + " ,call is "
+			// + stackElement.getClassName() + "."
+			// + stackElement.getMethodName();
+			// Log.println(Constants.CONNECTION, message, "getConnection");
 		}
 		org.apache.commons.dbutils.DbUtils.rollbackAndCloseQuietly(connection);
 	}
@@ -130,20 +131,22 @@ public class DbUtils {
 		}
 		InputStream inputStream = null;
 		try {
-			String path = DbUtils.class.getClassLoader().getResource("/").toURI().getPath(); 
-		
-			//InputStream path1=DbUtils.class.getClass().getResourceAsStream(path+Constants.STR_DATASOURCE_PATH_WIN);
-			//InputStream fis=new FileInputStream(path+Constants.STR_DATASOURCE_PATH_WIN); 
+			String path = DbUtils.class.getClassLoader().getResource("/").toURI().getPath();
+
+			// InputStream
+			// path1=DbUtils.class.getClass().getResourceAsStream(path+Constants.STR_DATASOURCE_PATH_WIN);
+			// InputStream fis=new
+			// FileInputStream(path+Constants.STR_DATASOURCE_PATH_WIN);
 			String osName = System.getProperty("os.name");
-			if(osName.toLowerCase().contains("win"))
-				inputStream = new FileInputStream(path+Constants.STR_DATASOURCE_PATH_WIN);
+			if (osName.toLowerCase().contains("win"))
+				inputStream = new FileInputStream(path + Constants.STR_DATASOURCE_PATH_WIN);
 			else
-				inputStream = new FileInputStream(path+Constants.STR_DATASOURCE_PATH_LIN);
+				inputStream = new FileInputStream(path + Constants.STR_DATASOURCE_PATH_LIN);
 
 			Properties properties = new Properties();
 			properties.loadFromXML(inputStream);
 			properties.list(System.out);
-			
+
 			dataSource = (BasicDataSource) BasicDataSourceFactory.createDataSource(properties);
 		} catch (Exception ex) {
 		} finally {

@@ -41,8 +41,8 @@ public class PNGShow extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doDelete(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	public void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		// Put your code here
 	}
@@ -61,8 +61,7 @@ public class PNGShow extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -94,8 +93,7 @@ public class PNGShow extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		/*
 		 * response.setContentType("text/html"); PrintWriter out =
@@ -125,8 +123,7 @@ public class PNGShow extends HttpServlet {
 			if (tempList[i].isFile()) {
 				// ��ȡĳ���ļ����µ������ļ�
 				String strName = tempList[i].getName();
-				String prefixString = strName.substring(strName
-						.lastIndexOf(".") + 1);
+				String prefixString = strName.substring(strName.lastIndexOf(".") + 1);
 				if (prefixString.compareToIgnoreCase("PNG") == 0) {
 					strArr.add(tempList[i].getPath());
 					nPNGcount++;
@@ -192,8 +189,7 @@ public class PNGShow extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doPut(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// Put your code here
 	}

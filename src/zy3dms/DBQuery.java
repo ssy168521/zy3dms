@@ -49,8 +49,7 @@ public class DBQuery extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		/*
 		 * response.setContentType("text/html"); PrintWriter out =
@@ -65,8 +64,6 @@ public class DBQuery extends HttpServlet {
 		 */
 
 	}
-
-	
 
 	/**
 	 * The doPost method of the servlet. <br>
@@ -83,8 +80,7 @@ public class DBQuery extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// 设置response的编码
 		response.setCharacterEncoding("utf-8");
@@ -92,8 +88,7 @@ public class DBQuery extends HttpServlet {
 		// 设置request的编码
 		request.setCharacterEncoding("utf-8");
 		String wktPoly = request.getParameter("wktPoly");
-		String[] zy3_sensorradio = request
-				.getParameterValues("zy3_sensorradio");
+		String[] zy3_sensorradio = request.getParameterValues("zy3_sensorradio");
 
 		String[] zy3_radio = request.getParameterValues("zy3_radio");
 		String ProductType = request.getParameter("ProductType");
@@ -113,11 +108,9 @@ public class DBQuery extends HttpServlet {
 			strWherClause = BuildSQL.querySQLbyDOMScene(request);
 
 		} else if (ProductType.compareToIgnoreCase("分景DOM") == 0) {
-			strWherClause = BuildSQL.querySQLbySC(request,true);
-		}
-		else 
-		{
-			strWherClause = BuildSQL.querySQLbySC(request,false);
+			strWherClause = BuildSQL.querySQLbySC(request, true);
+		} else {
+			strWherClause = BuildSQL.querySQLbySC(request, false);
 		}
 
 		String geojsonstr = "";
@@ -155,9 +148,8 @@ public class DBQuery extends HttpServlet {
 				if (conn == null)
 					return;
 
-				geojsonstr = layer2GeoJson.ToGeoJSONJDBC(conn, wktPoly,
-						strWherClause, sataellite, (String[]) (sensorarr
-								.toArray(new String[sensorarr.size()])));
+				geojsonstr = layer2GeoJson.ToGeoJSONJDBC(conn, wktPoly, strWherClause, sataellite,
+						(String[]) (sensorarr.toArray(new String[sensorarr.size()])));
 				ConnPoolUtil.close(conn, null, null);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -167,8 +159,7 @@ public class DBQuery extends HttpServlet {
 		} else {
 			try {
 				// 获取geojson数据
-				geojsonstr = layer2GeoJson.ToGeoJSON(tbname, wktPoly,
-						strWherClause);
+				geojsonstr = layer2GeoJson.ToGeoJSON(tbname, wktPoly, strWherClause);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

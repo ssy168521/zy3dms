@@ -52,8 +52,8 @@ public class OverviewShow extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doDelete(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	public void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		// Put your code here
 	}
@@ -72,8 +72,7 @@ public class OverviewShow extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -105,8 +104,7 @@ public class OverviewShow extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// ����response�ı���
 		response.setCharacterEncoding("utf-8");
@@ -118,8 +116,7 @@ public class OverviewShow extends HttpServlet {
 		String strSQL = BuildSQL.querySQL(request);
 		System.out.println(strSQL);
 
-		String conffilepath = getServletContext().getRealPath("/")
-				+ "conf/dbConnConf.properties";
+		String conffilepath = getServletContext().getRealPath("/") + "conf/dbConnConf.properties";
 		Layer pLayer = GDALmysql.ExecuteQuery(strSQL, wktPoly, conffilepath);
 		Feature pFeature = null;
 		pLayer.ResetReading();
@@ -130,8 +127,7 @@ public class OverviewShow extends HttpServlet {
 			String strDataID = pFeature.GetFieldAsString("F_DATAID");
 			System.out.println(strDataName);
 			String[] strtmp = strDataName.split("-");
-			String strpath = "E:\\TestData\\ZY3BM\\" + strtmp[6] + "\\"
-					+ strDataName + strDataID + ".png";
+			String strpath = "E:\\TestData\\ZY3BM\\" + strtmp[6] + "\\" + strDataName + strDataID + ".png";
 			File pFile = new File(strpath);
 			if (pFile.exists()) {
 				arrlistFiles.add(strpath);
@@ -158,8 +154,7 @@ public class OverviewShow extends HttpServlet {
 		}
 
 		request.getSession().setAttribute("strOverviewfiles", strOverviewfiles);
-		request.getSession().setAttribute("strOverviewExtents",
-				strOverviewExtents);
+		request.getSession().setAttribute("strOverviewExtents", strOverviewExtents);
 		// request.getSession().setAttribute("resultMosaic", true);
 		response.sendRedirect("../query.jsp");
 
@@ -179,8 +174,7 @@ public class OverviewShow extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doPut(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// Put your code here
 	}

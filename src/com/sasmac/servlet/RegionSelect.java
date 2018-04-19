@@ -45,8 +45,7 @@ public class RegionSelect extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -78,8 +77,7 @@ public class RegionSelect extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		request.setCharacterEncoding("utf-8"); // 设置编码
 		response.setCharacterEncoding("utf-8");
@@ -92,8 +90,7 @@ public class RegionSelect extends HttpServlet {
 		if (seleCounty != null) {
 			String strOut = "{";
 			RegionManage regimana = new RegionManage();
-			String[] wkts = regimana
-					.getRegionWkt(seleCounty, RegionType.County);//
+			String[] wkts = regimana.getRegionWkt(seleCounty, RegionType.County);//
 			JSONArray jsonArraywkt = JSONArray.fromObject(wkts);
 			String wktString = jsonArraywkt.toString();
 			strOut += "\"RegionWkts\":" + wktString + "}";
@@ -104,8 +101,7 @@ public class RegionSelect extends HttpServlet {
 			String strOut = "{";
 			RegionManage regimana = new RegionManage();
 			for (int i = 0; i < seleCity.length; i++) {
-				List<String> countyList = regimana
-						.get2ndRegByRegion(seleCity[i]);
+				List<String> countyList = regimana.get2ndRegByRegion(seleCity[i]);
 				JSONArray jsonArray = JSONArray.fromObject(countyList);
 				String jsonsString = jsonArray.toString();
 				strOut += "\"" + seleCity[i] + "\":" + jsonsString + ",";
@@ -122,8 +118,7 @@ public class RegionSelect extends HttpServlet {
 			String strOut = "{";
 			RegionManage regimana = new RegionManage();
 			for (int i = 0; i < seleProvince.length; i++) {
-				List<String> cityList = regimana
-						.get2ndRegByRegion(seleProvince[i]);
+				List<String> cityList = regimana.get2ndRegByRegion(seleProvince[i]);
 				JSONArray jsonArray = JSONArray.fromObject(cityList);
 				String jsonsString = jsonArray.toString();
 				strOut += "\"" + seleProvince[i] + "\":" + jsonsString + ",";
@@ -131,8 +126,7 @@ public class RegionSelect extends HttpServlet {
 			strOut = strOut.substring(0, strOut.lastIndexOf(",")) + "}";
 
 			strOut = "{\"RegionNames\":" + strOut + ",";
-			String[] wkts = regimana.getRegionWkt(seleProvince,
-					RegionType.Province);//
+			String[] wkts = regimana.getRegionWkt(seleProvince, RegionType.Province);//
 			JSONArray jsonArraywkt = JSONArray.fromObject(wkts);
 			String wktString = jsonArraywkt.toString();
 			strOut += "\"RegionWkts\":" + wktString + "}";

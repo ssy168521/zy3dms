@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import com.sasmac.util.MetaTableUtil;
 import com.web.util.DataUtils;
 
-public class spatialmetadata implements metadata , JSONString, Serializable{
+public class spatialmetadata implements metadata, JSONString, Serializable {
 	private int dataId;
 	private String satellite;
 	private String sensor;
@@ -319,11 +319,9 @@ public class spatialmetadata implements metadata , JSONString, Serializable{
 		if (conn == null)
 			return false;
 		// String TableName ="TB_ZY301_SC_"+getSensor();
-		String TableName = MetaTableUtil.GetTableName(conn, satellite,
-				productLevel);
+		String TableName = MetaTableUtil.GetTableName(conn, satellite, productLevel);
 		if (TableName == null) {
-			myLogger.error(" can not find the meta table: " + satellite + "  "
-					+ productLevel);
+			myLogger.error(" can not find the meta table: " + satellite + "  " + productLevel);
 			return false;
 		}
 		if (TableName == "") {
@@ -400,14 +398,13 @@ public class spatialmetadata implements metadata , JSONString, Serializable{
 
 	@Override
 	public String toJSONString() {
-		String json="{\"dataid\":" + this.dataId + ",\"satellite\":\"" + this.satellite 
-				+"\",\"sensor\":\"" + this.sensor + "\",\"orbitID\":" + this.orbitID 
-				+",\"productLevel\":\"" + this.productLevel + "\",\"cloudPercent\":" + this.cloudPercent 
-				+",\"productQuality\":" + this.productQuality + ",\"acquisitionTime\":\"" + this.acquisitionTime
-				+"\",\"archiveTime\":\"" + this.archiveTime + "\",\"FileName\":\"" + this.FileName
-				+"\",\"FilePath\":\"" + this.FilePath + "\",\"fileSize\":" + this.fileSize
-				+ "}";
+		String json = "{\"dataid\":" + this.dataId + ",\"satellite\":\"" + this.satellite + "\",\"sensor\":\""
+				+ this.sensor + "\",\"orbitID\":" + this.orbitID + ",\"productLevel\":\"" + this.productLevel
+				+ "\",\"cloudPercent\":" + this.cloudPercent + ",\"productQuality\":" + this.productQuality
+				+ ",\"acquisitionTime\":\"" + this.acquisitionTime + "\",\"archiveTime\":\"" + this.archiveTime
+				+ "\",\"FileName\":\"" + this.FileName + "\",\"FilePath\":\"" + this.FilePath + "\",\"fileSize\":"
+				+ this.fileSize + "}";
 		return json;
-	
+
 	}
 }

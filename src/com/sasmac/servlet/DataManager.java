@@ -55,8 +55,7 @@ public class DataManager extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -88,8 +87,7 @@ public class DataManager extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setCharacterEncoding("utf-8");
 		response.setContentType("text/html; charset=utf-8");
@@ -120,16 +118,13 @@ public class DataManager extends HttpServlet {
 		if (tbname == null || tbname.isEmpty())
 			return;
 		try {
-			conffilepath = Loadoverview.class.getClassLoader().getResource("/")
-					.toURI().getPath();
+			conffilepath = Loadoverview.class.getClassLoader().getResource("/").toURI().getPath();
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		PropertiesUtil propertiesUtil = new PropertiesUtil(conffilepath
-				+ Constants.STR_CONF_PATH);
-		String stroverviewfilepath = propertiesUtil
-				.getProperty("overviewfilepath");
+		PropertiesUtil propertiesUtil = new PropertiesUtil(conffilepath + Constants.STR_CONF_PATH);
+		String stroverviewfilepath = propertiesUtil.getProperty("overviewfilepath");
 
 		int num = jsonArr.size();
 		Object[][] param = new Object[num][1];
@@ -162,11 +157,9 @@ public class DataManager extends HttpServlet {
 			storagePath = FilePath + File.separator + FileName + suffix;
 			arrlistFiles.add(storagePath);
 
-			overviewpath = File.separator + satellite + File.separator
-					+ ProductLevel + File.separator + photoDate
-					+ File.separator + orbit + File.separator + Sensor
-					+ File.separator + jsonObj.get("FileName").toString()
-					+ ".png";
+			overviewpath = File.separator + satellite + File.separator + ProductLevel + File.separator + photoDate
+					+ File.separator + orbit + File.separator + Sensor + File.separator
+					+ jsonObj.get("FileName").toString() + ".png";
 
 			overviewFilelist.add(stroverviewfilepath + overviewpath);
 

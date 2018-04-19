@@ -41,8 +41,8 @@ public class Mosaic extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doDelete(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	public void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		// Put your code here
 	}
@@ -61,8 +61,7 @@ public class Mosaic extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -94,8 +93,7 @@ public class Mosaic extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		/*
 		 * response.setContentType("text/html"); PrintWriter out =
@@ -125,8 +123,7 @@ public class Mosaic extends HttpServlet {
 			if (tempList[i].isFile()) {
 				// 读取某个文件夹下的所有文件
 				String strName = tempList[i].getName();
-				String prefixString = strName.substring(strName
-						.lastIndexOf(".") + 1);
+				String prefixString = strName.substring(strName.lastIndexOf(".") + 1);
 				if (prefixString.compareToIgnoreCase("tif") == 0) {
 					strArr.add(tempList[i].getPath());
 					nJPGcount++;
@@ -145,8 +142,7 @@ public class Mosaic extends HttpServlet {
 		String[] strArrFiles = new String[nJPGcount];
 		strArr.toArray(strArrFiles);
 
-		String strOutFile = getServletContext().getRealPath("/")
-				+ "img/test.png";
+		String strOutFile = getServletContext().getRealPath("/") + "img/test.png";
 		int result = jnItest.Mosaic(strArrFiles, strOutFile);
 		System.out.println(result);
 
@@ -154,9 +150,9 @@ public class Mosaic extends HttpServlet {
 		System.out.println(strExtent);
 
 		/*
-		 * String
-		 * strXmlFile=getServletContext().getRealPath("/")+"img/test.png.aux.xml"
-		 * ; //File xmlFile=new File(strXmlFile); DocumentBuilderFactory
+		 * String strXmlFile=getServletContext().getRealPath("/")+
+		 * "img/test.png.aux.xml" ; //File xmlFile=new File(strXmlFile);
+		 * DocumentBuilderFactory
 		 * domfactory=DocumentBuilderFactory.newInstance(); try {
 		 * DocumentBuilder dombuilder=domfactory.newDocumentBuilder(); Document
 		 * doc =dombuilder.parse(strXmlFile); String
@@ -192,8 +188,7 @@ public class Mosaic extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doPut(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// Put your code here
 	}

@@ -48,8 +48,8 @@ public class Query extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doDelete(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	public void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		// Put your code here
 	}
@@ -68,8 +68,7 @@ public class Query extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		/*
 		 * response.setContentType("text/html"); PrintWriter out =
@@ -101,8 +100,7 @@ public class Query extends HttpServlet {
 	 *             if an error occurred
 	 */
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		/*
 		 * response.setContentType("text/html"); PrintWriter out =
@@ -129,16 +127,14 @@ public class Query extends HttpServlet {
 
 		String conffilepath = getServletContext().getRealPath("/")
 				+ "WEB-INF/classes/com/sasmac/conf/dbConnConf.properties";
-		String path3 = request.getSession().getServletContext()
-				.getRealPath(request.getRequestURL().toString());
+		String path3 = request.getSession().getServletContext().getRealPath(request.getRequestURL().toString());
 
 		String query = request.getParameter("query");
 		String statistic = request.getParameter("statistic");
 		String submitType = request.getParameter("submitType");
 
 		if (query != null) {
-			Layer pLayer = GDALmysql
-					.ExecuteQuery(strSQL, wktPoly, conffilepath);
+			Layer pLayer = GDALmysql.ExecuteQuery(strSQL, wktPoly, conffilepath);
 			/*
 			 * String quyResultJson=pLayer.exporttojson();
 			 * request.getSession().setAttribute("quyresult", quyResultJson);
@@ -148,11 +144,9 @@ public class Query extends HttpServlet {
 			// request.getSession().setAttribute("result", result);
 		} else if (statistic != null) {
 			// System.out.println("统计");
-			double dblresult = Statistic.statisticArea(conffilepath, strSQL,
-					wktPoly);
+			double dblresult = Statistic.statisticArea(conffilepath, strSQL, wktPoly);
 			BigDecimal bDecimal = new BigDecimal(dblresult);
-			request.getSession().setAttribute("resultstatistic",
-					bDecimal.toString());
+			request.getSession().setAttribute("resultstatistic", bDecimal.toString());
 		} else if (submitType.equals("exportShp")) {
 			/*
 			 * int exportShpResult = GDALmysql.ExportShp(strSQL, wktPoly,
@@ -179,8 +173,7 @@ public class Query extends HttpServlet {
 	 * @throws IOException
 	 *             if an error occurred
 	 */
-	public void doPut(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// Put your code here
 	}

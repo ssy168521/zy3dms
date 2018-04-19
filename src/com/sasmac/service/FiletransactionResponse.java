@@ -6,11 +6,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>filetransactionResponse complex typeµÄ Java Àà¡£
+ * <p>
+ * filetransactionResponse complex typeï¿½ï¿½ Java ï¿½à¡£
  * 
- * <p>ÒÔÏÂÄ£Ê½Æ¬¶ÎÖ¸¶¨°üº¬ÔÚ´ËÀàÖĞµÄÔ¤ÆÚÄÚÈİ¡£
+ * <p>
+ * ï¿½ï¿½ï¿½ï¿½Ä£Ê½Æ¬ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½Ğµï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½İ¡ï¿½
  * 
  * <pre>
  * &lt;complexType name="filetransactionResponse"&gt;
@@ -27,28 +28,26 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "filetransactionResponse", propOrder = {
-    "_return"
-})
+@XmlType(name = "filetransactionResponse", propOrder = { "_return" })
 public class FiletransactionResponse {
 
-    @XmlElement(name = "return")
-    protected int _return;
+	@XmlElement(name = "return")
+	protected int _return;
 
-    /**
-     * »ñÈ¡returnÊôĞÔµÄÖµ¡£
-     * 
-     */
-    public int getReturn() {
-        return _return;
-    }
+	/**
+	 * ï¿½ï¿½È¡returnï¿½ï¿½ï¿½Ôµï¿½Öµï¿½ï¿½
+	 * 
+	 */
+	public int getReturn() {
+		return _return;
+	}
 
-    /**
-     * ÉèÖÃreturnÊôĞÔµÄÖµ¡£
-     * 
-     */
-    public void setReturn(int value) {
-        this._return = value;
-    }
+	/**
+	 * ï¿½ï¿½ï¿½ï¿½returnï¿½ï¿½ï¿½Ôµï¿½Öµï¿½ï¿½
+	 * 
+	 */
+	public void setReturn(int value) {
+		this._return = value;
+	}
 
 }

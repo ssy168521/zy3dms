@@ -42,17 +42,14 @@ public class AppUtil {
 		String SMBMapPath = "";
 		String path;
 		try {
-			path = Constants.class.getClassLoader().getResource("/").toURI()
-					.getPath();
+			path = Constants.class.getClassLoader().getResource("/").toURI().getPath();
 			HashMap<String, String> paramap;
 
-			paramap = XMLUtil.getMaplistByDiskname(path
-					+ Constants.STR_MAPDISK_CONF_PATH, localDiskroot);
+			paramap = XMLUtil.getMaplistByDiskname(path + Constants.STR_MAPDISK_CONF_PATH, localDiskroot);
 
 			Iterator iter = paramap.entrySet().iterator();
 			while (iter.hasNext()) {
-				HashMap.Entry<String, String> entry = (HashMap.Entry<String, String>) iter
-						.next();
+				HashMap.Entry<String, String> entry = (HashMap.Entry<String, String>) iter.next();
 				String key = (String) entry.getKey();
 				if (key.compareToIgnoreCase("path") == 0) {
 					SMBMapPath = (String) entry.getValue();

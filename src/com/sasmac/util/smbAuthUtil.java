@@ -20,8 +20,7 @@ public class smbAuthUtil {
 			return null;
 		String path = "";
 		try {
-			path = smbAuthUtil.class.getClassLoader().getResource("/").toURI()
-					.getPath();
+			path = smbAuthUtil.class.getClassLoader().getResource("/").toURI().getPath();
 		} catch (URISyntaxException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -30,14 +29,12 @@ public class smbAuthUtil {
 		HashMap<String, String> paramap = null;
 		try {
 			if (filepath.contains("smb://")) {
-				paramap = XMLUtil.getMaplistBySmbPath(path
-						+ Constants.STR_MAPDISK_CONF_PATH, filepath);
+				paramap = XMLUtil.getMaplistBySmbPath(path + Constants.STR_MAPDISK_CONF_PATH, filepath);
 
 			} else {
 				String Diskroot = filepath.substring(0, filepath.indexOf(":"));
 				String str = "";
-				paramap = XMLUtil.getMaplistByDiskname(path
-						+ Constants.STR_MAPDISK_CONF_PATH, Diskroot);
+				paramap = XMLUtil.getMaplistByDiskname(path + Constants.STR_MAPDISK_CONF_PATH, Diskroot);
 			}
 
 		} catch (Exception e) {
@@ -53,8 +50,7 @@ public class smbAuthUtil {
 		String domain = "";
 		Iterator iter = paramap.entrySet().iterator();
 		while (iter.hasNext()) {
-			HashMap.Entry<String, String> entry = (HashMap.Entry<String, String>) iter
-					.next();
+			HashMap.Entry<String, String> entry = (HashMap.Entry<String, String>) iter.next();
 			String key = (String) entry.getKey();
 			if (key.compareToIgnoreCase("path") == 0) {
 				SMBMapPath = (String) entry.getValue();
@@ -67,8 +63,7 @@ public class smbAuthUtil {
 			}
 		}
 
-		NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(
-				domain, username, password);
+		NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(domain, username, password);
 		try {
 			InetAddress ip = InetAddress.getByName(domain);
 			UniAddress myDomain = new UniAddress(ip);
