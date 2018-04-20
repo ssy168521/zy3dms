@@ -66,6 +66,12 @@
 
 		function quyTaskInfo() {
 
+            var tasktype =  document.getElementsByName("tasktypename").value;
+            if(tasktype == null)
+            {
+               document.getElementsByName("tasktypename").value ="archive";
+            }
+            
 			$.ajax({
 				url : "servlet/ShowTaskInfoservlet",
 				type : "POST",

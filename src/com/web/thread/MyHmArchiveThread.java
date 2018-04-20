@@ -76,6 +76,22 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 
 		myLogger.info("start archive:" + archivePath);
 		try {
+			if (!bStopThread) {
+				myLogger.info("finish archive " + archivePath);
+				setTaskStatus(THREADSTATUS.THREAD_STATUS_FINISHED.ordinal());
+				setTaskEndTime(new Date());
+				setTaskMarkinfo(archivePath + " " + Integer.toString(fileCount) + " files archive");
+				setTaskProgress(100);
+				PrintTaskInfo(conn);
+				FinishThread();
+			} else {
+				myLogger.info(archivePath + " :archive task is stoped");
+				setTaskStatus(THREADSTATUS.THREAD_STATUS_STOPED.ordinal());
+				setTaskEndTime(new Date());
+				setTaskMarkinfo(archivePath + ": archive task is stoped");
+				PrintTaskInfo(conn);
+				StopThread();
+			}
 			conn = DbUtils.getConnection(true);
 			if (bIsSMBfile == 0) {
 				java.io.File rootPath = new java.io.File(archivePath);
@@ -98,22 +114,7 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 
 			}
 
-			if (!bStopThread) {
-				myLogger.info("finish archive " + archivePath);
-				setTaskStatus(THREADSTATUS.THREAD_STATUS_FINISHED.ordinal());
-				setTaskEndTime(new Date());
-				setTaskMarkinfo(archivePath + " " + Integer.toString(fileCount) + " files archive");
-				setTaskProgress(100);
-				PrintTaskInfo(conn);
-				FinishThread();
-			} else {
-				myLogger.info(archivePath + " :archive task is stoped");
-				setTaskStatus(THREADSTATUS.THREAD_STATUS_STOPED.ordinal());
-				setTaskEndTime(new Date());
-				setTaskMarkinfo(archivePath + ": archive task is stoped");
-				PrintTaskInfo(conn);
-				StopThread();
-			}
+
 
 		} catch (Exception e) {
 			e.printStackTrace();

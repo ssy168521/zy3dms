@@ -97,6 +97,7 @@ public class ShowTaskInfoservlet extends HttpServlet {
 		String taskfinished = request.getParameter("taskfinished-checkbox");
 		String taskstop = request.getParameter("taskstop-checkbox");
 		String tasktype = request.getParameter("tasktypename");
+		if(tasktype ==null) tasktype="archive";
 		PrintWriter out = response.getWriter();
 		String outputjson = null;
 		List<TaskInfo> pTaskInfoList = new ArrayList<TaskInfo>();
