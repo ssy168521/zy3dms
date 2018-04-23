@@ -19,7 +19,7 @@ import com.web.service.impl.WebServiceImpl;
 import com.web.util.DbUtils;
 import com.web.util.FileUtil;
 import com.web.util.PropertiesUtil;
-
+import com.web.util.TarUtils;
 /**
  * 分景产品扫描归档
  * 
@@ -147,6 +147,8 @@ public class ArchiveThread extends BaseThread implements Runnable {
 		setTaskStatus(THREADSTATUS.THREAD_STATUS_RUNNING.ordinal());
 		java.io.File[] aF = myPath.listFiles();
 		String filename = "";
+		String path = Constants.class.getClassLoader().getResource("/").toURI().getPath();
+		PropertiesUtil propertiesUtil = new PropertiesUtil(path + Constants.STR_CONF_PATH);
 		for (java.io.File fF : aF) {
 			if (bStopThread) {
 				setTaskStatus(THREADSTATUS.THREAD_STATUS_STOPED.ordinal());
@@ -214,6 +216,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				
 					Meta2Database mdb = new Meta2Database();
 					mdb.tifToDb(filename, tablename, tiffpath);
+					
 				
 			}
 
@@ -235,8 +238,8 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				String tifpath = myPath.getPath() + fF.separator + fF.getName();
 				// String[] ss=filename.split("_");
 				// String StoragePath = ss[0]+"\\"+ss[1]+"\\"+ss[4];
-				String path = Constants.class.getClassLoader().getResource("/").toURI().getPath();
-				PropertiesUtil propertiesUtil = new PropertiesUtil(path + Constants.STR_CONF_PATH);
+			
+				
 				// 快视图路径
 				String OverviewStoragePath = propertiesUtil.getProperty("overviewfilepath");
 
@@ -293,9 +296,17 @@ public class ArchiveThread extends BaseThread implements Runnable {
 			}
 			if (ArchiveMode == 1) // 迁移归档
 			{
-				int ret = FileUtil.mappedBuffer("", "");
+				String ImageStoragePath = propertiesUtil.getProperty("ImageStoragepath");
+				String RelativePath = DataModel.generateoverviewpath(ProductionType, filename);
+				String destfile= ImageStoragePath+RelativePath+ File.separator + fF.getName();
+				TarUtils.fileProber(ImageStoragePath+RelativePath);
+				int ret = FileUtil.mappedBuffer(tiffpath,destfile );
 				if (ret == 0) {
 					myLogger.info(filename + "文件实体迁移失败！");
+				}
+				else
+				{
+					myLogger.info("copy of "+filename + "  is finished");
 				}
 			}
 			myLogger.info("finish archive " + Integer.toString(iCurridx + 1) + " file");
@@ -312,7 +323,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 	 * @return
 	 */
 	private boolean isFinishCopy(java.io.File fileName) {
-		/** 绛夊埌鏂囦欢鎷疯礉瀹屾垚鍐嶈繘琛屽睘鎬ц幏鍙栧強鍒ゆ柇绛夋搷浣� */
+	
 		boolean bFlag = false;
 		java.io.RandomAccessFile raf = null;
 		try {

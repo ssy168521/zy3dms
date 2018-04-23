@@ -3,7 +3,7 @@
 <properties>
 <comment></comment>
 
-
+<entry key="ImageStoragepath">C:\database\Image\</entry>
 <entry key="overviewfilepath">C:\database\overview\</entry>
 <entry key="logfilepath">C:\database\log\</entry>
 <entry key="tmpfilepath">C:\database\tmp\</entry>

@@ -41,7 +41,7 @@ public class Meta2Database {
 	 */
 	public void xml2Db(String filename, String productName, String productTable, String xmlName)
 			throws DocumentException {
-		File xmlFile = new File(xmlName);
+/*		File xmlFile = new File(xmlName);
 		org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
 		org.dom4j.Document doc = reader.read(xmlFile);
 		org.dom4j.Node node = null;
@@ -225,7 +225,7 @@ public class Meta2Database {
 		} finally {
 			ConnPoolUtil.close(conn, null, null);
 		}
-
+*/
 	}
 
 	/**
@@ -238,7 +238,7 @@ public class Meta2Database {
 	 * @throws IOException
 	 */
 	public void tif2Db(String satellite, String filename, String tablename, String tiffpath) throws IOException {
-		Connection conn = null;
+/*		Connection conn = null;
 		Statement stmt = null;
 		File imageFile = new File(tiffpath);
 		Tif2DB dataInfo = new Tif2DB();
@@ -254,19 +254,19 @@ public class Meta2Database {
 		try {
 			stmt = conn.createStatement();
 			// 判断dataid是否已存在，已有则另加一
-			/*
-			 * if(satellite.contains("GF")){ long dataid1 =
-			 * System.currentTimeMillis(); //int dataid1 =
-			 * Integer.parseInt(ss[5].substring(6,13)); //判断dataid是否重复 String
-			 * sql = "SELECT *FROM "+ tablename
-			 * +" WHERE dataid =\""+dataid1+"\";"; ResultSet result = null;
-			 * result = stmt.executeQuery(sql); if(result.next()){
-			 * dataid=Integer.parseInt(dataid1+"11"); } else { dataid=dataid1; }
-			 * 
-			 * }else if(satellite.contains("zy")){ dataid =
-			 * Integer.parseInt(ss[8]); }else {
-			 * myLogger.info(" 错误：dataid未能正确提取！"); }
-			 */
+			
+			// if(satellite.contains("GF")){ long dataid1 =
+			// System.currentTimeMillis(); //int dataid1 =
+			// Integer.parseInt(ss[5].substring(6,13)); //判断dataid是否重复 String
+			// sql = "SELECT *FROM "+ tablename
+			// +" WHERE dataid =\""+dataid1+"\";"; ResultSet result = null;
+			 // result = stmt.executeQuery(sql); if(result.next()){
+			 // dataid=Integer.parseInt(dataid1+"11"); } else { dataid=dataid1; }
+			// 
+			 // }else if(satellite.contains("zy")){ dataid =
+			 // Integer.parseInt(ss[8]); }else {
+			 // myLogger.info(" 错误：dataid未能正确提取！"); }
+			//
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -392,7 +392,7 @@ public class Meta2Database {
 		} finally {
 			ConnPoolUtil.close(conn, null, null);
 		}
-
+*/
 	}
 
 	/**
@@ -403,7 +403,7 @@ public class Meta2Database {
 	 * @param tiffpath
 	 */
 	public void tifToDb(String filename, String tablename, String tiffpath) {
-		Connection conn = null;
+	/*	Connection conn = null;
 		Statement stmt = null;
 		File imageFile = new File(tiffpath);
 		Tif2DB dataInfo = new Tif2DB();
@@ -496,11 +496,11 @@ public class Meta2Database {
 		hDataset.delete();
 		// 执行数据插入操作
 		String sql = "insert into " + tablename;
-		/**
-		 * fid,dataid,FileName,FilePath,FileSize,acquisitionTime,archiveTime," +
-		 * "productid,productLevel,CellSizexy,Columns,Rows,BandsNumber,DataType,ExtentTop,ExtentLeft,"
-		 * + "ExtentBottom,ExtentRight,Shape)"
-		 */
+		
+		// * fid,dataid,FileName,FilePath,FileSize,acquisitionTime,archiveTime," +
+		// * "productid,productLevel,CellSizexy,Columns,Rows,BandsNumber,DataType,ExtentTop,ExtentLeft,"
+		// * + "ExtentBottom,ExtentRight,Shape)"
+		
 		sql += "(fid,dataid,FileName,FilePath,FileSize,acquisitionTime,archiveTime,"
 				+ "productid,productLevel,CellSizexy,Columns,Rows,BandsNumber,DataType,ExtentTop,ExtentLeft,"
 				+ "ExtentBottom,ExtentRight,Shape)" + " values(";
@@ -542,7 +542,7 @@ public class Meta2Database {
 		} finally {
 			ConnPoolUtil.close(conn, null, null);
 		}
-
+		*/
 	}
 
 }
