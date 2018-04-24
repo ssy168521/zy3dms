@@ -3,6 +3,7 @@
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -387,6 +388,110 @@ public class FileUtil {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	 static class MyMainFileNameFileter implements FilenameFilter {
+        private String strMainFilename;
+		 MyMainFileNameFileter(String strMainFilename)
+		 {
+			 this.strMainFilename=strMainFilename;
+			 
+		 }
+        @Override
+        public boolean accept(File file, String filename) {
+        	if(filename == null) return false;
+        	String mainfilename=filename.substring(0,filename.indexOf("."));
+        	if(mainfilename==strMainFilename)
+        	{
+        		return true;
+        	}
+            return false;
+        }
+
+    }
+	public static int fileCopyNormal(String srcFilePath,String MainFileName,String destFilePath) 
+	{
+		File fromFile = new File(srcFilePath);
+		MyMainFileNameFileter filter=new MyMainFileNameFileter(MainFileName);
+		File[] file=fromFile.listFiles(filter);
+		String filename;
+		for(int i=0;i<file.length;i++)
+		{
+			filename=file[i].getName();
+			file[i].getParent();
+			int ret=fileCopyNormal(file[i].getAbsolutePath(),destFilePath+File.separator+filename );
+		}
+		
+		return 1;
+	}
+
+	/**
+	* 普通的文件复制方法
+	*
+	* @param fromFile 源文件
+	* @param toFile 目标文件
+	* @throws FileNotFoundException 未找到文件异常
+	*/
+	public static int fileCopyNormal(String srcFile,String destFile)   {
+		File fromFile = new File(srcFile);
+		File toFile= new File(destFile);
+		InputStream inputStream = null;
+		OutputStream outputStream = null;
+		try {
+			inputStream = new BufferedInputStream(new FileInputStream(fromFile));
+			outputStream = new BufferedOutputStream(new FileOutputStream(toFile));
+			byte[] bytes = new byte[1024];
+			int i;
+			//读取到输入流数据，然后写入到输出流中去，实现复制
+			while ((i = inputStream.read(bytes)) != -1) {
+				outputStream.write(bytes, 0, i);
+			}
+			if (inputStream != null)
+				inputStream.close();
+			if (outputStream != null)
+				outputStream.close();
+			return 1;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
+
+	/**
+	* 用filechannel进行文件复制
+	*
+	* @param fromFile 源文件
+	* @param toFile 目标文件
+	*/
+	public static int fileCopyWithFileChannel(String srcFile,String destFile) {
+		File fromFile = new File(srcFile);
+		File toFile= new File(destFile);
+		FileInputStream fileInputStream = null;
+		FileOutputStream fileOutputStream = null;
+		FileChannel fileChannelInput = null;
+		FileChannel fileChannelOutput = null;
+		try {
+			fileInputStream = new FileInputStream(fromFile);
+			fileOutputStream = new FileOutputStream(toFile);
+			//得到fileInputStream的文件通道
+			fileChannelInput = fileInputStream.getChannel();
+			//得到fileOutputStream的文件通道
+			fileChannelOutput = fileOutputStream.getChannel();
+			//将fileChannelInput通道的数据，写入到fileChannelOutput通道
+			fileChannelInput.transferTo(0, fileChannelInput.size(), fileChannelOutput);
+			if (fileInputStream != null)
+				fileInputStream.close();
+			if (fileChannelInput != null)
+				fileChannelInput.close();
+			if (fileOutputStream != null)
+				fileOutputStream.close();
+			if (fileChannelOutput != null)
+				fileChannelOutput.close();
+			return 1;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return -1;
 		}
 	}
 

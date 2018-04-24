@@ -10,16 +10,16 @@ package com.web.dao;
  */
 public class XmlTable {
 	// 读xml获取节点
-	private String nodecontent;
+	// private String nodecontent;
 	private String nodepath;
 	private String nodeName;
-	private String fieldName;
+	// private String fieldName;
 
-	public XmlTable(String fieldName, String nodeName, String nodecontent, String nodepath) {
+	public XmlTable(String nodeName, String nodepath) {
 		super();
-		this.setFieldName(fieldName);
+		// this.setFieldName(fieldName);
 		this.setNodeName(nodeName);
-		this.setNodecontent(nodecontent);
+		// this.setNodecontent(nodecontent);
 		this.setNodepath(nodepath);
 	}
 
@@ -28,14 +28,12 @@ public class XmlTable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public String getNodecontent() {
-		return nodecontent;
-	}
-
-	public void setNodecontent(String nodecontent) {
-		this.nodecontent = nodecontent;
-	}
-
+	// public String getNodecontent() {
+	// return nodecontent;
+	// }
+	// public void setNodecontent(String nodecontent) {
+	// this.nodecontent = nodecontent;
+	// }
 	public String getNodepath() {
 		return nodepath;
 	}
@@ -44,14 +42,12 @@ public class XmlTable {
 		this.nodepath = nodepath;
 	}
 
-	public String getFieldName() {
-		return fieldName;
-	}
-
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
-	}
-
+	// public String getFieldName() {
+	// return fieldName;
+	// }
+	// public void setFieldName(String fieldName) {
+	// this.fieldName = fieldName;
+	// }
 	public String getNodeName() {
 		return nodeName;
 	}

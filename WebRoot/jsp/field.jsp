@@ -17,32 +17,34 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <link rel="stylesheet" href="css/admin.css">
     <link rel="stylesheet" href="css/font-awesome.css">
 
-    <script src="./lib/jquery.js"></script>
+    <script src="./lib/jquery.js"></script> 
+    <!-- <script src="./lib/jquery-3.2.0.min.js"></script> -->
    	<script src="./lib/bootstrap/js/bootstrap.js"></script>	
 	<script src="./lib/bootstrap-table/bootstrap-table.js"></script>
 	<script src="./lib/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
-	<script src="./lib/bootstrap-editable/js/bootstrap-editable.js"></script>
-	<!-- <script src="./lib/bootstrap-table/bootstrap-table-export.js"></script> -->
+	<script src="./lib/bootstrap3-editable/js/bootstrap-editable.js"></script>
+	<script src="./lib/bootstrap-table/extensions/editable/bootstrap-table-editable.js"></script>
 
     <script src="js/pintuer.js"></script>
     <script src="js/user.js"></script>
 	<link rel="stylesheet" href="./lib/bootstrap/css/bootstrap.css" />
 	<link rel="stylesheet" href="./lib/bootstrap-table/bootstrap-table.css" />
-	<link rel="stylesheet" href="./lib/bootstrap-editable/css/bootstrap-editable.css" />
-    
+    <link rel="stylesheet" href="./lib/bootstrap3-editable/css/bootstrap-editable.css" />
   </head> 
 <body> 
   <div class="panel admin-panel">
-    <div class="panel-head"><strong class="icon-reorder">表字段</strong></div>
+    <div class="panel-head"><strong class="icon-reorder">新建数据集</strong></div>
    <div id="toolbar">
     	<li style="padding-left:20px;"> 
-    	<a href="./jsp/fieldadd.html" class="button border-main icon-plus-square-o"> 添加字段</a>
+    	<a href="./jsp/fieldadd.html" class="button border-main icon-plus-square-o">添加字段</a>
         <a href="javascript:void(0)" class="button border-red icon-trash-o" onclick="delSelectUsers()"> 删除</a>
         <!--  <a href="javascript:void(0)" class="button border-main icon-plus-square-o" onclick="createNewTable()">创建新表</a>  -->  
         <form id="table" method="post" action="" style="display:inline"> 
-           <label>新数据表：</label>
-           <input id="createtable" type="text" name="ntablename" placeholder="请输入新表名" data-validate="required:请输入表名" />                                   
-    	   <input type="button" name="submit" class="button border-main icon-plus-square-o" value="创建新表" onclick="createNewTable()"/>
+           <label>  新数据表：tb_</label>
+           <input id="createtable" type="text" name="ntablename" placeholder="请输入新表名" data-validate="required:请输入表名" /> 
+           <label>_product</label>                                  
+    <!--style="display:inline" <input type="button" name="submit" class="button border-main icon-plus-square-o" value="创建新表" onclick="createNewTable()"/>-->
+    	   <label class="help-block" > 举例：tb_sc_product</label>
     	</form> 
     	</li>
    </div>
@@ -53,8 +55,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	<input type="hidden" id="subfieldTypeName" name="subusername"/>
     	
     </form>
-    
-    <script type="text/javascript">
+    <div style="margin-right:30px;">
+    <!-- <input type="button" name="submit" class="button border-main icon-plus-square-o" value="创建新表" onclick="createNewTable()"/> -->
+    <a href="javascript:void(0)" class="button border-main icon-plus-square-o" onclick="createNewTable()">创建新表</a>
+    </div>
+    <script type="text/javascript"> 
 		var obj;
 		$(function () {
 			$.ajax({
@@ -70,10 +75,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						method: 'get',
 						cache: false,
 						height: 708,
+						clickToSelect:true,     //是否选中  
 						toolbar: '#toolbar',
 						striped: true,
 						pagination: true,
-						pageSize: 10,
+						pageSize: 9,
 						pageNumber: 1,
 						pageList: [10, 20, 50, 100, 200, 500],
 						search: true,
@@ -81,35 +87,66 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						showRefresh: true,
 						showExport: true,
 						exportTypes: ['csv','txt','xml'],
-						search: true,
-						//clickToSelect: true,
-						columns: [{field:"select",title:"全选",checkbox:true,width:20,align:"center",valign:"middle"},
-						{field:"fieldid",title:"字段id",align:"center",valign:"middle",sortable:"true"},
+						search: false,
+						columns: [{field:"checkStatus",title:"全选",checkbox:true,width:20,align:"center",valign:"middle"},
+						//{field:"fieldid",title:"字段id",align:"center",valign:"middle",sortable:"true"},
 						{field:"fieldName",title:"字段名称",align:"center",valign:"middle",sortable:"true"},
 						{field:"fieldTypeName",title:"字段数据类型",align:"center",valign:"middle",sortable:"true"},
-						/*{field:"isAutoInctement",title:"是否自动递增",align:"center",valign:"middle",sortable:"true"},
-						{field:"constraint",title:"约束条件",align:"center",valign:"middle",sortable:"true"},*/
+						{field:"nullValue",title:"是否为空",align:"center",valign:"middle",sortable:"true",
+							editable: {
+    		                    type: 'select',
+    		                    title: '是否为空值',
+    		                    source:[{value:true,text:"是"},
+    		                            {value:false,text:"否"},
+    		                            ]
+    		                }
+						},
+						{field:"primaryKey",title:"是否为主键",align:"center",valign:"middle",sortable:"true",
+							editable: {
+    		                    type: 'select',
+    		                    title: '是否为主键',
+    		                    source:[{value:true,text:"是"},
+    		                            {value:false,text:"否"},
+    		                            ]
+    		                }
+						},
 						{field:"action",title:"操作",align:"center",valign:"middle",formatter:"actionFormatter",event:"actionEvents"}],
-						
 						data:obj,
-						onPageChange: function (size, number) {	
-		                },
-						
-		                formatNoMatches: function(){
-		                	return '无符合条件的记录';
-		                }
+						onEditableSave: function (field, row, oldValue, $el) {
+					    	var productType=$('#producttype').val();
+				                $.ajax({
+				                    type: "post",
+				                    url: "./servlet/fieldModify",
+				                    data: {"objSelec":JSON.stringify(row)},//json序列化，不能直接传送json对象
+				                    dataType: 'JSON',
+				                    success: function (data, status) {
+				                        if (status == "success") {
+				                            alert('提交数据成功');
+				                        }
+				                    },
+				                    error: function () {
+				                        alert('编辑失败');
+				                    },
+				                    complete: function () {
+
+				                    }
+
+				                });
+				            }
+		
 					});	
 				}
 			});
 			$(window).resize(function () {
 				$('#userTable').bootstrapTable('resetView');//移除表数据
 			});
-		});
+			
+		});		
 		function actionFormatter(value,row,index){
 			
 			var resu= '<div class="button-group">'+
 						
-						'<button class="button border-main icon-edit" onclick=modifyUser('+JSON.stringify(row)+');>修改</button>'+
+						//'<button class="button border-main icon-edit" onclick=modifyUser('+JSON.stringify(row)+');>修改</button>'+
 						'<button class="button border-red icon-trash-o" name="btnDelUser" onclick=delUser('+JSON.stringify(row)+');>删除</button>'+
 						'</div>';
 			
@@ -183,7 +220,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				}
 			}		
 		}
-				
+		/*		
 		function modifyUser(row){
 			document.getElementById("subform").action="./jsp/fieldmodify.jsp?subfieldName="+row.fieldName+"&"+"subfieldid="+row.fieldid;
 			$("#subfieldName").val(row.fieldName);
@@ -191,7 +228,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$("#subform").submit();
 			
 		}
-		
+		*/
 		function delUser(row){
 			
 			if(confirm("您确定要删除吗?")){

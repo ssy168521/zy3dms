@@ -20,6 +20,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -27,6 +29,7 @@ import org.dom4j.io.SAXReader;
 import com.web.dao.XmlTable;
 
 public class UploadXML extends HttpServlet {
+	private Logger myLogger = LogManager.getLogger("mylog");
 	private static final long serialVersionUID = 1L;
 	// 保存文件的目录
 	private static String PATH_FOLDER = "/";
@@ -91,9 +94,9 @@ public class UploadXML extends HttpServlet {
 			String docUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 					+ request.getContextPath() + "/upload/" + saveName;
 
-			System.out.println("存放目录:" + PATH_FOLDER);
-			System.out.println("文件名:" + filename);
-			System.out.println("浏览器访问路径:" + docUrl);
+			myLogger.info("存放目录:" + PATH_FOLDER);
+			// System.out.println("文件名:" + filename);
+			myLogger.info("浏览器访问路径:" + docUrl);
 
 			// 真正写到磁盘上
 			item.write(new File(PATH_FOLDER, saveName)); // 第三方提供的
@@ -109,11 +112,9 @@ public class UploadXML extends HttpServlet {
 				Element root = document.getRootElement();// 获取根节点
 				JSONArray jsonArray = null;
 				jsonArray = JSONArray.fromObject(this.getNodes(root, tables));
+
 				jsonTableList = jsonArray.toString();
-				// jsonTableList="[{\"fieldName\":\"CreaDate\",\"nodecontent\":\"20170821\",\"nodepath\":\"/metadata/Esri/CreaDate\"},{\"fieldName\":\"Process\",\"nodecontent\":\"BuildPyramids
-				// H:\\水利部第五六批成果\\第五六批成果\\J46D001001.TIF -1 NONE NEAREST DEFAULT
-				// 75
-				// OVERWRITE\",\"nodepath\":\"/metadata/Esri/DataProperties/lineage/Process\"}]";
+				// [{"fieldName":"","nodeName":"SatelliteID","nodepath":"/ProductMetaData/SatelliteID"},
 			}
 			PrintWriter out = response.getWriter();
 			out.print(jsonTableList);
@@ -137,14 +138,14 @@ public class UploadXML extends HttpServlet {
 			// 当前节点的名称、文本内容和属性
 			XmlTable content = new XmlTable();
 			String nodeName = node.getName();
-			String nodecontent = node.getTextTrim();
-			String fieldName = null;
+			// String nodecontent=node.getTextTrim();
+			// String fieldName=null;
 			String nodepath = node.getPath();
 
 			content.setNodeName(nodeName);
-			content.setNodecontent(nodecontent);
+			// content.setNodecontent(nodecontent);
 			content.setNodepath(nodepath);
-			content.setFieldName(fieldName);
+			// content.setFieldName(fieldName);
 			tables.add(content);
 		}
 

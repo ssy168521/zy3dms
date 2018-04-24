@@ -114,8 +114,6 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 
 			}
 
-
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

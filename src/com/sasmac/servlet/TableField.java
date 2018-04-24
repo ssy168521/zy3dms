@@ -29,6 +29,7 @@ import net.sf.json.JSONObject;
 
 import com.sasmac.dbconnpool.ConnPoolUtil;
 import com.sasmac.util.Layer2GeoJSON2;
+import com.sun.javafx.sg.prism.NodePath;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
@@ -61,10 +62,14 @@ public class TableField extends HttpServlet {
 					int fieldid = rs.getInt("id");
 					String fieldName = rs.getString("fieldName");
 					String fieldTypeName = rs.getString("fieldTypeName");
+					Boolean nullValue = rs.getBoolean("nullValue"); // 是否为空
+					Boolean primaryKey = rs.getBoolean("primaryKey");// 是否主键
 					// 构造json
 					table.setFieldid(fieldid);
 					table.setFieldName(fieldName);
 					table.setFieldTypeName(fieldTypeName);
+					table.setNullValue(nullValue);
+					table.setPrimaryKey(primaryKey);
 					tables.add(table);
 				}
 				JSONArray jsonArray = JSONArray.fromObject(tables);
@@ -87,8 +92,8 @@ public class TableField extends HttpServlet {
 			PrintWriter out = response.getWriter();
 			String fieldName = request.getParameter("fieldName");
 			String fieldType = request.getParameter("fieldType");
-			String sql1 = "insert into field_meta01 values( " + null + ",\"" + fieldName + "\"," + "\"" + fieldType
-					+ "\");";
+			String sql1 = "insert into field_meta01 (fieldName,fieldTypeName) values( \"" + fieldName + "\"," + "\""
+					+ fieldType + "\");";
 			try {
 				conn = ConnPoolUtil.getConnection();
 				stmt = conn.createStatement();
@@ -114,7 +119,7 @@ public class TableField extends HttpServlet {
 				PrintWriter out = response.getWriter();
 
 				String tabName = request.getParameter("tabName");
-				String tabName1 = tabName.substring(1, tabName.length() - 1);
+				String tabName1 = "tb_" + tabName.substring(1, tabName.length() - 1) + "_product";// tb_sc_product
 				// 判断表名是否重复
 				String sql = "SELECT table_name FROM information_schema.TABLES WHERE table_name =\"" + tabName1 + "\";";
 				ResultSet result = stmt.executeQuery(sql);
@@ -122,6 +127,14 @@ public class TableField extends HttpServlet {
 					out.print("表名重复，请重新输入！");
 				} else {
 					out.print("表名正确！");
+				}
+				// 新建数据的同时将建库方案插入tb_metamanager,插入表名
+				String sql_meta = "insert into tb_metamanager(`tablename`)values(\"" + tabName1 + "\");";
+				boolean b1 = stmt.execute(sql_meta);
+				if (!b1) {
+					out.print("true");
+				} else {
+					out.print("插入失败！");
 				}
 				// 简单要素类型用于设置名称、增加属性和几何属性
 				SimpleFeatureTypeBuilder b = new SimpleFeatureTypeBuilder();
@@ -242,7 +255,7 @@ public class TableField extends HttpServlet {
 			} finally {
 				ConnPoolUtil.close(conn, null, null);
 			}
-		} else if (requestURI.contains("producttype")) {// 下拉框显示产品类型
+		} else if (requestURI.contains("producttype")) {// 下拉框显示产品类型与产品表
 			Connection conn = null;
 			Statement stmt = null;
 			PrintWriter out = response.getWriter();
@@ -251,19 +264,55 @@ public class TableField extends HttpServlet {
 			try { // 数据库连接池
 				conn = ConnPoolUtil.getConnection();
 				stmt = conn.createStatement();
-				String sql3 = "select distinct productName from archiveconfig;";
+				// String sql3="select distinct productName from
+				// archiveconfig;";
+				String sql3 = "select distinct productType,tablename from tb_metamanager;";
 				ResultSet result = stmt.executeQuery(sql3);
 				// 构造json字符串
 
 				while (result.next()) {
-					String productName = result.getString("productName");
-					list.add("{\"productName\":\"");
+					String productName = result.getString("productType");
+					String productTable = result.getString("tablename");
+					// list.add("{\"productName\":\"");
 					list.add(productName);
-					list.add("\"}");
+					list.add(productTable);
+					// list.add("\"}");
 				}
-				// JSONArray jsonArray = JSONArray.fromObject(list);
-				// String jsonTable = jsonArray.toString();
-				String jsonTable = "[{\"productName\":\"分景产品\"},{\"productName\":\"标准分幅产品\"},{\"productName\":\"sc产品\"}]";
+				JSONArray jsonArray = JSONArray.fromObject(list);
+				String jsonTable = jsonArray.toString();
+				// jsonTable:
+				out.print(jsonTable);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				ConnPoolUtil.close(conn, null, null);
+			}
+		} else if (requestURI.contains("columnName")) {// 查询产品表的字段信息，如：tb_sc_product、tb_domscene_product
+			Connection conn = null;
+			Statement stmt = null;
+			PrintWriter out = response.getWriter();
+			// 构造list数组，接收数据库数据
+			List<Table> tables = new ArrayList<Table>();
+			try { // 数据库连接池
+				conn = ConnPoolUtil.getConnection();
+				stmt = conn.createStatement();
+				String tabname = request.getParameter("productTable");
+				String productTable = tabname.substring(1, tabname.length() - 1);
+				String sql3 = "select COLUMN_NAME,DATA_TYPE from information_schema.COLUMNS where table_name = \""
+						+ productTable + "\" and table_schema = 'testdb';";
+				ResultSet result = stmt.executeQuery(sql3);
+				// 构造json字符串
+				while (result.next()) {
+					String fieldName = result.getString("COLUMN_NAME");// 表的字段名
+					String fieldTypeName = result.getString("DATA_TYPE");// 字段类型
+					Table table = new Table();
+					table.setFieldName(fieldName);
+					table.setFieldTypeName(fieldTypeName);
+					tables.add(table);
+				}
+				JSONArray jsonArray = JSONArray.fromObject(tables);
+				String jsonTable = jsonArray.toString();
+				// jsonTable:[{"fieldName":"id","fieldTypeName":"int","fieldid":0,"nullValue":false,"primaryKey":false},
 				out.print(jsonTable);
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -276,20 +325,20 @@ public class TableField extends HttpServlet {
 			PrintWriter out = response.getWriter();
 			// 从前端获取序列化json数据
 			String json = request.getParameter("objSelec");
-			String productName1 = request.getParameter("productName");
+			String productType1 = request.getParameter("productType");
 			String productTable1 = request.getParameter("productTable");
-			String productName = productName1.substring(1, productName1.length() - 1);
+			String productType = productType1.substring(1, productType1.length() - 1);
 			String productTable = productTable1.substring(1, productTable1.length() - 1);
 			JSONObject j = JSONObject.fromObject(json);
 			// 根据key获取相应的value
 			String fieldName = j.getString("fieldName");
-			String nodeName = j.getString("nodeName");
-			String nodepath = j.getString("nodepath");
-			String xmlfile1 = request.getParameter("fileName");
-			String xmlfile = xmlfile1.substring(1, xmlfile1.length() - 1);
-			String sql2 = "insert into archiveconfig(fid,fieldName,productName,productTable,nodeName,nodepath,xmlfile) "
-					+ "values( " + null + ",\"" + fieldName + "\",\"" + productName + "\",\"" + productTable + "\",\""
-					+ nodeName + "\",\"" + nodepath + "\",\"" + xmlfile + "\");";
+			String nodepath = j.getString("nodeName").substring(1, j.getString("nodeName").length() - 1);
+			String nodeName = nodepath.substring(nodepath.lastIndexOf("/") + 1);
+			// String xmlfile1 = request.getParameter("fileName");
+			// String xmlfile=xmlfile1.substring(1,xmlfile1.length()-1);
+			String sql2 = "insert into archiveconfig(fieldName,productType,productTable,nodeName,nodepath) "
+					+ "values( \"" + fieldName + "\",\"" + productType + "\",\"" + productTable + "\",\"" + nodeName
+					+ "\",\"" + nodepath + "\");";
 			try {
 				conn = ConnPoolUtil.getConnection();
 				stmt = conn.createStatement();
@@ -306,17 +355,31 @@ public class TableField extends HttpServlet {
 				ConnPoolUtil.close(conn, null, null);
 			}
 		} else if (requestURI.contains("fieldModify")) {// 字段修改
-
-			String fieldid = request.getParameter("fieldid");
-			String nfieldName = request.getParameter("nfieldname");
-			String dataType = request.getParameter("dataType");
-
+			// 从前端获取序列化json数据
+			String json = request.getParameter("objSelec");
+			// String fieldid = request.getParameter("fieldid");
+			// String nfieldName = request.getParameter("nfieldname");
+			// String dataType = request.getParameter("dataType");
+			JSONObject j = JSONObject.fromObject(json);// 转为对象
+			// 根据key获取相应的value
+			String nullValue = j.getString("nullValue");
+			String primaryKey = j.getString("primaryKey");
+			String fieldName = j.getString("fieldName");
+			if (primaryKey.equals("true")) { // "=="比较内存地址，不可取
+				primaryKey = "1";
+			} else {
+				primaryKey = "0";
+			}
+			if (nullValue.equals("true")) {
+				nullValue = "1";
+			} else {
+				nullValue = "0";
+			}
 			Connection conn = null;
 			Statement stmt = null;
 			PrintWriter out = response.getWriter();
-			String sql1 = "update field_meta01 set `fieldName` = " + "\"" + nfieldName + "\"" + ",`fieldTypeName` ="
-					+ "\"" + dataType + "\"" + " where id=" + fieldid;
-			System.out.println(sql1);
+			String sql1 = "update field_meta01 set `nullValue` = " + "\"" + nullValue + "\"" + ",`primaryKey` =" + "\""
+					+ primaryKey + "\"" + " where `fieldName` = \"" + fieldName + "\";";
 			try {
 				conn = ConnPoolUtil.getConnection();
 				stmt = conn.createStatement();

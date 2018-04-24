@@ -20,6 +20,13 @@ import com.web.util.DbUtils;
 import com.web.util.FileUtil;
 import com.web.util.PropertiesUtil;
 import com.web.util.TarUtils;
+import com.sasmac.meta.SceneDOMMetaParser;
+import com.sasmac.meta.SceneDOMSpatialMeta;
+import com.sasmac.meta.FrameDOMMetaParser;
+import com.sasmac.meta.FrameDOMSpatialMeta;
+
+import com.sasmac.dbconnpool.ConnPoolUtil;
+
 /**
  * 分景产品扫描归档
  * 
@@ -169,12 +176,12 @@ public class ArchiveThread extends BaseThread implements Runnable {
 			myLogger.info("start archive " + Integer.toString(iCurridx) + " file");
 			String tiffpath = myPath.getPath() + File.separator + fF.getName();
 			String satellite = "";
-			String prefix=tiffpath.substring(tiffpath.lastIndexOf("."));
+			String prefix = tiffpath.substring(tiffpath.lastIndexOf("."));
 			if (!prefix.equalsIgnoreCase(".tif")) {
-				myLogger.info(prefix+" 文件格式不对！");
+				myLogger.info(prefix + " 文件格式不对！");
 				continue;
 			}
-			
+
 			if (ProductionType.compareToIgnoreCase("分景DOM") == 0) {
 				int idx = filename.indexOf("_");
 				String prefixname = filename.substring(0, idx);
@@ -195,12 +202,23 @@ public class ArchiveThread extends BaseThread implements Runnable {
 					continue;
 				}
 				String tablename = DataModel.GetProductTabName(ProductionType);
-				tiffpath = fF.getAbsolutePath();//+File.separator+fF.getName();
-				
-				
-					Meta2Database mdb = new Meta2Database();
-					mdb.tif2Db(satellite, filename, tablename, tiffpath);
-		
+				tiffpath = fF.getAbsolutePath();// +File.separator+fF.getName();
+
+				// Meta2Database mdb = new Meta2Database();
+				// mdb.tif2Db(satellite, filename, tablename, tiffpath);
+				SceneDOMMetaParser parser = new SceneDOMMetaParser();
+				SceneDOMSpatialMeta meta = parser.ParseMeta(tiffpath);
+				if (ArchiveMode == 1) // 迁移归档
+				{
+					String ImageStoragePath = propertiesUtil.getProperty("ImageStoragepath");
+					String RelativePath = DataModel.generateoverviewpath(ProductionType, filename);
+					meta.setFilePath(ImageStoragePath + RelativePath);
+				}
+
+				Connection conn1 = ConnPoolUtil.getConnection();
+				meta.insertmeta(conn1);
+				ConnPoolUtil.close(conn1, null, null);
+				;
 
 			} else if (ProductionType.compareToIgnoreCase("分幅DOM") == 0) {
 				// 正则表达式比较 J46D001001
@@ -212,12 +230,22 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				;
 
 				String tablename = DataModel.GetProductTabName(ProductionType);
+				FrameDOMMetaParser parser = new FrameDOMMetaParser();
+				FrameDOMSpatialMeta meta = parser.ParseMeta(tiffpath);
 
-				
-					Meta2Database mdb = new Meta2Database();
-					mdb.tifToDb(filename, tablename, tiffpath);
-					
-				
+				if (ArchiveMode == 1) // 迁移归档
+				{
+					String ImageStoragePath = propertiesUtil.getProperty("ImageStoragepath");
+					String RelativePath = DataModel.generateoverviewpath(ProductionType, filename);
+					meta.setFilePath(ImageStoragePath + RelativePath);
+				}
+				Connection conn1 = ConnPoolUtil.getConnection();
+				meta.insertmeta(conn1);
+				ConnPoolUtil.close(conn1, null, null);
+				;
+				// Meta2Database mdb = new Meta2Database();
+				// mdb.tifToDb(filename, tablename, tiffpath);
+
 			}
 
 			// 表名
@@ -238,8 +266,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				String tifpath = myPath.getPath() + fF.separator + fF.getName();
 				// String[] ss=filename.split("_");
 				// String StoragePath = ss[0]+"\\"+ss[1]+"\\"+ss[4];
-			
-				
+
 				// 快视图路径
 				String OverviewStoragePath = propertiesUtil.getProperty("overviewfilepath");
 
@@ -298,16 +325,20 @@ public class ArchiveThread extends BaseThread implements Runnable {
 			{
 				String ImageStoragePath = propertiesUtil.getProperty("ImageStoragepath");
 				String RelativePath = DataModel.generateoverviewpath(ProductionType, filename);
-				String destfile= ImageStoragePath+RelativePath+ File.separator + fF.getName();
-				TarUtils.fileProber(ImageStoragePath+RelativePath);
-				int ret = FileUtil.mappedBuffer(tiffpath,destfile );
+				String destfile = ImageStoragePath + RelativePath + File.separator + fF.getName();
+				TarUtils.fileProber(ImageStoragePath + RelativePath);
+				
+				int ret = FileUtil.fileCopyNormal(tiffpath, destfile);
+				
 				if (ret == 0) {
 					myLogger.info(filename + "文件实体迁移失败！");
+				} else {
+					myLogger.info("copy of " + filename + "  is finished");
 				}
-				else
-				{
-					myLogger.info("copy of "+filename + "  is finished");
-				}
+				String filename1= tiffpath.replace(".tif", ".tfw");
+				File file = new File(filename1);
+				ret = FileUtil.fileCopyNormal(filename1, ImageStoragePath + RelativePath + File.separator+file.getName());
+		
 			}
 			myLogger.info("finish archive " + Integer.toString(iCurridx + 1) + " file");
 
@@ -323,7 +354,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 	 * @return
 	 */
 	private boolean isFinishCopy(java.io.File fileName) {
-	
+
 		boolean bFlag = false;
 		java.io.RandomAccessFile raf = null;
 		try {

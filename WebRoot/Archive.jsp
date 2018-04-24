@@ -95,9 +95,9 @@
   <h2><span class="icon-cogs"></span>归档配置</h2>
   <ul style="display:block">  
     <li><a href="./jsp/ArchiveSet.jsp" target="right"><span class="icon-caret-right"></span>归档配置</a></li>  
-    <li><a href="./jsp/field.jsp" target="right"><span class="icon-caret-right"></span>数据库手动配置</a></li> 
-    <li><a href="./jsp/field-autoread.jsp" target="right"><span class="icon-caret-right"></span>数据库配置</a></li> 
-    <li><a href="./jsp/field-autobuildtable.jsp" target="right"><span class="icon-caret-right"></span>新建库方案</a></li>       
+    <li><a href="./jsp/field.jsp" target="right"><span class="icon-caret-right"></span>新建数据集</a></li> 
+    <li><a href="./jsp/fieldmatch.jsp" target="right"><span class="icon-caret-right"></span>建库方案</a></li> 
+    <!-- <li><a href="./jsp/field-autobuildtable.jsp" target="right"><span class="icon-caret-right"></span>建库方案二</a></li>   -->     
   </ul>  
 </div>
 <script type="text/javascript">

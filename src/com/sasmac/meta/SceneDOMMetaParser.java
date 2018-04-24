@@ -1,4 +1,5 @@
 package com.sasmac.meta;
+
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -14,14 +15,15 @@ import org.gdal.osr.SpatialReference;
 
 public class SceneDOMMetaParser {
 	private Logger myLogger = LogManager.getLogger("mylog");
-	public SpatialMeta ParseMeta(String strTifFile) throws Exception {
-		
-		SpatialMeta m_SpatialMeta = new SpatialMeta();
+
+	public SceneDOMSpatialMeta ParseMeta(String strTifFile) throws Exception {
+
+		SceneDOMSpatialMeta m_SpatialMeta = new SceneDOMSpatialMeta();
 		File imageFile = new File(strTifFile);
-		String filename=imageFile.getName();
-	
-		String filePath = imageFile.getParent().replace("\\", "\\\\");
-		
+		String filename = imageFile.getName();
+
+		String filePath = imageFile.getParent(); // .replace("\\", "\\\\");
+
 		String RasterFormat = strTifFile.substring(strTifFile.lastIndexOf(".") + 1);
 		// split切分字符串，循环求出第三个各字符串即为日期
 		String[] ss = filename.split("_");
@@ -29,17 +31,16 @@ public class SceneDOMMetaParser {
 		long dataid = System.currentTimeMillis();
 
 		// 当前系统时间就是归档时间
-		SimpleDateFormat dft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
-		String archiveTime = dft.format(new Date()); // new Date()为获取当前系统时间
-		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		Date date = sdf.parse(acquisitionTime);
 
 		m_SpatialMeta.setArchiveTime(new Date());
 		m_SpatialMeta.setProductid(dataid);
 		m_SpatialMeta.setDataid(dataid);
-		//m_SpatialMeta.setAcquisitionTime(acquisitionTime);
+		m_SpatialMeta.setAcquisitionTime(date);
 		m_SpatialMeta.setFileName(filename); // 写入文件名
 		m_SpatialMeta.setFilePath(filePath); // 写入文件路径
-		//m_SpatialMeta.setSatellite(satellite); // 写入卫星
+		m_SpatialMeta.setSatellite(ss[0]); // 写入卫星
 		m_SpatialMeta.setDataType(RasterFormat); // 写入影像类型
 		if (imageFile.exists() && imageFile.isFile()) {
 			int fileSize = (int) (imageFile.length() / 1024 / 1024);//
@@ -52,7 +53,7 @@ public class SceneDOMMetaParser {
 		// 读取图像
 		Dataset hDataset = gdal.Open(strTifFile, gdalconstConstants.GA_ReadOnly);
 		if (hDataset == null)
-			return  m_SpatialMeta;
+			return m_SpatialMeta;
 
 		String crsString = hDataset.GetProjectionRef();// 获取crs
 		SpatialReference Crs = new SpatialReference(crsString);// 构造投影坐标系统的空间参考(wkt)，
@@ -65,7 +66,6 @@ public class SceneDOMMetaParser {
 
 		int xSize = hDataset.GetRasterXSize();// 图像宽度
 		int ySize = hDataset.GetRasterYSize();// 图像高度
-	
 
 		double[] geoTransform = hDataset.GetGeoTransform();
 
@@ -78,7 +78,6 @@ public class SceneDOMMetaParser {
 		m_SpatialMeta.setExtentLeft(xmin);
 		m_SpatialMeta.setExtentTop(ymax);
 		m_SpatialMeta.setExtentBottom(ymax);
-
 
 		// ct.TransformPoint()，投影坐标转地理坐标
 		double a[] = ct.TransformPoint(xmin, ymax);
@@ -101,4 +100,3 @@ public class SceneDOMMetaParser {
 		return m_SpatialMeta;
 	}
 }
-

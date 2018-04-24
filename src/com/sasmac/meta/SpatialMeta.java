@@ -1,5 +1,8 @@
 package com.sasmac.meta;
+
 import java.sql.Connection;
+import org.apache.commons.dbutils.QueryRunner;
+
 /**
  * 用于接收xml节点内或geotiff数据内容、NodePathParser.java
  * 
@@ -9,7 +12,7 @@ import java.sql.Connection;
  * @ModifiedBy 修改人
  * @date 2018年3月20日 下午4:19:15
  */
- public class SpatialMeta implements metadata{
+public class SpatialMeta implements metadata {
 
 	private String FileName; // 文件名
 	private String FilePath; // 路径
@@ -30,6 +33,22 @@ import java.sql.Connection;
 	private String sensor; // 传感器
 	private long productid; // 产品id
 	private int productLevel; // 产品级别
+
+	public java.util.Date getAcquisitionTime() {
+		return acquisitionTime;
+	}
+
+	public void setAcquisitionTime(java.util.Date acquisitionTime) {
+		this.acquisitionTime = acquisitionTime;
+	}
+
+	public java.util.Date getArchiveTime() {
+		return archiveTime;
+	}
+
+	public void setArchiveTime(java.util.Date archiveTime) {
+		this.archiveTime = archiveTime;
+	}
 
 	public String getFileName() {
 		return FileName;
@@ -53,13 +72,6 @@ import java.sql.Connection;
 
 	public void setFileSize(long fileSize) {
 		FileSize = fileSize;
-	}
-
-
-
-
-	public void setArchiveTime(java.util.Date archiveTime) {
-		this.archiveTime = archiveTime;
 	}
 
 	public double getExtentRight() {
@@ -174,9 +186,11 @@ import java.sql.Connection;
 		this.productLevel = productLevel;
 	}
 
-
 	@Override
 	public boolean insertmeta(Connection conn) throws Exception {
+
+		// QueryRunner qr = new QueryRunner();
+
 		return true;
 	}
 }

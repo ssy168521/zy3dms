@@ -1,7 +1,5 @@
 package com.web.dao;
 
-import org.apache.logging.log4j.message.StringFormattedMessage;
-
 /**
  * @author Administrator
  * @ClassName:Table
@@ -14,26 +12,17 @@ public class Table {
 	private String fieldName;
 	private String fieldTypeName;
 	private int fieldid;
+	private boolean nullValue;
+	private boolean primaryKey;
 
 	// 有参构造
-	public Table(int fieldid, String fieldName, String fieldTypeName) {
-		super();
-		this.setFieldid(fieldid);
+	public Table(String fieldName) {
 		this.setFieldName(fieldName);// 将局部变量的值传递给成员变量
-		this.setFieldTypeName(fieldTypeName);
 	}
 
 	public Table() {
 		super();
 		// TODO Auto-generated constructor stub
-	}
-
-	public int getFieldid() {
-		return fieldid;
-	}
-
-	public void setFieldid(int fieldid) {
-		this.fieldid = fieldid;
 	}
 
 	public String getFieldName() {
@@ -52,4 +41,27 @@ public class Table {
 		this.fieldTypeName = fieldTypeName;
 	}
 
+	public boolean isNullValue() {
+		return nullValue;
+	}
+
+	public void setNullValue(boolean nullValue) {
+		this.nullValue = nullValue;
+	}
+
+	public boolean isPrimaryKey() {
+		return primaryKey;
+	}
+
+	public void setPrimaryKey(boolean primaryKey) {
+		this.primaryKey = primaryKey;
+	}
+
+	public int getFieldid() {
+		return fieldid;
+	}
+
+	public void setFieldid(int fieldid) {
+		this.fieldid = fieldid;
+	}
 }
