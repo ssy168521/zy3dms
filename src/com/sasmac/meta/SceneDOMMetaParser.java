@@ -21,7 +21,7 @@ public class SceneDOMMetaParser {
 		SceneDOMSpatialMeta m_SpatialMeta = new SceneDOMSpatialMeta();
 		File imageFile = new File(strTifFile);
 		String filename = imageFile.getName();
-
+		String MainFileName= filename.substring(0,filename.lastIndexOf("."));
 		String filePath = imageFile.getParent(); // .replace("\\", "\\\\");
 
 		String RasterFormat = strTifFile.substring(strTifFile.lastIndexOf(".") + 1);
@@ -38,7 +38,7 @@ public class SceneDOMMetaParser {
 		m_SpatialMeta.setProductid(dataid);
 		m_SpatialMeta.setDataid(dataid);
 		m_SpatialMeta.setAcquisitionTime(date);
-		m_SpatialMeta.setFileName(filename); // 写入文件名
+		m_SpatialMeta.setFileName(MainFileName); // 写入文件名
 		m_SpatialMeta.setFilePath(filePath); // 写入文件路径
 		m_SpatialMeta.setSatellite(ss[0]); // 写入卫星
 		m_SpatialMeta.setDataType(RasterFormat); // 写入影像类型
@@ -77,7 +77,7 @@ public class SceneDOMMetaParser {
 		m_SpatialMeta.setExtentRight(xmax);
 		m_SpatialMeta.setExtentLeft(xmin);
 		m_SpatialMeta.setExtentTop(ymax);
-		m_SpatialMeta.setExtentBottom(ymax);
+		m_SpatialMeta.setExtentBottom(ymin);
 
 		// ct.TransformPoint()，投影坐标转地理坐标
 		double a[] = ct.TransformPoint(xmin, ymax);

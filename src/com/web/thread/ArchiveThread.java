@@ -7,7 +7,10 @@ import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import java.util.Collection;
 import com.sasmac.common.DataModel;
 import com.sasmac.jni.Gdal_resample;
 import com.sasmac.jni.ImageProduce;
@@ -175,13 +178,12 @@ public class ArchiveThread extends BaseThread implements Runnable {
 			filename = fF.getName().substring(0, fF.getName().lastIndexOf("."));
 			myLogger.info("start archive " + Integer.toString(iCurridx) + " file");
 			String tiffpath = myPath.getPath() + File.separator + fF.getName();
-			String satellite = "";
 			String prefix = tiffpath.substring(tiffpath.lastIndexOf("."));
 			if (!prefix.equalsIgnoreCase(".tif")) {
-				myLogger.info(prefix + " 文件格式不对！");
 				continue;
 			}
 
+			String satellite="";
 			if (ProductionType.compareToIgnoreCase("分景DOM") == 0) {
 				int idx = filename.indexOf("_");
 				String prefixname = filename.substring(0, idx);
@@ -201,7 +203,6 @@ public class ArchiveThread extends BaseThread implements Runnable {
 					myLogger.info("file format is not support: " + filename);
 					continue;
 				}
-				String tablename = DataModel.GetProductTabName(ProductionType);
 				tiffpath = fF.getAbsolutePath();// +File.separator+fF.getName();
 
 				// Meta2Database mdb = new Meta2Database();
@@ -229,7 +230,6 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				}
 				;
 
-				String tablename = DataModel.GetProductTabName(ProductionType);
 				FrameDOMMetaParser parser = new FrameDOMMetaParser();
 				FrameDOMSpatialMeta meta = parser.ParseMeta(tiffpath);
 
@@ -328,6 +328,8 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				String destfile = ImageStoragePath + RelativePath + File.separator + fF.getName();
 				TarUtils.fileProber(ImageStoragePath + RelativePath);
 				
+				FileUtil.fileCopyNormal(fF.getParent(), filename, ImageStoragePath + RelativePath);
+/*				
 				int ret = FileUtil.fileCopyNormal(tiffpath, destfile);
 				
 				if (ret == 0) {
@@ -338,7 +340,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				String filename1= tiffpath.replace(".tif", ".tfw");
 				File file = new File(filename1);
 				ret = FileUtil.fileCopyNormal(filename1, ImageStoragePath + RelativePath + File.separator+file.getName());
-		
+	*/	
 			}
 			myLogger.info("finish archive " + Integer.toString(iCurridx + 1) + " file");
 
@@ -385,13 +387,10 @@ public class ArchiveThread extends BaseThread implements Runnable {
 	private void calcFileCount(String strPath) throws Exception {
 		if (bIsSMBfile == 0) {
 			java.io.File myPath = new File(strPath);
-			java.io.File[] aF = myPath.listFiles();
-			for (java.io.File fF : aF) {
-				if (fF.isDirectory()) { // 若是目录返回true
-					calcFileCount(fF.getPath());
-				} else {
+			
+			Collection<File> aF = FileUtils.listFiles(myPath, new SuffixFileFilter("tfw"), DirectoryFileFilter.INSTANCE);
+			for (java.io.File fF : aF) {			
 					fileCount++;
-				}
 			}
 		} else {
 			myLogger.info("归档文件不存在！");

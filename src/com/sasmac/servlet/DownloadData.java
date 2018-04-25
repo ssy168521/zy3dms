@@ -81,28 +81,40 @@ public class DownloadData extends HttpServlet {
 
 		String objSelec = request.getParameter("objSelec");
 		JSONArray jsonArr = JSONArray.fromObject(objSelec);
+		String strProducType = request.getParameter("ProducType");
 		String FileName = "";
 		String FilePath = "";
 		String satellite = "";
 		String storagePath = "";
 		String ProductLevel = "";
 		String suffix = ".tar";
+		if(strProducType.compareToIgnoreCase("SC")==0)
+		{
+			suffix = ".tar";
+		}else if(strProducType.compareToIgnoreCase("分景DOM")==0)
+		{
+			suffix = ".tif";
+		}
+		else if(strProducType.compareToIgnoreCase("分幅DOM")==0)
+		{
+			suffix = ".tif";
+		}
 		List<String> arrlistFiles = new ArrayList<String>();
 		for (int i = 0; i < jsonArr.size(); i++) {
 			JSONObject jsonObj = jsonArr.getJSONObject(i);
 			FileName = jsonObj.get("FileName").toString();
 			FilePath = jsonObj.get("FilePath").toString();
-			satellite = jsonObj.get("satellite").toString();
-			ProductLevel = jsonObj.get("productLevel").toString();
-			if (satellite.contains("GF")) {
-				if (ProductLevel.contains("LEVEL1A")) {
-					suffix = ".tar.gz";
-				}
-			} else if (satellite.contains("ZY3")) {
-				if (ProductLevel.contains("SC")) {
-					suffix = ".tar";
-				}
-			}
+			//satellite = jsonObj.get("satellite").toString();
+			//ProductLevel = jsonObj.get("productLevel").toString();
+			//if (satellite.contains("GF")) {
+			//	if (ProductLevel.contains("LEVEL1A")) {
+			//		suffix = ".tar.gz";
+			//	}
+			//} else if (satellite.contains("ZY3")) {
+			//	if (ProductLevel.contains("SC")) {
+			//		suffix = ".tar";
+			//	}
+		    //}
 			storagePath = FilePath + File.separator + FileName + suffix;
 			arrlistFiles.add(storagePath);
 		}

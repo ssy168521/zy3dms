@@ -395,13 +395,12 @@ public class FileUtil {
 		 MyMainFileNameFileter(String strMainFilename)
 		 {
 			 this.strMainFilename=strMainFilename;
-			 
 		 }
         @Override
         public boolean accept(File file, String filename) {
         	if(filename == null) return false;
         	String mainfilename=filename.substring(0,filename.indexOf("."));
-        	if(mainfilename==strMainFilename)
+        	if(mainfilename.compareTo(strMainFilename)==0)
         	{
         		return true;
         	}
@@ -415,11 +414,19 @@ public class FileUtil {
 		MyMainFileNameFileter filter=new MyMainFileNameFileter(MainFileName);
 		File[] file=fromFile.listFiles(filter);
 		String filename;
+		if(!destFilePath.endsWith("\\"))
+		{
+			destFilePath=destFilePath+File.separator;
+		}
 		for(int i=0;i<file.length;i++)
 		{
 			filename=file[i].getName();
 			file[i].getParent();
-			int ret=fileCopyNormal(file[i].getAbsolutePath(),destFilePath+File.separator+filename );
+			int ret=fileCopyNormal(file[i].getAbsolutePath(),destFilePath+filename );
+			if(ret !=1 )
+			{
+				myLogger.info("copy of " + filename + "  is failed");
+			}
 		}
 		
 		return 1;

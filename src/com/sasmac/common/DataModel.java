@@ -75,7 +75,7 @@ public class DataModel {
 				return "";
 			}
 		} else if (strProductType.compareToIgnoreCase("分幅DOM") == 0) {
-			if (Filename.length() != 10)
+			if (Filename.length()!=10)
 				return "";
 			path += "FrameDOM" + File.separator;
 			path += Filename.substring(0, 3);

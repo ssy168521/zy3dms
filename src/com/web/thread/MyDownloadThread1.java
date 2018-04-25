@@ -78,7 +78,16 @@ public class MyDownloadThread1 extends BaseThread implements Runnable {
 				com.sasmac.util.AppConfUtil util = com.sasmac.util.AppConfUtil.getInstance();
 				util.SetAppconFile("appconf.xml");
 				String filecopywebservice = util.getProperty("filecopy_ws");
-				if (!filecopywebservice.isEmpty()) {
+				if(filecopywebservice == null ||filecopywebservice.isEmpty() )
+				{
+					//FileUtil.fileCopy(srcFile, strDestpath);
+					File f = new File(srcFile);
+					String filename = f.getName();
+					String MainFileName = filename.substring(0,filename.lastIndexOf("."));
+					String srcFilePath=f.getParent();
+					FileUtil.fileCopyNormal(srcFilePath, MainFileName, strDestpath);
+				}
+				else {
 					FileCopy s = new FileCopy(new java.net.URL(filecopywebservice));
 					FileCopyPortType server = s.getFileCopyPort();
 
@@ -87,9 +96,7 @@ public class MyDownloadThread1 extends BaseThread implements Runnable {
 					if (ret != 0) {
 
 					}
-				} else {
-					FileUtil.fileCopy(srcFile, strDestpath);
-				}
+				} 
 
 				setTaskProgress((int) Math.rint((float) (i + 1) / (float) ncount * 100));
 
@@ -100,10 +107,12 @@ public class MyDownloadThread1 extends BaseThread implements Runnable {
 				setTaskEndTime(new Date());
 				setTaskMarkinfo(strDestpathconf + " " + Integer.toString(ncount) + " files download");
 				setTaskProgress(100);
+				FinishThread(); // 结束归档线程
 			} else {
 				setTaskStatus(THREADSTATUS.THREAD_STATUS_STOPED.ordinal());
 				setTaskEndTime(new Date());
 				setTaskMarkinfo(strDestpathconf + " :download task is stoped  ");
+				StopThread();
 			}
 			Connection conn = DbUtils.getConnection();
 			PrintTaskInfo(conn);

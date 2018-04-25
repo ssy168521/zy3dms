@@ -104,9 +104,9 @@ public class Loadoverview extends HttpServlet {
 			e.printStackTrace();
 		}
 		PropertiesUtil propertiesUtil = new PropertiesUtil(conffilepath + Constants.STR_CONF_PATH);
-		String stroverviewfilepath = propertiesUtil // 存放快视图路径
+		String stroverviewfilepath = propertiesUtil.getProperty("overviewfilepath"); // 存放快视图路径
 													// E:\database\overview\
-				.getProperty("overviewfilepath");
+				
 
 		String objSelec = request.getParameter("objSelec"); // 从jsp页面获取传递参数
 		JSONArray jsonArr = JSONArray.fromObject(objSelec); // objSelec 转 json

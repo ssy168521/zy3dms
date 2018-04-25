@@ -1070,11 +1070,12 @@ String username="";
 			
 				var objSelec=$('#resulist').bootstrapTable('getSelections');
 				if(objSelec==null)	return false;
+				
 				var strtmp=JSON.stringify(objSelec);
 				$.ajax({
 					url:"./servlet/DownloadData",
 					type:"POST",
-					data:{"objSelec":strtmp},
+					data:{"objSelec":strtmp,"ProducType":productype},
 					//dataType:"json",
 					async:false,
 					error:function(request){
@@ -1122,10 +1123,11 @@ String username="";
 				if(objSelec==null)	return false;
 				var strtmp=JSON.stringify(objSelec);
 				var tablename= $("#tbname").val();
+				var productype=$("#ProductType").val();
 				$.ajax({
 					url:"./servlet/ExportSHP",
 					type:"POST",
-					data:{"objSelec":strtmp,"tablename":tablename},
+					data:{"objSelec":strtmp,"ProducType":productype},
 					//dataType:"json",
 					async:false,
 					error:function(request){
@@ -1652,8 +1654,9 @@ String username="";
 	
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {            
        var  activeTab = $(e.target).text();
-       $("#ProductType").val(activeTab);
-       
+       if(activeTab != "结果列表")
+         $("#ProductType").val(activeTab);
+      
      });
      
 	function advancequery()

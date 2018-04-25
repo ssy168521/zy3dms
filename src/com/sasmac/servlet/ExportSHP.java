@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
-
+import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,10 +38,11 @@ import org.gdal.ogr.Layer;
 import org.gdal.ogr.ogr;
 import org.gdal.osr.SpatialReference;
 
+import com.sasmac.common.DataModel;
 import com.sasmac.dbconnpool.ConnPoolUtil;
 import com.sasmac.meta.spatialmetadata;
 import com.web.util.FileUtil;
-
+import com.web.util.TarUtils;
 public class ExportSHP extends HttpServlet {
 
 	/**
@@ -120,115 +121,114 @@ public class ExportSHP extends HttpServlet {
 		response.setCharacterEncoding("utf-8");
 		request.setCharacterEncoding("utf-8");
 		String objSelec = request.getParameter("objSelec");
-		if (objSelec != null) {
-			JSONArray jsonArr = JSONArray.fromObject(objSelec);
-			int n = jsonArr.size();
-			if (n <= 0)
-				return;
-			Connection conn = ConnPoolUtil.getConnection();
-			if (conn == null)
+		String strProducType = request.getParameter("ProducType");
+		
+		if (objSelec == null) return;
+		
+		
+		JSONArray jsonArr = JSONArray.fromObject(objSelec);
+		int n = jsonArr.size();
+		if (n <= 0)return;
+		Connection conn = ConnPoolUtil.getConnection();
+		if (conn == null)
 				return;
 
-			String tbname = "tb_sc_product";// request.getParameter("tablename");
-			if (tbname == null || tbname.isEmpty())
+		// "tb_sc_product";// request.getParameter("tablename");
+		String tbname =DataModel.GetProductTabName(strProducType);
+		if (tbname == null || tbname.isEmpty())
 				return;
 			// Object[] param = new Object[3];
-			int param;
+		long param;
 
-			QueryRunner qr = new QueryRunner();
-			ResultSetHandler<List<spatialmetadata>> rsh = new BeanListHandler<spatialmetadata>(spatialmetadata.class);
-			String strSQL = "select dataid,id,FileName,FilePath,scenePath,sceneRow,orbitID,satellite,sensor,acquisitionTime,productLevel,cloudPercent,astext(shape) as wktstring from ";
-			strSQL += tbname;
-			String where = " where dataid=? ";
+		QueryRunner qr = new QueryRunner();
+		ResultSetHandler<List<spatialmetadata>> rsh = new BeanListHandler<spatialmetadata>(spatialmetadata.class);
+		String strSQL ="";
+		if(strProducType.compareToIgnoreCase("SC")==0)
+		{
+		   strSQL = "select dataid,FileName,FilePath,scenePath,sceneRow,orbitID,satellite,sensor,acquisitionTime,productLevel,cloudPercent,astext(shape) as wktstring from ";
+		}
+		else if(strProducType.compareToIgnoreCase("分景DOM")==0)
+		{
+			   strSQL = "select dataid,FileName,FilePath,scenePath,sceneRow,orbitID,satellite,sensor,acquisitionTime,productLevel,astext(shape) as wktstring from ";
+		}
+		else if(strProducType.compareToIgnoreCase("分幅DOM")==0)
+		{
+			   strSQL = "select dataid,FileName,FilePath,astext(shape) as wktstring from ";
+		}
+		strSQL += tbname;
+		String where = " where dataid=? ";
 			// String where = " where satellite=? and productLevel=?";
-			String sql = strSQL + where;
-			List<spatialmetadata> AllSMDlist = new ArrayList<spatialmetadata>();
-			List<spatialmetadata> SMDlist;
-			try {
-				for (int i = 0; i < n; i++) {
-					JSONObject jsonObj = jsonArr.getJSONObject(i);
-					param = Integer.parseInt(jsonObj.get("dataid").toString());
-					// param[1] = jsonObj.get("scenePath");
-					// param[2] = jsonObj.get("sceneRow");
-					SMDlist = qr.query(conn, sql, rsh, param);
-					if (SMDlist != null)
-						AllSMDlist.addAll(SMDlist);
-				}
+		String sql = strSQL + where;
+		List<spatialmetadata> AllSMDlist = new ArrayList<spatialmetadata>();
+		List<spatialmetadata> SMDlist;
+		try {
+			for (int i = 0; i < n; i++) {
+				JSONObject jsonObj = jsonArr.getJSONObject(i);
+				
+				param =  Long.parseLong(jsonObj.get("dataid").toString());
+				SMDlist = qr.query(conn, sql, rsh, param);
+				if (SMDlist != null)
+					AllSMDlist.addAll(SMDlist);
+			}
 
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-
-			ConnPoolUtil.close(conn, null, null);
-
-			int num = AllSMDlist.size();
-			if (num <= 0)
-				return;
-			String downloadFilePath = this.getServletContext().getRealPath("/download");
-
-			String filename = downloadFilePath + "\\download.shp";
-			File tmpfile = new File(filename);
-			if (tmpfile.exists())
-				tmpfile.delete();
-			tmpfile = new File(downloadFilePath + "\\download.shx");
-			if (tmpfile.exists())
-				tmpfile.delete();
-			tmpfile = new File(downloadFilePath + "\\download.prj");
-			if (tmpfile.exists())
-				tmpfile.delete();
-			tmpfile = new File(downloadFilePath + "\\download.dbf");
-			if (tmpfile.exists())
-				tmpfile.delete();
-
-			boolean b = CreateSHP(AllSMDlist, downloadFilePath + "\\download.shp");
-			if (b == false)
-				return;
-
-			File file = new File(downloadFilePath + "\\download.rar");
-			if (!file.exists()) {
-				if (!file.createNewFile())
-					return;
-			}
-			try {
-				//
-				FileOutputStream fous = new FileOutputStream(file);
-				ZipOutputStream zipOut = new ZipOutputStream(fous);
-
-				List<File> files = new ArrayList<File>();
-				filename = downloadFilePath + "\\download.shp";
-				tmpfile = new File(filename);
-				if (tmpfile.exists())
-					files.add(tmpfile);
-				tmpfile = new File(downloadFilePath + "\\download.shx");
-				if (tmpfile.exists())
-					files.add(tmpfile);
-				tmpfile = new File(downloadFilePath + "\\download.prj");
-				if (tmpfile.exists())
-					files.add(tmpfile);
-				tmpfile = new File(downloadFilePath + "\\download.dbf");
-				if (tmpfile.exists())
-					files.add(tmpfile);
-
-				FileUtil.zipFile(files, zipOut);
-				zipOut.close();
-				fous.close();
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			// request.getRequestDispatcher("./servlet/ExportSHP").forward(request,
-			// response);
-		} else {
-			// download file
-			/*
-			 * String downloadFilePath = this.getServletContext().getRealPath(
-			 * "/download"); File file = new File(downloadFilePath +
-			 * "\\download.rar"); response = downloadZip(file, response);
-			 * file.deleteOnExit();
-			 */
 		}
 
+		ConnPoolUtil.close(conn, null, null);
+
+		int num = AllSMDlist.size();
+		if (num <= 0)	return;
+		String downloadFilePath = this.getServletContext().getRealPath("/download");
+
+		String filename = downloadFilePath + "\\download.shp";
+		File tmpfile = new File(filename);
+		if (tmpfile.exists())
+			tmpfile.delete();
+		tmpfile = new File(downloadFilePath + "\\download.shx");
+		if (tmpfile.exists())
+				tmpfile.delete();
+		tmpfile = new File(downloadFilePath + "\\download.prj");
+		if (tmpfile.exists())
+				tmpfile.delete();
+		tmpfile = new File(downloadFilePath + "\\download.dbf");
+		if (tmpfile.exists())
+				tmpfile.delete();
+
+		boolean b = CreateSHP(AllSMDlist, downloadFilePath + "\\download.shp");
+		if (b == false)
+				return;
+
+		File file = new File(downloadFilePath + "\\download.rar");
+		if (!file.exists()) {
+			if (!file.createNewFile())
+					return;
+		}
+		try {
+			FileOutputStream fous = new FileOutputStream(file);
+			ZipOutputStream zipOut = new ZipOutputStream(fous);
+
+			List<File> files = new ArrayList<File>();
+			filename = downloadFilePath + "\\download.shp";
+			tmpfile = new File(filename);
+			if (tmpfile.exists())
+					files.add(tmpfile);
+			tmpfile = new File(downloadFilePath + "\\download.shx");
+			if (tmpfile.exists())
+					files.add(tmpfile);
+			tmpfile = new File(downloadFilePath + "\\download.prj");
+			if (tmpfile.exists())
+					files.add(tmpfile);
+			tmpfile = new File(downloadFilePath + "\\download.dbf");
+			if (tmpfile.exists())
+					files.add(tmpfile);
+			FileUtil.zipFile(files, zipOut);
+			zipOut.close();
+			fous.close();
+		} catch (Exception e) {
+				e.printStackTrace();
+			}
 		return;
 	}
 
@@ -332,7 +332,9 @@ public class ExportSHP extends HttpServlet {
 				oFeature.SetField(5, md.getOrbitID());
 				oFeature.SetField(6, md.getSatellite());
 				oFeature.SetField(7, md.getSensor());
-				oFeature.SetField(8, formatter.format(md.getAcquisitionTime()));
+				Date m=md.getAcquisitionTime();
+				if(m!=null)
+				  oFeature.SetField(8, formatter.format(md.getAcquisitionTime()));
 				oFeature.SetField(9, md.getCloudPercent());
 				oFeature.SetField(10, md.getProductLevel());
 				Geometry geo = Geometry.CreateFromWkt(md.getwktString());
@@ -354,7 +356,14 @@ public class ExportSHP extends HttpServlet {
 
 	public HttpServletResponse downloadZip(File file, HttpServletResponse response) {
 		try {
-			// ??????????????????
+		
+			try
+			{
+				TarUtils.fileProber(file.getParent());
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
 			InputStream fis = new BufferedInputStream(new FileInputStream(file.getPath()));
 			byte[] buffer = new byte[fis.available()];
 			fis.read(buffer);
@@ -365,7 +374,7 @@ public class ExportSHP extends HttpServlet {
 			OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
 			response.setContentType("application/octet-stream");
 
-			// ???????????????????????????????URLEncoder.encode???????д???
+		
 			response.setHeader("Content-Disposition",
 					"attachment;filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
 			toClient.write(buffer);

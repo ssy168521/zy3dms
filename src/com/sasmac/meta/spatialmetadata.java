@@ -14,7 +14,7 @@ import com.sasmac.util.MetaTableUtil;
 import com.web.util.DataUtils;
 
 public class spatialmetadata implements metadata, JSONString, Serializable {
-	private int dataId;
+	private long dataId;
 	private String satellite;
 	private String sensor;
 	private int orbitID;
@@ -82,11 +82,11 @@ public class spatialmetadata implements metadata, JSONString, Serializable {
 		this.wktstring = wkt;
 	}
 
-	public int getDataId() {
+	public long getDataId() {
 		return dataId;
 	}
 
-	public void setDataId(int dataId) {
+	public void setDataId(long dataId) {
 		this.dataId = dataId;
 	}
 
