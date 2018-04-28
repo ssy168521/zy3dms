@@ -172,7 +172,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				ergodicDir(fF.getAbsoluteFile());
 				continue;
 			}
-			iCurridx++;
+			
 
 			// 无后缀名的文件名
 			filename = fF.getName().substring(0, fF.getName().lastIndexOf("."));
@@ -197,6 +197,10 @@ public class ArchiveThread extends BaseThread implements Runnable {
 					satellite = "ZY301";
 				} else if (prefixname.compareToIgnoreCase("ZY302") == 0) {
 					satellite = "ZY302";
+				} else if (prefixname.compareToIgnoreCase("ZY301a") == 0) {
+					satellite = "ZY301";
+				} else if (prefixname.compareToIgnoreCase("ZY302a") == 0) {
+					satellite = "ZY302";
 				} else if (prefixname.compareToIgnoreCase("ZY3") == 0) {
 					satellite = "ZY3";
 				} else {
@@ -210,7 +214,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				SceneDOMMetaParser parser = new SceneDOMMetaParser();
 				SceneDOMSpatialMeta meta = parser.ParseMeta(tiffpath);
 				if (ArchiveMode == 1) // 迁移归档
-				{
+				{    //获取sysconf.xml 下影像存储路径
 					String ImageStoragePath = propertiesUtil.getProperty("ImageStoragepath");
 					String RelativePath = DataModel.generateoverviewpath(ProductionType, filename);
 					meta.setFilePath(ImageStoragePath + RelativePath);
@@ -247,7 +251,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				// mdb.tifToDb(filename, tablename, tiffpath);
 
 			}
-
+			
 			// 表名
 
 			// 所有标准分幅产品信息都存于此表
@@ -287,7 +291,9 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				 * res = imgprodu.ImageRectify(tifpath, destpath +
 				 * File.separator + filename + ".png", 256, 256);
 				 */
-
+				 
+				imgprodu.ImageRectify2GeoCS(tifpath, destpath + File.separator + filename + ".png", 256, 256,1);
+/*
 				boolean res1 = false;
 				res1 = imgprodu.ImageRectify(tifpath, destpath + File.separator + filename + ".png", 256, 256);
 				if (!res1) {
@@ -303,8 +309,10 @@ public class ArchiveThread extends BaseThread implements Runnable {
 
 					} else {
 						myLogger.info("需要重投影！开始投影！");
-						// 先删除第一次重采样图片
+						// 先删除第一次重采样图片和相关xml（不删除xml会重投影失效）
 						File tempResmple = new File(destpath + File.separator + filename + ".png");
+						File tempResmple1= new File(destpath + File.separator + filename + ".png.aux.xml");
+						tempResmple1.delete();
 						tempResmple.delete();
 						// 重采样后进行投影变换，再次重采样，将投影变换的输出文件作为重采样的输入文件
 						res = imgprodu.ImageRectify(destpath + File.separator + "temp.png",
@@ -319,6 +327,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 						}
 					}
 				}
+				*/
 				// ************
 			}
 			if (ArchiveMode == 1) // 迁移归档
@@ -342,6 +351,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				ret = FileUtil.fileCopyNormal(filename1, ImageStoragePath + RelativePath + File.separator+file.getName());
 	*/	
 			}
+			iCurridx++;
 			myLogger.info("finish archive " + Integer.toString(iCurridx + 1) + " file");
 
 			int iProgress = (int) ((double) iCurridx / (double) fileCount * 100);
@@ -388,7 +398,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 		if (bIsSMBfile == 0) {
 			java.io.File myPath = new File(strPath);
 			
-			Collection<File> aF = FileUtils.listFiles(myPath, new SuffixFileFilter("tfw"), DirectoryFileFilter.INSTANCE);
+			Collection<File> aF = FileUtils.listFiles(myPath, new SuffixFileFilter("tif"), DirectoryFileFilter.INSTANCE);
 			for (java.io.File fF : aF) {			
 					fileCount++;
 			}

@@ -91,12 +91,12 @@ public class UploadXML extends HttpServlet {
 			// 保存后的文件名
 			String saveName = new Date().getTime() + filename.substring(filename.lastIndexOf("."));
 			// 保存后文件的浏览器访问路径
-			String docUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-					+ request.getContextPath() + "/upload/" + saveName;
+//			String docUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+//					+ request.getContextPath() + "/upload/" + saveName;
 
 			myLogger.info("存放目录:" + PATH_FOLDER);
 			// System.out.println("文件名:" + filename);
-			myLogger.info("浏览器访问路径:" + docUrl);
+			//myLogger.info("浏览器访问路径:" + docUrl);
 
 			// 真正写到磁盘上
 			item.write(new File(PATH_FOLDER, saveName)); // 第三方提供的
@@ -116,6 +116,7 @@ public class UploadXML extends HttpServlet {
 				jsonTableList = jsonArray.toString();
 				// [{"fieldName":"","nodeName":"SatelliteID","nodepath":"/ProductMetaData/SatelliteID"},
 			}
+			uploadFile.delete();//将上传文件删除
 			PrintWriter out = response.getWriter();
 			out.print(jsonTableList);
 			out.flush();
