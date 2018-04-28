@@ -4,7 +4,7 @@ String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<html> 
   <head>
     <base href="<%=basePath%>">    
     <title>数据归档</title>   
@@ -37,14 +37,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  <div class="tabbable" id="myTab">
            <div style="text-align:center; padding-top:15px">
 		     <ul class="nav nav-tabs">
-				<li class="active" style="width:33%">
+				<li class="active" style="width:25%">
 					 <a href="#sc-query-region" data-toggle="tab">传感器校正产品</a>
 				</li>
-				<li style="width:33%">
+				<li style="width:25%">
 					 <a href="#sc-query-region" data-toggle="tab">分幅DOM</a>
 				</li>
-				<li style="width:33%">
+				<li style="width:25%">
 					 <a href="#sc-query-region" data-toggle="tab">分景DOM</a>
+				</li>
+				<li style="width:25%">
+					 <a href="#sc-query-region" data-toggle="tab">镶嵌线</a>
 				</li>
 			</ul>
 		  </div>
@@ -113,7 +116,7 @@ $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 	  $("#taskname").val(taskname);
 });
 
-  //SC产品归档
+  //产品归档
 $("#btn_archive").click(function(){
 	var strtaskname=$("#taskname").val();
 	var strarchivepath=$("#path").val(); 

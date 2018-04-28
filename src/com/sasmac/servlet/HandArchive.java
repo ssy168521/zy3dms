@@ -85,10 +85,10 @@ public class HandArchive extends HttpServlet {
 
 		response.setCharacterEncoding("utf-8");
 		response.setContentType("text/html");
-		String srcPath = request.getParameter("ArchivePath");// �鵵Դ·��
-		String taskname = request.getParameter("taskname"); // ��������
-		String ProductType = request.getParameter("ProductType");
-		String ArchiveMode = request.getParameter("ArchiveMode");
+		String srcPath = request.getParameter("ArchivePath");// 归档路径
+		String taskname = request.getParameter("taskname"); // 任务名称
+		String ProductType = request.getParameter("ProductType"); //产品类型
+		String ArchiveMode = request.getParameter("ArchiveMode"); //归档方式（扫描or迁移）
 		int iArchiveMode = 0;
 		if (ArchiveMode.compareToIgnoreCase("copy") == 0) {
 			iArchiveMode = 1;
@@ -110,6 +110,15 @@ public class HandArchive extends HttpServlet {
 			pthreadpool.submmitJob(pThread);
 			return;
 		} else if (ProductType.compareToIgnoreCase("分景DOM") == 0) {
+			out.println("Archive is begining");
+			out.flush();
+			out.close();
+			ArchiveThread pThread = new ArchiveThread(ProductType, srcPath, iArchiveMode);
+			pThread.setTaskName(taskname);
+			ThreadManager pthreadpool = new ThreadManager();
+			pthreadpool.submmitJob(pThread);
+			return;
+		}else if(ProductType.compareToIgnoreCase("镶嵌线") == 0){
 			out.println("Archive is begining");
 			out.flush();
 			out.close();

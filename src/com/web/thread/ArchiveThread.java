@@ -27,7 +27,7 @@ import com.sasmac.meta.SceneDOMMetaParser;
 import com.sasmac.meta.SceneDOMSpatialMeta;
 import com.sasmac.meta.FrameDOMMetaParser;
 import com.sasmac.meta.FrameDOMSpatialMeta;
-
+import com.sasmac.meta.SeamLineMetaParser;
 import com.sasmac.dbconnpool.ConnPoolUtil;
 
 /**
@@ -179,6 +179,20 @@ public class ArchiveThread extends BaseThread implements Runnable {
 			myLogger.info("start archive " + Integer.toString(iCurridx) + " file");
 			String tiffpath = myPath.getPath() + File.separator + fF.getName();
 			String prefix = tiffpath.substring(tiffpath.lastIndexOf("."));
+			
+			if(ProductionType.compareToIgnoreCase("镶嵌线") == 0){ //镶嵌线归档
+				if(!prefix.equalsIgnoreCase(".shp")){
+					myLogger.info("file format is not support: " + filename);
+					continue;
+				}
+                SeamLineMetaParser parser = new SeamLineMetaParser();
+                boolean shp=parser.createFeatures(tiffpath);
+	            if(!shp){
+	            	myLogger.info("shapefile to mysql error!");
+	            }else {
+	            	myLogger.info("shapefile to mysql success!");
+				}
+			}else{
 			if (!prefix.equalsIgnoreCase(".tif")) {
 				continue;
 			}
@@ -223,7 +237,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				Connection conn1 = ConnPoolUtil.getConnection();
 				meta.insertmeta(conn1);
 				ConnPoolUtil.close(conn1, null, null);
-				;
+				
 
 			} else if (ProductionType.compareToIgnoreCase("分幅DOM") == 0) {
 				// 正则表达式比较 J46D001001
@@ -231,8 +245,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				if (bmatch == false) {
 					myLogger.info("file format is not support: " + filename);
 					continue;
-				}
-				;
+				};
 
 				FrameDOMMetaParser parser = new FrameDOMMetaParser();
 				FrameDOMSpatialMeta meta = parser.ParseMeta(tiffpath);
@@ -252,18 +265,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 
 			}
 			
-			// 表名
-
-			// 所有标准分幅产品信息都存于此表
-			/*
-			 * // String productName = "分景产品"; //产品名字 if
-			 * (service.isFileArchive(conn, tablename, filename)) {
-			 * myLogger.info("file had exist database:" + filename); continue; }
-			 * if (!isFinishCopy(fF.getAbsoluteFile())) continue;
-			 * 
-			 * //geotiff文件全路径 String tiffpath = myPath.getPath() +
-			 * File.separator + fF.getName();
-			 */
+	
 			// tif重采样
 			if (tiffpath.substring(tiffpath.lastIndexOf(".")).equalsIgnoreCase(".tif")) {
 				// tif图像原路径
@@ -286,14 +288,14 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				if (!dest.exists()) {
 					dest.mkdirs();// 创建此抽象路径名指定的目录，包括所有必需但不存在的父目录
 				}
-				// 图像重采样
+				//重采样并投影得到wgs84下影像
+				res = imgprodu.ImageRectify2GeoCS(tifpath, destpath + File.separator + filename + ".png", 256, 256,1);
+				if(!res){
+					myLogger.info(filename + " :png overview build error !");
+				}else{
+					myLogger.info("finish ImageRectify overiew-png: " + filename + ".png");
+				}
 				/*
-				 * res = imgprodu.ImageRectify(tifpath, destpath +
-				 * File.separator + filename + ".png", 256, 256);
-				 */
-				 
-				imgprodu.ImageRectify2GeoCS(tifpath, destpath + File.separator + filename + ".png", 256, 256,1);
-/*
 				boolean res1 = false;
 				res1 = imgprodu.ImageRectify(tifpath, destpath + File.separator + filename + ".png", 256, 256);
 				if (!res1) {
@@ -330,13 +332,14 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				*/
 				// ************
 			}
+			}
 			if (ArchiveMode == 1) // 迁移归档
 			{
 				String ImageStoragePath = propertiesUtil.getProperty("ImageStoragepath");
 				String RelativePath = DataModel.generateoverviewpath(ProductionType, filename);
 				String destfile = ImageStoragePath + RelativePath + File.separator + fF.getName();
 				TarUtils.fileProber(ImageStoragePath + RelativePath);
-				
+				myLogger.info("ArchivePath:"+ImageStoragePath + RelativePath);
 				FileUtil.fileCopyNormal(fF.getParent(), filename, ImageStoragePath + RelativePath);
 /*				
 				int ret = FileUtil.fileCopyNormal(tiffpath, destfile);

@@ -112,6 +112,7 @@ public class Loadoverview extends HttpServlet {
 		JSONArray jsonArr = JSONArray.fromObject(objSelec); // objSelec 转 json
 		// 17年
 		String satellite = "";
+		String ProductLevel = "";
 		String photoDate = "";
 		String tablename = "";
 		String orbit = "";
@@ -127,17 +128,20 @@ public class Loadoverview extends HttpServlet {
 			JSONObject jsonObj = jsonArr.getJSONObject(i);
 			if (jsonObj.get("sensor") != null) {// 判断是否是sc产品的字段，分景DOM与分幅都没有
 				satellite = jsonObj.get("satellite").toString();// 从json数据中获取键为satellite的值
+				ProductLevel = jsonObj.get("productLevel").toString();
 				photoDate = jsonObj.get("acquisitionTime").toString();
 				filename = jsonObj.get("FileName").toString();
 				photoDate = photoDate.replace("/", "-");
 				orbit = String.format("%06d", jsonObj.get("orbitID"));
 				Sensor = jsonObj.get("sensor").toString();
 				// database下快视图路径
-				storagePath = File.separator + satellite + File.separator + photoDate + File.separator + orbit
-						+ File.separator + Sensor + File.separator + filename + ".png";
+				storagePath = File.separator + satellite + File.separator
+						+ ProductLevel + File.separator + photoDate
+						+ File.separator + orbit + File.separator + Sensor
+						+ File.separator + filename
+						+ ".png";
 				// 图像范围和空间参考（'wkid':4326）
-				// String RelativePath=DataModel.generateoverviewpath("SC",
-				// filename);
+				
 				overviewpath = stroverviewfilepath + storagePath; // 快试图绝对路径
 				String strExt = GDALimage.GetImageExtent(overviewpath);
 				extarr.add(strExt);

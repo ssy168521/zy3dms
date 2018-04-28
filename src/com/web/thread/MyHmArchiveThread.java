@@ -41,7 +41,7 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 
 	private WebService service = null;
 
-	//private Connection conn = null;
+	private Connection conn = null;
 	/** 文件数量 **/
 	private int fileCount = 0;
 	int bIsSMBfile;;
@@ -82,21 +82,17 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 				setTaskEndTime(new Date());
 				setTaskMarkinfo(archivePath + " " + Integer.toString(fileCount) + " files archive");
 				setTaskProgress(100);
-				Connection	conn = DbUtils.getConnection(true);
 				PrintTaskInfo(conn);
-				DbUtils.closeQuietlyConnection(conn);
 				FinishThread();
 			} else {
 				myLogger.info(archivePath + " :archive task is stoped");
 				setTaskStatus(THREADSTATUS.THREAD_STATUS_STOPED.ordinal());
 				setTaskEndTime(new Date());
 				setTaskMarkinfo(archivePath + ": archive task is stoped");
-				Connection	conn = DbUtils.getConnection(true);
 				PrintTaskInfo(conn);
-				DbUtils.closeQuietlyConnection(conn);
 				StopThread();
 			}
-		   
+			conn = DbUtils.getConnection(true);
 			if (bIsSMBfile == 0) {
 				java.io.File rootPath = new java.io.File(archivePath);
 				if (!rootPath.exists() || rootPath.isFile()) {
@@ -120,7 +116,9 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-		} 
+		} finally {
+			DbUtils.closeQuietlyConnection(conn);
+		}
 
 	}
 
@@ -198,13 +196,12 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 					myLogger.info("file format is not support: " + filename);
 					continue;
 				}
-				Connection	conn = DbUtils.getConnection(true);
 				String tablename = MetaTableUtil.GetTableName(conn, satellite, productLevel);
+
 				if (service.isFileArchive(conn, tablename, filename)) {
 					myLogger.info("file had exist database:" + filename);
 					continue;
 				}
-				DbUtils.closeQuietlyConnection(conn);
 				// if(!isFinishCopy(fF.getAbsoluteFile())) return;
 				// //鍒ゆ柇鏂囦欢鏄惁琚崰鐢�
 				// if(!CheckValid(fF.getAbsoluteFile())) return ;//鍒ゆ柇鏂囦欢鏄惁瀹屾暣
@@ -262,6 +259,7 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 				}
 				// 文件名
 				filename = fF.getName();
+				//filename = filename.substring(0,filename.indexOf("."));//去除后缀
 				myLogger.info("start archive " + Integer.toString(iCurridx) + " file");
 				int intNowHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
@@ -270,20 +268,20 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 				int flag = 0;
 				// 正则表达式比较
 				boolean bmatch = filename
-						.matches("zy301a_[a-z]{3}_[0-9]{6}_[0-9]{6}_[0-9]{14}_[0-9]{2}_sec_[0-9]{4}_[0-9]{10}.tar");
+						.matches("zy301a_[a-z]{3}_[0-9]{6}_[0-9]{6}_[0-9]{14}_[0-9]{2}_sec_[0-9]{4}_[0-9]{10}.tar.gz");
 				if (bmatch) {
 					flag = 1;
 					satellite = "ZY3-1";
 					productLevel = "SC";
 
-					int idx = filename.lastIndexOf(".tar");
+					int idx = filename.lastIndexOf(".tar.gz");
 					if (idx == -1)
 						continue;
 					filename = filename.substring(0, idx);
 				} else if (filename
-						.matches("zy302a_[a-z]{3}_[0-9]{6}_[0-9]{6}_[0-9]{14}_[0-9]{2}_sec_[0-9]{4}_[0-9]{10}.tar")) {
+						.matches("zy302a_[a-z]{3}_[0-9]{6}_[0-9]{6}_[0-9]{14}_[0-9]{2}_sec_[0-9]{4}_[0-9]{10}.tar.gz")) {
 					flag = 2;
-					int idx = filename.lastIndexOf(".tar");
+					int idx = filename.lastIndexOf(".tar.gz");
 					if (idx == -1)
 						continue;
 					satellite = "ZY3-2";
@@ -309,11 +307,9 @@ public class MyHmArchiveThread extends BaseThread implements Runnable {
 					myLogger.info("file format is not support: " + filename);
 					continue;
 				}
-				
-				Connection conn=DbUtils.getConnection(true);
 				// 表名
 				String tablename = MetaTableUtil.GetTableName(conn, satellite, productLevel);
-				DbUtils.closeQuietlyConnection(conn);
+
 				if (service.isFileArchive(conn, tablename, filename)) {
 					myLogger.info("file had exist database:" + filename);
 					continue;

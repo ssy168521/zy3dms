@@ -109,6 +109,11 @@ public class DataModel {
 				return "";
 			path += "FrameDOM" + File.separator;
 			path += Filename.substring(0, 3);
+		}else if (strProductType.compareToIgnoreCase("镶嵌线") == 0) {
+			if (Filename.length()!=10)
+				return "";
+			path += "SeamLine" + File.separator;
+			path += Filename;
 		} else
 			return "";
 
