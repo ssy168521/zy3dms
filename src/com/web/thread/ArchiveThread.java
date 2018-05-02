@@ -77,10 +77,11 @@ public class ArchiveThread extends BaseThread implements Runnable {
 	public ArchiveThread(String strProductionType, String strArchivedir, int iArchiveMode) {
 		// 调用父类BaseThread的构造方法
 		super("archive", THREADSTATUS.THREAD_STATUS_UNKNOWN.ordinal(), "数据归档", new Date(), null, 0, "");
-		if (strProductionType.compareToIgnoreCase("分幅DOM") != 0
-				&& strProductionType.compareToIgnoreCase("分景DOM") != 0) {
+		/*if (strProductionType.compareToIgnoreCase("分幅DOM") != 0
+				&& strProductionType.compareToIgnoreCase("分景DOM") != 0 
+				&& strProductionType.compareToIgnoreCase("镶嵌线") != 0) {
 			return;
-		}
+		}*/
 		archivePath = strArchivedir;
 		ProductionType = strProductionType;
 		ArchiveMode = iArchiveMode;
@@ -101,6 +102,27 @@ public class ArchiveThread extends BaseThread implements Runnable {
 		setTaskStartTime(new Date());
 
 		myLogger.info("start archive:" + archivePath);
+		
+		if(ProductionType.compareToIgnoreCase("镶嵌线")==0)
+		{
+			// 无后缀名的文件名 
+			File fF=new File(archivePath);
+			String filename = fF.getName().substring(0, fF.getName().lastIndexOf("."));
+			myLogger.info("start archive " + Integer.toString(iCurridx) + " file");
+			String tiffpath = fF.getPath() + File.separator + fF.getName();
+			String prefix = tiffpath.substring(tiffpath.lastIndexOf("."));
+			if(!prefix.equalsIgnoreCase(".shp")){
+				myLogger.info("file format is not support: " + filename);
+			}
+            SeamLineMetaParser parser = new SeamLineMetaParser();
+            boolean shp=parser.createFeatures(tiffpath);
+            if(!shp){
+            	myLogger.info("shapefile to mysql error!");
+            }else {
+            	myLogger.info("shapefile to mysql success!");
+			}
+			return;
+		}
 		try {
 			conn = DbUtils.getConnection(true);
 			if (bIsSMBfile == 0) {
@@ -193,6 +215,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 	            	myLogger.info("shapefile to mysql success!");
 				}
 			}else{
+				
 			if (!prefix.equalsIgnoreCase(".tif")) {
 				continue;
 			}
@@ -283,13 +306,11 @@ public class ArchiveThread extends BaseThread implements Runnable {
 				String RelativePath = DataModel.generateoverviewpath(ProductionType, filename);
 
 				String destpath = OverviewStoragePath + RelativePath;
+				TarUtils.fileProber(destpath);
 				// String destpath1 = OverviewStoragePath + StoragePath;
-				File dest = new File(destpath);
-				if (!dest.exists()) {
-					dest.mkdirs();// 创建此抽象路径名指定的目录，包括所有必需但不存在的父目录
-				}
+				
 				//重采样并投影得到wgs84下影像
-				res = imgprodu.ImageRectify2GeoCS(tifpath, destpath + File.separator + filename + ".png", 256, 256,1);
+				res = imgprodu.ImageRectify2GeoCS(tifpath, destpath + File.separator + filename + ".png", 256, 256,0);
 				if(!res){
 					myLogger.info(filename + " :png overview build error !");
 				}else{

@@ -20,7 +20,7 @@ import org.geotools.feature.NameImpl;
 import org.geotools.jdbc.JDBCDataStore;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-
+import com.web.util.PropertiesUtil;
 /**
  *geotools读取shapefile文件到数据库中，单纯的java读取shp文件会出现错误，对于Oracle有相应的插件读取shp文件。
  *主要步骤：1.将shp读取到要素库featureSource
@@ -34,10 +34,12 @@ public class SeamLineMetaParser {
 		boolean res=false;
 		long startTime = System.currentTimeMillis(); //程序开始记录时间
 		ShapefileDataStoreFactory dataStoreFactory = new ShapefileDataStoreFactory();
+		File f=new File(Shpfile)
+		//URL url=f.toURI().toURL();
 		try {
+			Shpfile = java.net.URLDecoder.decode(Shpfile,"utf-8");
 			ShapefileDataStore sds = (ShapefileDataStore) dataStoreFactory
-					.createDataStore(new File(Shpfile)
-							.toURI().toURL());  //toURI()转换非法字符
+					.createDataStore();  //toURI()转换非法字符
 			sds.setCharset(Charset.forName("GBK"));
 			SimpleFeatureSource featureSource = sds.getFeatureSource();
 
@@ -45,17 +47,22 @@ public class SeamLineMetaParser {
 
 			//JDBCDataStore pgDatastore;
 			MySQLDataStoreFactory factory1 = new MySQLDataStoreFactory();
-			//FeatureSource fsBC1;
-			Map<String,Object> params1 = new HashMap<String, Object>();
-			params1.put("dbtype", "mysql");
-			params1.put("host", "localhost");
-			params1.put("port", new Integer(3306));
-			params1.put("database", "gis");
-			params1.put("user", "root");
-			params1.put("passwd", "123456");
+			String conffilepath ="";
+			
+				 conffilepath = SeamLineMetaParser.class.getClassLoader().getResource("").toURI().getPath();
+	
+			conffilepath += "com/sasmac/conf/dbConnConf.properties";
+			PropertiesUtil util = new PropertiesUtil(conffilepath);
+			Map<String, Object> params2 = new HashMap<String, Object>();
+			params2.put("dbtype", util.getProperty("dbtype"));
+			params2.put("host", util.getProperty("host"));
+			params2.put("port", util.getProperty("port"));
+			params2.put("database", util.getProperty("database"));
+			params2.put("user", util.getProperty("user"));
+			params2.put("passwd", util.getProperty("password"));
 			JDBCDataStore ds;
 			try {
-				ds = (JDBCDataStore) factory1.createDataStore(params1);
+				ds = (JDBCDataStore) factory1.createDataStore(params2);
 				ContentEntry entry = ds.getEntry(new NameImpl(null, schema
 						.getTypeName()));
 				if (entry != null) {
