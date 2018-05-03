@@ -20,6 +20,9 @@ import org.geotools.feature.NameImpl;
 import org.geotools.jdbc.JDBCDataStore;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+
 import com.web.util.PropertiesUtil;
 /**
  *geotools读取shapefile文件到数据库中，单纯的java读取shp文件会出现错误，对于Oracle有相应的插件读取shp文件。
@@ -46,6 +49,7 @@ public class SeamLineMetaParser {
 			SimpleFeatureSource featureSource = sds.getFeatureSource();
 
 			SimpleFeatureType schema = featureSource.getSchema();
+			CoordinateReferenceSystem crs=schema.getCoordinateReferenceSystem();
 
 			//JDBCDataStore pgDatastore;
 			MySQLDataStoreFactory factory1 = new MySQLDataStoreFactory();
@@ -72,6 +76,8 @@ public class SeamLineMetaParser {
 				}
 				
 				ds.createSchema(schema);//
+				
+			
 				myLogger.info(" create table success!");
 				//
 				FeatureWriter<SimpleFeatureType, SimpleFeature> writer = ds

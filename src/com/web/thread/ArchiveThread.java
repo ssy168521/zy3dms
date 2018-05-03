@@ -29,7 +29,7 @@ import com.sasmac.meta.FrameDOMMetaParser;
 import com.sasmac.meta.FrameDOMSpatialMeta;
 import com.sasmac.meta.SeamLineMetaParser;
 import com.sasmac.dbconnpool.ConnPoolUtil;
-
+import com.sasmac.DataModel.MetaManager;
 /**
  * 分景产品扫描归档
  * 
@@ -108,6 +108,7 @@ public class ArchiveThread extends BaseThread implements Runnable {
 			// 无后缀名的文件名 
 			File fF=new File(archivePath);
 			String filename = fF.getName().substring(0, fF.getName().lastIndexOf("."));
+			//String MainFilename = filename.substring(filename.lastIndexOf("\\"));
 			myLogger.info("start archive " + Integer.toString(iCurridx) + " file");
 			String tiffpath = fF.getPath();
 			String prefix = tiffpath.substring(tiffpath.lastIndexOf("."));
@@ -120,6 +121,9 @@ public class ArchiveThread extends BaseThread implements Runnable {
             	myLogger.info("shapefile to mysql error!");
             }else {
             	myLogger.info("shapefile to mysql success!");
+            	boolean b=MetaManager.InsertMetaManangerInfo(filename,"","","", "镶嵌线");
+            	if(b)myLogger.info("metamanager is inserted success !");
+            	
 			}
 			return;
 		}
