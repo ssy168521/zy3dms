@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.net.URL;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geotools.data.FeatureWriter;
@@ -34,13 +34,15 @@ public class SeamLineMetaParser {
 		boolean res=false;
 		long startTime = System.currentTimeMillis(); //程序开始记录时间
 		ShapefileDataStoreFactory dataStoreFactory = new ShapefileDataStoreFactory();
-		File f=new File(Shpfile)
-		//URL url=f.toURI().toURL();
+		
 		try {
 			Shpfile = java.net.URLDecoder.decode(Shpfile,"utf-8");
+			File f=new File(Shpfile);
+			URL url=f.toURI().toURL();
 			ShapefileDataStore sds = (ShapefileDataStore) dataStoreFactory
-					.createDataStore();  //toURI()转换非法字符
+					.createDataStore(url);  //toURI()转换非法字符
 			sds.setCharset(Charset.forName("GBK"));
+					
 			SimpleFeatureSource featureSource = sds.getFeatureSource();
 
 			SimpleFeatureType schema = featureSource.getSchema();
@@ -49,7 +51,7 @@ public class SeamLineMetaParser {
 			MySQLDataStoreFactory factory1 = new MySQLDataStoreFactory();
 			String conffilepath ="";
 			
-				 conffilepath = SeamLineMetaParser.class.getClassLoader().getResource("").toURI().getPath();
+			conffilepath = this.getClass().getClassLoader().getResource("").toURI().getPath();
 	
 			conffilepath += "com/sasmac/conf/dbConnConf.properties";
 			PropertiesUtil util = new PropertiesUtil(conffilepath);

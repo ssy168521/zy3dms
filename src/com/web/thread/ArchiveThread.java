@@ -109,13 +109,13 @@ public class ArchiveThread extends BaseThread implements Runnable {
 			File fF=new File(archivePath);
 			String filename = fF.getName().substring(0, fF.getName().lastIndexOf("."));
 			myLogger.info("start archive " + Integer.toString(iCurridx) + " file");
-			String tiffpath = fF.getPath() + File.separator + fF.getName();
+			String tiffpath = fF.getPath();
 			String prefix = tiffpath.substring(tiffpath.lastIndexOf("."));
 			if(!prefix.equalsIgnoreCase(".shp")){
 				myLogger.info("file format is not support: " + filename);
 			}
             SeamLineMetaParser parser = new SeamLineMetaParser();
-            boolean shp=parser.createFeatures(tiffpath);
+            boolean shp=parser.createFeatures(archivePath);
             if(!shp){
             	myLogger.info("shapefile to mysql error!");
             }else {
