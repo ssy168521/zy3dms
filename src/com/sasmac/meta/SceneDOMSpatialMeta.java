@@ -44,7 +44,6 @@ public class SceneDOMSpatialMeta extends SpatialMeta {
 
 		} else {
 			sql += "null,";
-		}
 		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String str = formatter.format(getArchiveTime());
 		sql += "'" + str + "',";
@@ -75,4 +74,6 @@ public class SceneDOMSpatialMeta extends SpatialMeta {
 		}
 		return true;
 	}
+		return true;
+  }
 }
