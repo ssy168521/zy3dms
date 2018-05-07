@@ -262,12 +262,6 @@
   <servlet>
     <description>This is the description of my J2EE component</description>
     <display-name>This is the display name of my J2EE component</display-name>
-    <servlet-name>Loadoverview1</servlet-name>
-    <servlet-class>com.sasmac.servlet.Loadoverview1</servlet-class>
-  </servlet>
-  <servlet>
-    <description>This is the description of my J2EE component</description>
-    <display-name>This is the display name of my J2EE component</display-name>
     <servlet-name>UploadXML</servlet-name>
     <servlet-class>com.sasmac.servlet.UploadXML</servlet-class>
   </servlet>
@@ -280,10 +274,6 @@
   <servlet-mapping>
     <servlet-name>CountStatisticservlet</servlet-name>
     <url-pattern>/servlet/CountStatisticservlet</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>Loadoverview1</servlet-name>
-    <url-pattern>/servlet/Loadoverview1</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>UploadXML</servlet-name>

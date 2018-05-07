@@ -23,7 +23,10 @@ import org.geotools.data.mysql.MySQLDataStoreFactory;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.jdbc.JDBCDataStore;
 import org.opengis.feature.simple.SimpleFeatureType;
-
+import org.geotools.referencing.crs.*;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.referencing.factory.ReferencingObjectFactory;
+import org.opengis.referencing.FactoryException;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -35,7 +38,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.web.dao.Table;
 import com.web.util.PropertiesUtil;
-
+import com.sasmac.DataModel.MetaManager;
 public class TableField extends HttpServlet {
 
 	/**
@@ -111,35 +114,44 @@ public class TableField extends HttpServlet {
 				ConnPoolUtil.close(conn, null, null);
 			}
 		} else if (requestURI.contains("tableCreate")) {// 创建新数据表
+			PrintWriter out = response.getWriter();
 			Connection conn = null;
 			Statement stmt = null;
 			try {
-				conn = ConnPoolUtil.getConnection();
-				stmt = conn.createStatement();
-				PrintWriter out = response.getWriter();
-
+				String DatasetName = request.getParameter("DatasetName");
+				String SRS = request.getParameter("SRS");
+				
 				String tabName = request.getParameter("tabName");
 				String tabName1 = "tb_" + tabName.substring(1, tabName.length() - 1) + "_product";// tb_sc_product
-				// 判断表名是否重复
-				String sql = "SELECT table_name FROM information_schema.TABLES WHERE table_name =\"" + tabName1 + "\";";
-				ResultSet result = stmt.executeQuery(sql);
-				if (result.next()) {
-					out.print("表名重复，请重新输入！");
-				} else {
-					out.print("表名正确！");
+	
+				MetaManager m=new MetaManager();
+				boolean bb=m.InsertMetaManangerInfo(tabName1, "","","", DatasetName);
+				if(!bb) 
+				{
+					out.print("Dataset creation failure");
+					return ;
 				}
-				// 新建数据的同时将建库方案插入tb_metamanager,插入表名
-				String sql_meta = "insert into tb_metamanager(`tablename`)values(\"" + tabName1 + "\");";
-				boolean b1 = stmt.execute(sql_meta);
-				if (!b1) {
-					out.print("true");
-				} else {
-					out.print("插入失败！");
-				}
-				// 简单要素类型用于设置名称、增加属性和几何属性
+				
+				ReferencingObjectFactory crsfact = new ReferencingObjectFactory();
+				CoordinateReferenceSystem crs = null;
+				try
+				{
+					 crs=crsfact.createFromWKT(SRS);
+				}catch(FactoryException e) {
+					e.printStackTrace();
+				} 
+				
+					
+				conn = ConnPoolUtil.getConnection();
+				stmt = conn.createStatement();
+				
+
+					// 简单要素类型用于设置名称、增加属性和几何属性
 				SimpleFeatureTypeBuilder b = new SimpleFeatureTypeBuilder();
 				// 设置表名
 				b.setName(tabName1);
+				b.setCRS( crs );
+				
 				String objSelec = request.getParameter("objSelec");
 				JSONArray jsonArr = JSONArray.fromObject(objSelec);
 				for (int i = 0; i < jsonArr.size(); i++) {
@@ -165,11 +177,9 @@ public class TableField extends HttpServlet {
 				// 建立类型
 				final SimpleFeatureType FLAG = b.buildFeatureType();
 				SimpleFeatureType schema = FLAG;
+				
 				MySQLDataStoreFactory factory1 = new MySQLDataStoreFactory();
 				String conffilepath = "";
-				// String conffilepath2 = "E:/MyEclipse2014
-				// workspace/archives/libs/dbConnConf.properties";
-
 				try {
 					conffilepath = Layer2GeoJSON2.class.getClassLoader().getResource("").toURI().getPath();
 				} catch (URISyntaxException e) {
@@ -187,12 +197,15 @@ public class TableField extends HttpServlet {
 				JDBCDataStore ds;
 				try {
 					ds = (JDBCDataStore) factory1.createDataStore(params2);
-					if (ds != null) {
-						out.print("系统连接到位于localhost的空间数据库成功！");
-					} else {
-						out.print("系统连接到位于localhost的空间数据库失败！请检查相关参数！");
+					
+					if (ds == null) {
+						out.print("database connection is failure！");
+						return ;
 					}
+					
 					ds.createSchema(schema);// 在mysql创建表
+					
+					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -293,13 +306,25 @@ public class TableField extends HttpServlet {
 			PrintWriter out = response.getWriter();
 			// 构造list数组，接收数据库数据
 			List<Table> tables = new ArrayList<Table>();
+			String conffilepath ="";
+			try {
+				conffilepath = this.getClass().getClassLoader().getResource("").toURI().getPath();
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block e.printStackTrace();
+			}
+			conffilepath += "com/sasmac/conf/dbConnConf.properties";
+			PropertiesUtil util = new PropertiesUtil(conffilepath);
+			String Database=util.getProperty("database");
+		
 			try { // 数据库连接池
 				conn = ConnPoolUtil.getConnection();
 				stmt = conn.createStatement();
-				String tabname = request.getParameter("productTable");
-				String productTable = tabname.substring(1, tabname.length() - 1);
+				String producttype = request.getParameter("productName");
+				MetaManager m=new MetaManager();
+				String tabname=m.getTableNameByProductName(producttype);
+				//String productTable = tabname.substring(1, tabname.length() - 1);
 				String sql3 = "select COLUMN_NAME,DATA_TYPE from information_schema.COLUMNS where table_name = \""
-						+ productTable + "\" and table_schema = 'testdb';";
+						+ tabname + "\" and table_schema = '"+Database+"';";
 				ResultSet result = stmt.executeQuery(sql3);
 				// 构造json字符串
 				while (result.next()) {
@@ -326,19 +351,19 @@ public class TableField extends HttpServlet {
 			// 从前端获取序列化json数据
 			String json = request.getParameter("objSelec");
 			String productType1 = request.getParameter("productType");
-			String productTable1 = request.getParameter("productTable");
+			//String productTable1 = request.getParameter("productTable");
 			String productType = productType1.substring(1, productType1.length() - 1);
-			String productTable = productTable1.substring(1, productTable1.length() - 1);
+		//	String productTable = productTable1.substring(1, productTable1.length() - 1);
 			JSONObject j = JSONObject.fromObject(json);
 			// 根据key获取相应的value
 			String fieldName = j.getString("fieldName");
-			String nodepath = j.getString("nodeName").substring(1, j.getString("nodeName").length() - 1);
-			String nodeName = nodepath.substring(nodepath.lastIndexOf("/") + 1);
+//			String nodepath = j.getString("nodeName").substring(1, j.getString("nodeName").length() - 1);
+			String nodeName = j.getString("nodeName");
 			// String xmlfile1 = request.getParameter("fileName");
 			// String xmlfile=xmlfile1.substring(1,xmlfile1.length()-1);
-			String sql2 = "insert into archiveconfig(fieldName,productType,productTable,nodeName,nodepath) "
-					+ "values( \"" + fieldName + "\",\"" + productType + "\",\"" + productTable + "\",\"" + nodeName
-					+ "\",\"" + nodepath + "\");";
+			String sql2 = "insert into archiveconfig(fieldName,productType,nodeName) "
+					+ "values( \"" + fieldName + "\",\"" + productType + "\"," + nodeName
+					+ "\")" ;
 			try {
 				conn = ConnPoolUtil.getConnection();
 				stmt = conn.createStatement();
@@ -399,25 +424,7 @@ public class TableField extends HttpServlet {
 		}
 	}
 
-	// public String toJson(List<String> str){
-	// StringBuilder json = new StringBuilder();
-	//
-	// if (str == null)
-	// {
-	// return "null";
-	//
-	// }
-	// json.append("[");
-	// for(String item:str)
-	// {
-	// json.append("{\"Name\":\"");
-	// json.append(item);
-	// json.append("\"},");
-	// }
-	//
-	// return json.toString().substring(0, json.toString().lastIndexOf(",")) +
-	// "]";
-	// }
+	
 	/**
 	 * The doPost method of the servlet. <br>
 	 *

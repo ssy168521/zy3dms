@@ -121,7 +121,8 @@ public class ArchiveThread extends BaseThread implements Runnable {
             	myLogger.info("shapefile to mysql error!");
             }else {
             	myLogger.info("shapefile to mysql success!");
-            	boolean b=MetaManager.InsertMetaManangerInfo(filename,"","","", "镶嵌线");
+            	MetaManager m = new MetaManager();
+            	boolean b=m.InsertMetaManangerInfo(filename,"","","", "镶嵌线");
             	if(b)myLogger.info("metamanager is inserted success !");
             	
 			}

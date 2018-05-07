@@ -36,15 +36,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <div class="panel-head"><strong class="icon-reorder">新建数据集</strong></div>
    <div id="toolbar">
     	<li style="padding-left:20px;"> 
-    	<a href="./jsp/fieldadd.html" class="button border-main icon-plus-square-o">添加字段</a>
-        <a href="javascript:void(0)" class="button border-red icon-trash-o" onclick="delSelectUsers()"> 删除</a>
-        <!--  <a href="javascript:void(0)" class="button border-main icon-plus-square-o" onclick="createNewTable()">创建新表</a>  -->  
+         <!--  <a href="javascript:void(0)" class="button border-main icon-plus-square-o" onclick="createNewTable()">创建新表</a>  -->  
         <form id="table" method="post" action="" style="display:inline"> 
-           <label>  新数据表：tb_</label>
-           <input id="createtable" type="text" name="ntablename" placeholder="请输入新表名" data-validate="required:请输入表名" /> 
+           <label>  数据集名：</label>
+           <input id="DatasetID" type="text" name="Datasetname" placeholder="请输入数据集名" data-validate="required:请输入数据集名" /> 
+           <label>  坐标系统：</label>
+           <input id="SRSID" type="text" name="SRSName" placeholder="请输入坐标系" data-validate="required:请输入坐标系" /> 
+           <label>  新数据表：tb_</label>         
+           <input id="tableid" type="text" name="tablename" placeholder="请输入新表名" data-validate="required:请输入表名" /> 
            <label>_product</label>                                  
-    <!--style="display:inline" <input type="button" name="submit" class="button border-main icon-plus-square-o" value="创建新表" onclick="createNewTable()"/>-->
-    	   <label class="help-block" > 举例：tb_sc_product</label>
+           <!--style="display:inline" <input type="button" name="submit" class="button border-main icon-plus-square-o" value="创建新表" onclick="createNewTable()"/>-->
+    	   <label class="help-block" >  (举例：tb_sc_product)</label>
     	</form> 
     	</li>
    </div>
@@ -56,8 +58,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	
     </form>
     <div style="margin-right:30px;">
-    <!-- <input type="button" name="submit" class="button border-main icon-plus-square-o" value="创建新表" onclick="createNewTable()"/> -->
-    <a href="javascript:void(0)" class="button border-main icon-plus-square-o" onclick="createNewTable()">创建新表</a>
+       	<a href="./jsp/fieldadd.html" class="button border-main icon-plus-square-o">添加字段</a>
+        <a href="javascript:void(0)" class="button border-red icon-trash-o" onclick="delSelectUsers()"> 删除</a>
+        <a href="javascript:void(0)" class="button border-main icon-plus-square-o" onclick="createNewTable()">创建数据集</a>
     </div>
     <script type="text/javascript"> 
 		var obj;
@@ -186,7 +189,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		
 		function createNewTable(){
 			var objSelec=$('#userTable').bootstrapTable('getSelections');
-			var tabName=$('#createtable').val();
+			var tabName=$('#tableid').val();
+			var strSRS=$('#SRSID').val();
+			var DatasetName=$('#DatasetID').val();
 			
 			if(objSelec == null){
 				alter("请选择要建表的字段!");
@@ -201,7 +206,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					$.ajax({
 						url:"./servlet/tableCreate",
 						type:"POST",
-						data:{"objSelec":strtmp,"tabName":ntabName},
+						data:{"objSelec":strtmp,"tabName":ntabName,"DatasetName":DatasetName,"SRS":strSRS},
 						//dataType:"json",
 						async:false,
 						error:function(request){
