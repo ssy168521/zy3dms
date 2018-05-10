@@ -37,50 +37,26 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <div class="panel admin-panel">
     <div class="panel-head"><strong class="icon-reorder">建库方案</strong></div>
     <div id="toolbar">
-			<form class="form-inline" style="width:100%;" name="xmlform" enctype="multipart/form-data">
-			   <div  style="display:inline-block; width: 741px">
-			      <label style="height:25px;">产品名称 : </label>
-				   <select id="producttype" style="height:25px;width:50%;">
-			   
-				 
-	            <!--  <option>sc产品</option>
-                      <option>分景DOM</option>
-				      <option>分幅DOM</option> --> 
-						</select>																
-			<!-- <input style="height:25px;width:100px;" type="text" id="productlevel" value="输入产品"/> -->
-				 <span class="help-block">选择或输入归档产品类型</span>
-		
-
- <!-- 			<form class="form-inline" style="width:33%;">
-				<label style="height:25px;">数据库表名 : </label>
-			 <select id="tablename" style="height:25px;width:165px;">
-						 </select>
-				<span class="help-block">选择已有数据表</span>
-	       </form>
-	-->
-			        <input id="FileId" type="file" accept="text/xml" name="xmlfile" onchange="$('#btn').click();">
-			        <input type="hidden" id="btn" value="确定" >
-			        <span class="help-block">选择xml文件</span>			
+			<form class="form-inline" style="width:100%;" name="xmlform"  enctype="multipart/form-data">
+			   <div  style="display:inline-block; width:100%">
+			       <label style="height:25px;">产品名称 : </label>
+				   <select id="producttype" style="height:25px;width: 15%;" onchange='SelectProduct(this)'></select>																
+			        &nbsp;&nbsp;&nbsp;
+			       <input id="FileId" type="file" accept="text/xml"  name="xmlfile" style="height:25px;width: 30%;">
+			 	   <span class="help-block">选择xml文件</span>
+			 	   <input type="button" value="上传" onclick="Uploadxml()"	/>
+			 	   <!--  <button value="上传" onclick="Uploadxml()">上传</button>-->
 		        </div>		         
 	       </form>
-           <!-- <span class="help-block">说明：选择产品类型和数据表后，在表中选择合适的xml节点，然后输入新的字段名，建立字段节点连接关系</span> -->
-    
-
-     </div>
-    <table id="userTable"></table>
-    <form id="subform" method="post">
-        <input type="hidden" id="subfieldid" name="subid"/>
-    	<input type="hidden" id="subfieldName" name="subuserid"/>
-    	<input type="hidden" id="subfieldTypeName" name="subusername"/>
-    </form>
-    
+    </div>
+    <table id="userTable"></table>   
     <div>  <button onclick="OnSaveSchema()">保存建库方案</button> </div>
   </div>
   
  <script type="text/javascript">
-   var obj;
-   var productTable;
-  // alert("111");
+   var result = [];//[{value: 1, text: "text1"}, {value: 2, text: "text2"}];
+   var field=null;
+   $("#producttype").append("<option>请选择产品类型</option>");
    $.ajax({
        url: "./servlet/producttype",
        async: false,
@@ -98,19 +74,157 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
            }
        }
    });
-   
+   function Uploadxml()
+   {
+      var xmlfile = document.xmlform.xmlfile.files[0];
+      var fm = new FormData();
+      fm.append('xmlfile', xmlfile);
+      var filepath =$("#FileId").val();
+      if(filepath==null )
+      {
+         alert("请选择上传的xml文件");
+         return;
+      }
+     
+      $.ajax({
+		      url: 'servlet/UploadXML',
+		      async: false,
+		      type: 'post',
+		      data: fm,
+		      contentType: false, //禁止设置请求类型
+		      processData: false,
+		      success: function (info) {
+		          var jsonstr=eval("("+info+")");
+		          for(var i = 0; i < jsonstr.length; i++) {
+		             var str = JSON.stringify(jsonstr[i].nodeName);
+		             var str1 = JSON.stringify(jsonstr[i].nodepath);
+		              result.push({ value:str,text:str1 });
+		          }
+		         showtable(field,result);;
+		      }
+		});
+		
+		//var col=$('#userTable').columns[3];
+		//col.editable({
+       //      source:result
+        //    });
+       // $('#userTable').editable
+        //$('#userTable').attr('data-original-title','');
+           // $('#userTable').editable({
+            // source:result
+          //  });
+      
+   }
+   function showtable(field,result)
+   {
+        $('#userTable').bootstrapTable('destroy');
+		$('#userTable').bootstrapTable({
+					method: 'get',
+					cache: false,
+					height: 708,
+					clickToSelect:true,     //是否选中  
+					//toolbar: '#toolbar',
+					striped: true,
+					pagination: true,
+					pageSize: 12,
+					pageNumber: 1,
+					pageList: [10, 20, 50, 100, 200, 500],
+					search: true,
+					showColumns: true,
+					showRefresh: true,
+					showExport: true,
+					exportTypes: ['csv','txt','xml'],
+					search: false,
+					columns: [{field:"checkStatus",title:"全选",checkbox:true,width:20,align:"center",valign:"middle"},
+					{field:"fieldName",title:"字段名称",align:"center",valign:"middle",sortable:"true"},
+					{field:"fieldTypeName",title:"字段数据类型",align:"center",valign:"middle",sortable:"true"},
+					{field:"nodepath",title:"节点名称",align:"center",valign:"middle",sortable:"true",
+						editable: {
+		                    type: 'select',
+		                    title: '节点名称',
+		                    source: result,
+		                }	
+					},
+					],
+					data:field,
+					onEditableSave: function (field, row, oldValue, $el) {
+					  // $('#userTable').bootstrapTable('updateRow', {index: row.rowId, row: row});
+			        }
+	
+				});	
+   }
+   function SelectProduct(obj)
+   {
+   	   var producttype=$('#producttype').val();	
+	   $.ajax({
+			url:"servlet/columnName",
+			type:"POST",
+			async:false,
+			data: {"productName":JSON.stringify(producttype)},
+			error:function(request){
+				alert("Network Error 网络异常");
+			},
+			success:function(data){
+			   var obj= eval("("+data+")");
+			   field=obj;
+               showtable(field,result);
+			}
+		});
+		$(window).resize(function () {
+			$('#userTable').bootstrapTable('resetView');//移除表数据
+		});
+   };
    function OnSaveSchema()
    {
-   
-   
+			var objSelec=$('#userTable').bootstrapTable('getSelections');
+			var strtmp=JSON.stringify(objSelec);
+			$.ajax({
+						url:"./servlet/SaveSchema",
+						type:"POST",
+						data:{"objSelec":strtmp,"productType":JSON.stringify(productType)},
+						//dataType:"json",
+						async:false,
+						error:function(request){
+							alert("Network Error 网络异常");
+						},
+						success:function(data){
+							if(data=="true"){
+								alert("保存成功！");
+							}
+						}
+				});
+			
    }
    
-   $('#btn').click(function () {
-	  var producttype=$('#producttype').val();	
-       //var xmlfile =$('#FileId').val(); 
+  // $('#btnSelectXml').click(function () {
+  /*function postclick(){
+	   var producttype=$('#producttype').val();	
        var xmlfile = document.xmlform.xmlfile.files[0];
        var fm = new FormData();
        fm.append('xmlfile', xmlfile);
+       var result = [];
+        $.ajax({
+		      url: 'servlet/UploadXML',
+		      async: false,
+		      type: 'post',
+		      data: fm,
+		      contentType: false, //禁止设置请求类型
+		      processData: false,
+		      success: function (info) {
+		          var jsonstr=eval("("+info+")");
+		          for(var i = 0; i < jsonstr.length; i++) {
+		             var str = JSON.stringify(jsonstr[i].nodeName);
+		             var str1 = JSON.stringify(jsonstr[i].nodepath);
+		              result.push({ value:str1,text:str });
+		          }
+		      }
+		});
+       // $('#userTable').editable
+        //$('#userTable').attr('data-original-title','');
+        $('#userTable').editable({
+             source:result
+            });
+       // $('#userTable').editable.source=result;
 		$.ajax({
 			url:"servlet/columnName",
 			type:"POST",
@@ -124,7 +238,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				$('#userTable').bootstrapTable({
 					method: 'get',
 					cache: false,
-					height: 708,
 					clickToSelect:true,     //是否选中  
 					//toolbar: '#toolbar',
 					striped: true,
@@ -172,7 +285,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					],
 					data:obj,
 					onEditableSave: function (field, row, oldValue, $el) {
-				    	/*var productType=$('#producttype').val();
+					$('#userTable').bootstrapTable('updateRow', {index: row.rowId, row: row});
+				    	var productType=$('#producttype').val();
 			                $.ajax({
 			                    type: "post",
 			                    url: "./servlet/fieldedit",
@@ -193,7 +307,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 			                    }
 
-			                });*/
+			                });
 			            }
 	
 				});	
@@ -203,7 +317,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$('#userTable').bootstrapTable('resetView');//移除表数据
 		});
 		
-	});	
+	};	*/
  
  </script>
   

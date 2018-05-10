@@ -39,6 +39,13 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.web.dao.Table;
 import com.web.util.PropertiesUtil;
 import com.sasmac.DataModel.MetaManager;
+
+import java.sql.Connection;  
+import java.sql.SQLException;  
+  
+import org.apache.commons.dbutils.DbUtils;  
+import org.apache.commons.dbutils.QueryRunner;  
+
 public class TableField extends HttpServlet {
 
 	/**
@@ -288,8 +295,7 @@ public class TableField extends HttpServlet {
 					String productTable = result.getString("tablename");
 					// list.add("{\"productName\":\"");
 					list.add(productName);
-					list.add(productTable);
-					// list.add("\"}");
+					//list.add(productTable);
 				}
 				JSONArray jsonArray = JSONArray.fromObject(list);
 				String jsonTable = jsonArray.toString();
@@ -417,6 +423,54 @@ public class TableField extends HttpServlet {
 				}
 			} catch (SQLException e) {
 				out.print("主键必须唯一！！");
+				e.printStackTrace();
+			} finally {
+				ConnPoolUtil.close(conn, null, null);
+			}
+		}
+		else if (requestURI.contains("/SaveSchema")) { // 将归档方案对应关系存于数据库
+			Connection conn = ConnPoolUtil.getConnection();
+			PrintWriter out = response.getWriter();
+			// 从前端获取序列化json数据
+			String json = request.getParameter("objSelec");
+			String productType = request.getParameter("productType");
+			//String productType = productType1.substring(1, productType1.length() - 1);
+			//JSONObject j = JSONObject.fromObject(json);
+			JSONArray jsonarray=JSONArray.fromObject(json);
+			int num=jsonarray.size();
+			
+			try {
+				String[][] para =null;
+				if(num>0) 
+				{
+					 para =new String[num][3]  ;
+				}
+				
+			    for(int i=0;i<num;i++)
+		     	{
+			    	JSONObject j =jsonarray.getJSONObject(i);
+			    	// 根据key获取相应的value
+			    	String fieldName = j.getString("fieldName");
+			    	String fieldTypeName = j.getString("fieldTypeName");
+			    	String nodepath = j.getString("nodepath");
+			    	para[i][0]=productType;
+			    	para[i][1]=fieldName;
+			    	//para[i][1]=fieldTypeName;
+			    	para[i][2]=nodepath;
+			    	
+		    	}
+			    if(num>0)
+			    {
+			    	String sql = "insert into archiveconfig(productType,fieldName,nodepath) values(?,?,?)";
+			    	// String sql2 = "insert into archiveconfig(productType,fieldName,nodepath) "
+			    			//		+ "values( \"" + fieldName + "\",\"" + productType + "\",\""+nodepath+"\",\"" + nodeName
+			    					//		+ "\")" ;
+			    	QueryRunner queryruner=new QueryRunner();
+			    	
+			    	int [] ret =queryruner.batch(conn,sql, para);
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} finally {
 				ConnPoolUtil.close(conn, null, null);

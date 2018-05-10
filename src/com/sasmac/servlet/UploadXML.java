@@ -84,6 +84,8 @@ public class UploadXML extends HttpServlet {
 			// 这意味着可以上传多个文件
 			// 请自行组织代码
 			List<FileItem> list = upload.parseRequest(request);
+			
+			if(list.size()<=0 ) return ;
 			// 获取上传的文件
 			FileItem item = getUploadFileItem(list);
 			// 获取文件名
